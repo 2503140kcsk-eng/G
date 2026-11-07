@@ -1,3 +1,4 @@
+module
 import Mathlib.RingTheory.Algebraic.Integral
 
 /-!
@@ -44,7 +45,7 @@ def algebraicNumbersSubalgebra (K A : Type*) [Field K] [Field A] [Algebra K A] :
 theorem mem_algebraicNumbersSubalgebra
     {K A : Type*} [Field K] [Field A] [Algebra K A] {x : A} :
     x ∈ algebraicNumbersSubalgebra K A ↔ IsAlgebraic K x :=
-  Subalgebra.mem_algebraicClosure
+  Subalgebra.mem_algebraicClosure K A
 
 /-- Closure under addition, expressed internally in the algebraic-number subalgebra. -/
 theorem algebraicNumbers_add
@@ -90,7 +91,8 @@ theorem isAlgebraic_of_root_of_algebraic_coefficients
   have hcoeffS : (↑p.coeffs : Set A) ⊆ S.toSubring := by
     intro c hc
     obtain ⟨n, hn, rfl⟩ := mem_coeffs_iff.mp hc
-    exact (Subalgebra.mem_algebraicClosure).2 (hcoeff n)
+    change c ∈ S
+    exact (Subalgebra.mem_algebraicClosure K A).2 (hcoeff n)
 
   -- Reinterpret p as a polynomial over S.
   let q : S[X] := p.toSubring S.toSubring hcoeffS
@@ -109,8 +111,8 @@ theorem isAlgebraic_of_root_of_algebraic_coefficients
 
   -- The root equation transfers to the polynomial over S.
   have hq_root : aeval x q = 0 := by
-    rw [← eval_map_algebraMap, hq_map, aeval_def]
-    exact hroot
+    rw [← eval_map_algebraMap, hq_map]
+    simpa [aeval_def] using hroot
 
   have hxS : IsAlgebraic S x := ⟨q, hq_ne, hq_root⟩
 
