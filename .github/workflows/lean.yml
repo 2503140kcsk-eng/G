@@ -13,8 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # lean-action expects a checked-in Lake manifest. Bootstrap Elan and create
-      # the manifest from the pinned toolchain and pinned Mathlib tag first.
+      # lean-action requires a Lake manifest. Bootstrap Elan and generate it
+      # from the pinned toolchain and pinned Mathlib tag.
       - name: Bootstrap Lean workspace
         shell: bash
         run: |
@@ -28,4 +28,3 @@ jobs:
         with:
           use-mathlib-cache: true
           axiom-audit: true
-          axiom-audit-root: AlgebraicNumberClosureFormalization
