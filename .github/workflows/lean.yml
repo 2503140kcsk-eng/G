@@ -12,6 +12,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # lean-action expects a checked-in Lake manifest. Bootstrap Elan and create
+      # the manifest from the pinned toolchain and pinned Mathlib tag first.
+      - name: Bootstrap Lean workspace
+        shell: bash
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          elan toolchain install "$(cat lean-toolchain)"
+          lake update
+
       - uses: leanprover/lean-action@v1
         with:
           use-mathlib-cache: true
+          axiom-audit: true
+          axiom-audit-root: AlgebraicNumberClosureFormalization
