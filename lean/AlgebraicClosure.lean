@@ -91,7 +91,7 @@ theorem isAlgebraic_of_root_of_algebraic_coefficients
   have hcoeffS : (↑p.coeffs : Set A) ⊆ S.toSubring := by
     intro c hc
     obtain ⟨n, hn, rfl⟩ := mem_coeffs_iff.mp hc
-    change c ∈ S
+    change p.coeff n ∈ S
     exact (Subalgebra.mem_algebraicClosure K A).2 (hcoeff n)
 
   -- Reinterpret p as a polynomial over S.
