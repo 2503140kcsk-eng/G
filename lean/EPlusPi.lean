@@ -1,3 +1,4 @@
+module
 import Mathlib
 
 /-!
@@ -6,10 +7,10 @@ import Mathlib
 This file defines the exact real number and the target property.
 It intentionally contains no axiom, sorry, or theorem claiming that
 the target is transcendental.
--/
+-/ 
 
 /-- The real number e + π, represented using Mathlib's real exponential and pi. -/
-def ePlusPi : ℝ := Real.exp 1 + Real.pi
+noncomputable def ePlusPi : ℝ := Real.exp 1 + Real.pi
 
 /-- A real number is transcendental over ℚ if no nonzero rational polynomial
     vanishes at it. -/
