@@ -74,7 +74,7 @@ This construction is a unified proof certificate and formalization strategy, not
 ## Key mathlib declarations checked
 
 - IsAlgebraic.inv_iff and IsAlgebraic.inv in Mathlib/RingTheory/Algebraic/Basic.
-- IsAlgebraic.pow and IsAlgebraic.isIntegral in the algebraic-element API.
+- IsAlgebraic.isIntegral, IsIntegral.pow, and IsIntegral.isAlgebraic for the natural-power proof.
 - IntermediateField.adjoin.finiteDimensional and IntermediateField.finiteDimensional_adjoin in Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.
 - IntermediateField.adjoin.finrank, identifying the dimension of a simple algebraic extension with the minimal-polynomial degree.
 - IntermediateField.fg_top_iff, identifying finite generation as a field with Algebra.EssFiniteType.
