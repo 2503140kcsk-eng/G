@@ -35,7 +35,8 @@ a nonzero polynomial over the algebraic numbers. Hence both would be algebraic, 
 
 - RESEARCH_STATUS.md: literature audit, theorem boundaries, and research plan.
 - lean/EPlusPi.lean: exact target definition, intentionally without a theorem asserting it.
-- lean/AlgebraicFieldClosure.lean: formal lemmas for inverse closure, integer powers, finite sets of algebraic generators, and the finite-generation/algebraicity criterion for finite extensions.
+- ALGEBRAIC_FIELD_CLOSURE_PROOF.md: complete hand proofs of inverse closure, integer powers, finite-dimensionality, the degree bound, and the finite-generation criterion.
+- lean/AlgebraicFieldClosure.lean: Lean formalization of the corresponding statements.
 - lean/lean-toolchain and lean/lakefile.lean: pinned Lean/mathlib project configuration.
 - .github/workflows/lean.yml: automatic Lean build and axiom audit on relevant pushes and pull requests.
 - TOOLS_AND_PROOF_PROTOCOL.md: roles for every tool and repository named for this task, their trust boundaries, and the unified proof architecture.
