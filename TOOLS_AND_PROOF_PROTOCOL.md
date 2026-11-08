@@ -39,29 +39,29 @@ The resource set below is the set of repositories and integrations named for thi
 
 Let F be a field, E/F a field extension, and let α₁,...,αᵣ be algebraic over F. Write dᵢ for the degree of the minimal polynomial of αᵢ over F and define
 
-\\[
+\[
 K_0=F,qquad K_i=K_{i-1}(\alpha_i).
-\\]
+\]
 
 The minimal polynomial over F remains a nonzero polynomial over Kᵢ₋₁ with αᵢ as a root. Therefore
 
-\\[
-[K_i:K_{i-1}]\\le d_i.
-\\]
+\[
+[K_i:K_{i-1}]\le d_i.
+\]
 
 The tower law gives the explicit bound
 
-\\[
+\[
 [F(\alpha_1,\ldots,\alpha_r):F]
  \le \prod_{i=1}^{r}d_i < \infty.
-\\]
+\]
 
 Equivalently, the monomials
 
-\\[
+\[
 \alpha_1^{e_1}\cdots\alpha_r^{e_r},
 \qquad 0\le e_i<d_i,
-\\]
+\]
 
 form a finite spanning family; they need not be linearly independent.
 
