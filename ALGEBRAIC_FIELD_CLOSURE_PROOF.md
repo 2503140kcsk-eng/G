@@ -30,7 +30,6 @@ Its leading coefficient is a₀ ≠ 0, so q is not the zero polynomial. Since m_
 
 \[
 q(\alpha^{-1})
- =(\alpha^{-1})^d m_{\alpha,F}(\alpha)\,\alpha^d
  =\alpha^{-d}m_{\alpha,F}(\alpha)
  =0.
 \]
