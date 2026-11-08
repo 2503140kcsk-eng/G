@@ -21,8 +21,13 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-      - name: Set up Lean and build
+      - name: Set up Lean, build, and audit axioms
         uses: leanprover/lean-action@v1
         with:
           lake-package-directory: lean
+          auto-config: false
           use-mathlib-cache: "true"
+          build: true
+          test: false
+          lint: false
+          axiom-audit: true
