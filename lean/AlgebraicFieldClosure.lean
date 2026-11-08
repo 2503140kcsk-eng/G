@@ -4,6 +4,8 @@ import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 import Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra
 import Mathlib.RingTheory.Algebraic.Integral
 
+public section
+
 /-!
 # Closure properties of algebraic elements and finite extensions
 
