@@ -24,7 +24,8 @@ A useful unconditional fact is that at least one of e + π and eπ is transcende
 - lean/EPlusPi.lean: exact target definition, intentionally without a theorem asserting it.
 - lean/AlgebraicFieldClosure.lean: formal lemmas for inverse closure, integer powers, finite sets of algebraic generators, and the finite-generation/algebraicity criterion for finite extensions.
 - lean/lean-toolchain and lean/lakefile.lean: pinned Lean/mathlib project configuration.
-- .github/workflows/lean.yml: automatic Lean build on relevant pushes and pull requests.
+- .github/workflows/lean.yml: automatic Lean build and axiom audit on relevant pushes and pull requests.
+- TOOLS_AND_PROOF_PROTOCOL.md: the role assignment for each named integration/repository, tool trust boundaries, and the unified proof architecture.
 
 The algebraic-closure file proves standard field-theory results that form infrastructure for the main project. It does **not** prove that e + π is transcendental.
 
