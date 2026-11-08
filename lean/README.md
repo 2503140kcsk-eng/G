@@ -17,7 +17,7 @@ lake build --wfail
 lake check --paranoid
 ```
 
-The CI workflow uses a pinned Elan v4.2.4 release asset instead of the moving `elan-init.sh` latest-release URL. It installs the exact toolchain from `lean-toolchain`, fetches the matching Mathlib cache, builds with warnings treated as failures, and runs `lake check --paranoid`.
+The CI workflow uses a pinned Elan v4.2.4 release asset instead of the moving `elan-init.sh` latest-release URL. It installs the exact toolchain from `lean-toolchain`, fetches the matching Mathlib cache, builds with warnings treated as failures, and runs `lake check --paranoid`. The `AlgebraicFieldClosure` library is marked as Lake's default target so both commands inspect the intended Lean module.
 
 ## Formalized results
 
