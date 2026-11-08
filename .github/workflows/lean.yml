@@ -69,6 +69,26 @@ jobs:
           set -euo pipefail
           lake build --wfail
 
+      # lake check runs untrusted build output in a bubblewrap sandbox. Install
+      # the distribution package and, on Ubuntu images that restrict user
+      # namespaces with AppArmor, load the narrowly scoped bwrap profile.
+      - name: Install bubblewrap sandbox prerequisites
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y bubblewrap apparmor-profiles apparmor-utils
+
+          profile="/usr/share/apparmor/extra-profiles/bwrap-userns-restrict"
+          if [[ -f "$profile" && -r /sys/module/apparmor/parameters/enabled ]] &&
+             [[ "$(cat /sys/module/apparmor/parameters/enabled)" == "Y" ]]; then
+            sudo install -m 0644 "$profile" /etc/apparmor.d/bwrap-userns-restrict
+            sudo apparmor_parser -r /etc/apparmor.d/bwrap-userns-restrict
+          fi
+
+          bwrap --version
+          bwrap --unshare-all --die-with-parent --ro-bind / / /bin/true
+
       # Lean 4.35+ ships lake check and independent proof checkers.
       # --paranoid requires acceptance by Lean's kernel and every bundled checker,
       # and rejects non-standard axioms (including sorryAx and custom axioms).
