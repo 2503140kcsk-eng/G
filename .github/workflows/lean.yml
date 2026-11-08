@@ -14,6 +14,11 @@ on:
 permissions:
   contents: read
 
+# Push and pull_request events target the same branch; run one validation at a time.
+concurrency:
+  group: lean-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build Lean proofs
