@@ -1,8 +1,9 @@
 module
 
-import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
-import Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra
-import Mathlib.RingTheory.Algebraic.Integral
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra
+public import Mathlib.RingTheory.Algebraic.Integral
+public import Mathlib.Algebra.Field.Defs
 
 public section
 
