@@ -17,7 +17,7 @@ lake build --wfail
 lake check --paranoid
 ```
 
-The CI workflow uses a pinned Elan v4.2.4 release asset instead of the moving `elan-init.sh` latest-release URL. It installs the exact toolchain from `lean-toolchain`, fetches the matching Mathlib cache, builds with warnings treated as failures, and runs `lake check --paranoid`. The `AlgebraicFieldClosure` library is marked as Lake's default target so both commands inspect the intended Lean module.
+The CI workflow uses a pinned Elan v4.2.4 release asset instead of the moving `elan-init.sh` latest-release URL. It installs the exact toolchain from `lean-toolchain`, fetches the matching Mathlib cache, builds with warnings treated as failures, and runs `lake check --paranoid`. Before that audit, CI installs Bubblewrap and (when Ubuntu's AppArmor namespace restriction is active) the scoped `bwrap-userns-restrict` profile; it probes the sandbox rather than disabling it. The `AlgebraicFieldClosure` library is marked as Lake's default target so both commands inspect the intended Lean module. A local Linux run of `lake check` likewise requires a working `bwrap` sandbox.
 
 ## Formalized results
 
