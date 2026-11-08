@@ -32,7 +32,7 @@ theorem isAlgebraic_inv {x : K} (hx : IsAlgebraic F x) :
 /-- Every nonnegative integer power of an algebraic element is algebraic. -/
 theorem isAlgebraic_nat_pow {x : K} (hx : IsAlgebraic F x) (n : ℕ) :
     IsAlgebraic F (x ^ n) :=
-  hx.pow n
+  (hx.isIntegral.pow n).isAlgebraic
 
 /-- Every integer power of an algebraic element is algebraic.
 
@@ -43,10 +43,10 @@ theorem isAlgebraic_int_pow {x : K} (hx : IsAlgebraic F x) (n : ℤ) :
     IsAlgebraic F (x ^ n) := by
   cases n with
   | ofNat n =>
-      exact hx.pow n
+      exact (hx.isIntegral.pow n).isAlgebraic
   | negSucc n =>
       rw [zpow_negSucc]
-      exact (hx.pow (n + 1)).inv
+      exact ((hx.isIntegral.pow (n + 1)).isAlgebraic).inv
 
 /-- A finite set of algebraic elements generates a finite-dimensional
 intermediate field.
