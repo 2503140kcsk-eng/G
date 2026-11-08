@@ -1,3 +1,5 @@
+module
+
 import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 import Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra
 import Mathlib.RingTheory.Algebraic.Integral
@@ -43,7 +45,7 @@ theorem isAlgebraic_int_pow {x : K} (hx : IsAlgebraic F x) (n : ℤ) :
     IsAlgebraic F (x ^ n) := by
   cases n with
   | ofNat n =>
-      exact (hx.isIntegral.pow n).isAlgebraic
+      simpa [zpow_ofNat] using (hx.isIntegral.pow n).isAlgebraic
   | negSucc n =>
       rw [zpow_negSucc]
       exact ((hx.isIntegral.pow (n + 1)).isAlgebraic).inv
@@ -77,11 +79,11 @@ theorem finite_iff_essFiniteType_and_algebraic :
       Algebra.EssFiniteType F K ∧ Algebra.IsAlgebraic F K := by
   constructor
   · intro h
-    letI : Module.Finite F K := h
+    let hFinite : Module.Finite F K := h
     exact ⟨inferInstance, inferInstance⟩
   · rintro ⟨hFiniteGeneration, hAlgebraic⟩
-    letI : Algebra.EssFiniteType F K := hFiniteGeneration
-    letI : Algebra.IsAlgebraic F K := hAlgebraic
+    let hFiniteGeneration' : Algebra.EssFiniteType F K := hFiniteGeneration
+    let hAlgebraic' : Algebra.IsAlgebraic F K := hAlgebraic
     exact Algebra.finite_of_essFiniteType_of_isAlgebraic
 
 end AlgebraicFieldClosure
