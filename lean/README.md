@@ -3,7 +3,7 @@
 The e + π file remains a statement-only artifact: it defines the exact real number, the transcendence predicate, and the unresolved target without claiming a proof.
 
 A separate algebraic-field development lives in:
-- G/AlgebraicElements.lean: the intermediate field of all algebraic elements, its explicit Field structure, field-operation closure, maximality, algebraic closedness under the ambient-field hypothesis, polynomial splitting, roots, and uniqueness.
+- G/AlgebraicElements.lean: the intermediate field of all algebraic elements, its explicit `Field` structure, field-operation closure, maximality, algebraic closedness under the ambient-field hypothesis, polynomial splitting, roots, and uniqueness.
 - G/AxiomAudit.lean: theorem-by-theorem #print axioms output.
 
 The project is pinned by lean-toolchain, lakefile.lean, and lake-manifest.json to Lean/mathlib v4.36.0-rc2 and exact transitive dependency revisions.
