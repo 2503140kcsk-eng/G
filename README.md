@@ -31,10 +31,17 @@ a nonzero polynomial over the algebraic numbers. Hence both would be algebraic, 
 - A formal theorem is complete only when Lean's kernel checks it and #print axioms shows no unintended assumptions.
 - Numerical approximations, symbolic simplification, and bounded searches cannot decide algebraicity.
 
+## Additional formalization: algebraic elements and algebraic closure
+
+The repository also contains a separate Lean development of the field of all elements algebraic over a base field and its algebraic-closure properties. See [ALGEBRAIC_CLOSURE_STATUS.md](ALGEBRAIC_CLOSURE_STATUS.md) and [G/AlgebraicElements.lean](G/AlgebraicElements.lean). This extension does not change the status of the e + π transcendence question.
+
 ## Repository map
 
 - RESEARCH_STATUS.md: literature audit, theorem boundaries, and research plan.
-- lean/: Lean formalization workspace (to be bootstrapped against a pinned mathlib revision).
+- G/AlgebraicElements.lean: algebraic-elements field and algebraic-closure formalization.
+- G/AxiomAudit.lean: explicit theorem axiom audit.
+- ALGEBRAIC_CLOSURE_STATUS.md: assumptions, results, trust model, and tool responsibilities.
+- lean/: original e + π formalization workspace.
 
 ## Sources checked
 

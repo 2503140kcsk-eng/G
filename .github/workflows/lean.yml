@@ -1,0 +1,58 @@
+name: Lean formalization
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      # Build first and run the dedicated axiom audit before independent
+      # kernel checks. The old lean-action nanoda hook builds nanoda_lib
+      # from its stale debug branch, which cannot parse current NDJSON exports.
+      - name: Build and audit axioms
+        uses: leanprover/lean-action@v1
+        env:
+          LEAN_NUM_THREADS: "1"
+        with:
+          build: true
+          use-mathlib-cache: true
+          nanoda: false
+          axiom-audit: true
+          axiom-audit-root: G
+          axiom-audit-allow: propext,Classical.choice,Quot.sound
+
+      # lake check runs its export checker inside bubblewrap. Install the
+      # sandbox runtime instead of disabling the sandbox.
+      - name: Install bubblewrap sandbox runtime and grant its AppArmor userns profile
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes bubblewrap apparmor
+          sudo tee /etc/apparmor.d/bwrap >/dev/null <<'EOF'
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile bwrap /usr/bin/bwrap flags=(unconfined) {
+            userns,
+            include if exists <local/bwrap>
+          }
+          EOF
+          sudo apparmor_parser -r /etc/apparmor.d/bwrap
+          bwrap --version
+          bwrap --unshare-user --uid 0 --gid 0 --ro-bind / / --dev /dev --proc /proc true
+
+      # Lean >= 4.35 bundles version-matched independent checkers.
+      # --paranoid runs the full checker set, including nanoda, without
+      # rebuilding the old debug-branch nanoda_lib from lean-action.
+      - name: Independently check exported declarations with all bundled kernels
+        run: lake check --paranoid
