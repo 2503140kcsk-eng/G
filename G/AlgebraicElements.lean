@@ -30,7 +30,7 @@ abbrev field : IntermediateField K E :=
   algebraicClosure K E
 
 /-- The algebraic elements carry the inherited field structure. -/
-theorem field_isField : Field (field K E) :=
+def field_structure : Field (field K E) :=
   inferInstance
 
 /-- Membership in this intermediate field is equivalent to algebraicity. -/
