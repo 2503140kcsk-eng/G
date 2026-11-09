@@ -30,16 +30,16 @@ turning a public theorem into a new axiom for downstream users.
 
 /--
 info: 'AlgebraicFieldClosure.algebraic_extension_of_finiteDimensional' depends on axioms: [propext,
-  Classical.choice,
-  Quot.sound]
+ Classical.choice,
+ Quot.sound]
 -/
 #guard_msgs in
 #print axioms AlgebraicFieldClosure.algebraic_extension_of_finiteDimensional
 
 /--
 info: 'AlgebraicFieldClosure.finite_iff_essFiniteType_and_algebraic' depends on axioms: [propext,
-  Classical.choice,
-  Quot.sound]
+ Classical.choice,
+ Quot.sound]
 -/
 #guard_msgs in
 #print axioms AlgebraicFieldClosure.finite_iff_essFiniteType_and_algebraic
