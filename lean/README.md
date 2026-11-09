@@ -1,10 +1,9 @@
 # Lean formalization workspace
 
-The initial formal artifact defines:
-- e + π as Real.exp 1 + Real.pi;
-- transcendence over ℚ as the non-vanishing of every nonzero polynomial in ℚ[X];
-- the target proposition without asserting it as an axiom or theorem.
+The e + π file remains a statement-only artifact: it defines the exact real number, the transcendence predicate, and the unresolved target without claiming a proof.
 
-This is a statement-only milestone, not a proof. The next implementation milestone is to establish elementary algebraic-closure lemmas and the sum/product disjunction, then audit classical inputs and the exact mathlib API.
+A separate, fully proved algebraic-field development now lives in:
+- G/AlgebraicElements.lean: the intermediate field of all algebraic elements, field-operation closure, maximality, algebraic closedness, splitting, roots, and uniqueness.
+- G/AxiomAudit.lean: theorem-by-theorem #print axioms output.
 
-Build configuration has deliberately not been guessed. Pin a Lean toolchain and mathlib revision before claiming reproducibility or CI success.
+The project is pinned by lean-toolchain and lakefile.lean to Lean/mathlib v4.36.0-rc2. Run lake exe cache get and lake build. GitHub Actions additionally runs LeanChecker, nanoda with sorry disallowed, and axiom-audit. Do not treat the workflow configuration as a passing build until its run succeeds.
