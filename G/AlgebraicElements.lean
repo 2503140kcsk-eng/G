@@ -16,6 +16,7 @@ closure theorems. If E is algebraically closed, mathlib's construction
 also supplies the full IsAlgClosure structure.
 -/
 
+@[expose] public section
 noncomputable section
 
 universe u v w
