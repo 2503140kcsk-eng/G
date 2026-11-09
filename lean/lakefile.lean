@@ -8,3 +8,7 @@ require mathlib from git
 
 @[default_target]
 lean_lib AlgebraicFieldClosure
+
+-- The Comparator challenge is built separately and is not part of the
+-- default library target. It fixes the expected proposition types.
+lean_lib AlgebraicFieldClosureChallenge
