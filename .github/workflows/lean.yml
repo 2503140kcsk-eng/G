@@ -13,17 +13,27 @@ permissions:
 jobs:
   build-and-audit:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
-      - name: Build, independently check, and audit axioms
+
+      # Build first and run the dedicated axiom audit before independent
+      # kernel checks. The old lean-action nanoda hook builds nanoda_lib
+      # from its stale debug branch, which cannot parse current NDJSON exports.
+      - name: Build and audit axioms
         uses: leanprover/lean-action@v1
         env:
           LEAN_NUM_THREADS: "1"
         with:
           build: true
           use-mathlib-cache: true
-          nanoda: true
-          nanoda-allow-sorry: false
+          nanoda: false
           axiom-audit: true
           axiom-audit-root: G
           axiom-audit-allow: propext,Classical.choice,Quot.sound
+
+      # Lean >= 4.35 bundles version-matched independent checkers.
+      # --paranoid runs the full checker set, including nanoda, without
+      # rebuilding the old debug-branch nanoda_lib from lean-action.
+      - name: Independently check exported declarations with all bundled kernels
+        run: lake check --paranoid
