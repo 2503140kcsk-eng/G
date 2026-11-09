@@ -1,6 +1,6 @@
 module
 
-import G.AlgebraicElements
+public import G.AlgebraicElements
 
 /-!
 The declarations below are audited by Lean's kernel and by the CI
