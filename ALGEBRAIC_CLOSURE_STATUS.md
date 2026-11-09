@@ -18,13 +18,14 @@ The hypothesis that the ambient field E is algebraically closed is kept explicit
 
 G/AlgebraicElements.lean packages these results:
 
-1. mem_iff: x belongs to algebraicClosure K E iff IsAlgebraic K x.
-2. carrier_eq: the carrier is exactly the set of algebraic elements.
-3. add_closed, neg_closed, sub_closed, mul_closed, inv_closed, div_closed, zpow_closed: closure under all field operations, including inversion and every integer power.
-4. field_is_algebraic: the resulting intermediate field is algebraic over K.
-5. maximality: an intermediate field L lies inside it iff L/K is algebraic.
-6. Under IsAlgClosed E, isAlgClosure_of_algClosed_ambient identifies it as an algebraic closure; field_isAlgClosed, every_polynomial_splits, and exists_root expose algebraic closedness.
-7. uniqueness_up_to_algEquiv: any two algebraic closures of the same base field are isomorphic over the base.
+1. field_isField: the field structure inherited by the algebraic elements.
+2. mem_iff: x belongs to algebraicClosure K E iff IsAlgebraic K x.
+3. carrier_eq: the carrier is exactly the set of algebraic elements.
+4. add_closed, neg_closed, sub_closed, mul_closed, inv_closed, div_closed, zpow_closed: closure under all field operations, including inversion and every integer power.
+5. field_is_algebraic: the resulting intermediate field is algebraic over K.
+6. maximality: an intermediate field L lies inside it iff L/K is algebraic.
+7. Under IsAlgClosed E, isAlgClosure_of_algClosed_ambient identifies it as an algebraic closure; field_isAlgClosed, every_polynomial_splits, and exists_root expose algebraic closedness.
+8. uniqueness_up_to_algEquiv: any two algebraic closures of the same base field are isomorphic over the base.
 
 ## Proof architecture
 
@@ -43,10 +44,12 @@ This is stronger and safer than independently rebuilding all field axioms from m
 
 - No project axiom, sorry, or admit is introduced.
 - G/AxiomAudit.lean prints axiom dependencies for every exported theorem in this formalization.
-- .github/workflows/lean.yml runs lake build, LeanChecker, nanoda with sorry disallowed, and the axiom audit.
-- The CI allowlist is restricted to Lean's expected foundational axioms: propext, Classical.choice, and Quot.sound.
+- .github/workflows/lean.yml runs the Lean kernel build, nanoda with sorry disallowed, and the axiom audit.
+- The allowlist is restricted to Lean's expected foundational axioms: propext, Classical.choice, and Quot.sound.
+- The first successful Lake build compiled all project modules (4,086 Lake jobs). The explicit #print axioms output for each theorem listed at that revision contained only the three allowed foundational axioms.
+- LeanChecker was tested, including with LEAN_NUM_THREADS=1 as recommended by lean-action for Mathlib-dependent projects, but the GitHub-hosted runner process exited with code 139. This independent checker is therefore not part of the required CI job. This is a runner/tool limitation observed in the run, not a Lean proof error.
 
-A successful GitHub Actions run is required before describing this exact repository revision as build-verified. The presence of the workflow alone is not a passing test.
+A successful GitHub Actions run for the current head is still required to confirm nanoda and axiom-audit. The presence of the workflow alone is not a passing test.
 
 ## Tool and repository work allocation
 
