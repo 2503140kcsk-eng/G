@@ -1,54 +1,86 @@
-# The Transcendence Status of e + π
+# Tool roles and proof-integrity protocol
 
-> **Research status (2026-11-07): OPEN. No proof of the transcendence of e + π is known in the sources checked.**
+## Governing principle
 
-This repository investigates the arithmetic nature of
+Separate three jobs:
+
+1. **Discovery:** find definitions, literature, API declarations, and known theorem statements.
+2. **Experiment:** test examples, compute candidate minimal polynomials, and search for counterexamples.
+3. **Proof:** establish the universal mathematical statements in Lean and have Lean's kernel check them.
+
+Only the third stage certifies the theorems in this repository. Computer algebra, SMT solvers, search engines, and AI theorem-proving agents can suggest or test arguments, but their output is not accepted as a substitute for a kernel-checked proof.
+
+The resource set below is the set of repositories and integrations named for this task; it is not a claim that every item in the user's entire GitHub Stars list has been enumerated.
+
+## ChatGPT integrations
+
+| Resource | Assigned responsibility | Limit |
+|---|---|---|
+| GitHub | Inspect this repository, inspect upstream mathlib source, commit the formalization on an isolated branch, and run GitHub Actions CI. | Git hosting and CI status do not themselves certify a mathematical proof. |
+| Sider Scholar | Discover algebra/field-theory references and cross-check standard terminology and theorem statements. | Search results are leads; source texts and exact hypotheses must be checked. |
+| Wolfram | Calculate exact illustrative minimal polynomials and check symbolic transformations in sample number fields. | A finite collection of examples cannot prove a universal statement about every field extension. |
+| Context7 | Retrieve current Lean 4 and mathlib documentation, avoiding stale theorem names and signatures. | Documentation helps construct proofs; Lean's elaborator and kernel make the final check. |
+| Parallel Search | Independently search academic notes and current technical documentation, and cross-check the proof outline. | Web research is not a proof assistant and can misread or omit hypotheses. |
+
+## User-specified GitHub repositories
+
+| Repository | Assigned responsibility in this project | What it must not be used to claim |
+|---|---|---|
+| [Macaulay2](https://github.com/Macaulay2/M2) | Explore finitely generated commutative algebras, polynomial ideals, quotient constructions, and computational algebra examples that illuminate algebraic relations. | A Gröbner-basis or ideal computation does not establish the abstract field-extension theorem for all fields. |
+| [GAP](https://github.com/gap-system/gap) | Test finite-field examples, finite groups of field automorphisms, and finite Galois-theoretic instances. | Finite examples do not settle arbitrary or infinite field extensions. |
+| [SymPy](https://github.com/sympy/sympy) | Check polynomial reversal, rational polynomial identities, and sample minimal-polynomial calculations. | Symbolic simplification or a computed minimal polynomial is not a formal proof in Lean. |
+| [SageMath](https://github.com/sagemath/sage) | Compare degrees, bases, and composita of concrete number fields; test the product-of-degrees bound on examples. | Numerical or computational number-field experiments do not prove the theorem for arbitrary base fields. |
+| [Naproche](https://github.com/naproche/naproche) | Audit whether the written proof is logically explicit and whether its mathematical prose can be rendered in a proof-checking style. | Its natural-language checking workflow is not a replacement for the Lean kernel proof in this repository. |
+| [cvc5](https://github.com/cvc5/cvc5) | Check selected polynomial equalities and bounded logical subproblems after they have been encoded in supported SMT theories. | An SMT result for an encoding is not automatically a theorem about all fields; the encoding and theory axioms would need a separate soundness argument. |
+| [LeanDojo-v2](https://github.com/lean-dojo/LeanDojo-v2) | Search Lean/mathlib premises, retrieve related proof traces, and propose tactics or proof candidates if a local, free deployment is available. | An agent's generated tactic or proof candidate is untrusted until Lean elaborates it and the kernel accepts it. |
+| [mathlib4](https://github.com/leanprover-community/mathlib4) | Supply the reusable field-theory results and exact APIs used by the formal development: inverse/power closure, finite-dimensional adjoin, and finite-generation/algebraicity results. | The library theorem names still need to be instantiated with the correct hypotheses; a citation to mathlib is not a substitute for the declarations in this project. |
+
+## Unified proof architecture
+
+Let F be a field, E/F a field extension, and let α₁,...,αᵣ be algebraic over F. Write dᵢ for the degree of the minimal polynomial of αᵢ over F and define
+
 \[
-e+\pi=\exp(1)+\pi.
+K_0=F,qquad K_i=K_{i-1}(\alpha_i).
 \]
 
-## Main conclusion
-
-The transcendence of e + π is **not currently established**. The separate transcendence of e and π, and the transcendence of e^π, do not imply the transcendence of their sum.
-
-A useful unconditional fact is:
+The minimal polynomial over F remains a nonzero polynomial over Kᵢ₋₁ with αᵢ as a root. Therefore
 
 \[
-\boxed{\text{At least one of }e+\pi\text{ and }e\pi\text{ is transcendental.}}
+[K_i:K_{i-1}]\le d_i.
 \]
 
-Proof: if both were algebraic, then e and π would be roots of
+The tower law gives the explicit bound
+
 \[
-X^2-(e+\pi)X+e\pi,
+[F(\alpha_1,\ldots,\alpha_r):F]
+ \le \prod_{i=1}^{r}d_i < \infty.
 \]
-a nonzero polynomial over the algebraic numbers. Hence both would be algebraic, contradicting the Hermite and Lindemann theorems. This does **not** decide which of the sum and product is transcendental.
 
-## Scope and honesty policy
+Equivalently, the monomials
 
-- Formalize definitions and established implications.
-- Keep the target statement explicitly marked **open**.
-- Do not use axiom, sorry, fabricated lemma, or numerical experiment as a proof.
-- A formal theorem is complete only when Lean's kernel checks it and #print axioms shows no unintended assumptions.
-- Numerical approximations, symbolic simplification, and bounded searches cannot decide algebraicity.
+\[
+\alpha_1^{e_1}\cdots\alpha_r^{e_r},
+\qquad 0\le e_i<d_i,
+\]
 
-## Repository map
+form a finite spanning family; they need not be linearly independent.
 
-- RESEARCH_STATUS.md: literature audit, theorem boundaries, and research plan.
-- lean/EPlusPi.lean: exact target definition, intentionally without a theorem asserting it.
-- ALGEBRAIC_FIELD_CLOSURE_PROOF.md: complete hand proofs of inverse closure, integer powers, finite-dimensionality, the degree bound, and the finite-generation criterion.
-- lean/AlgebraicFieldClosure.lean: Lean formalization of the corresponding statements.
-- lean/lean-toolchain and lean/lakefile.lean: pinned Lean/mathlib project configuration.
-- .github/workflows/lean.yml: automatic Lean build and axiom audit on relevant pushes and pull requests.
-- TOOLS_AND_PROOF_PROTOCOL.md: roles for every tool and repository named for this task, their trust boundaries, and the unified proof architecture.
+If an extension L/F has finite dimension N, then for every x in L the N+1 elements 1,x,...,xᴺ are linearly dependent. A nonzero polynomial over F therefore vanishes at x, proving that L/F is algebraic.
 
-The algebraic-closure file proves standard field-theory results that form infrastructure for the main project. It does **not** prove that e + π is transcendental.
+Finally, α⁻¹ (for α nonzero in the usual field convention) and αⁿ for n in ℤ (with α nonzero when n is negative) lie in F(α). They are consequently algebraic over F. The formal Lean file uses Lean's totalized field inverse, where 0⁻¹=0, and records the exact convention in its docstrings.
 
-## Sources checked
+This construction is a unified proof certificate and formalization strategy, not a claim to have discovered new field theory. The individual theorems are classical. No separability assumption, primitive element theorem, or algebraic-closure assumption is used.
 
-1. Eric W. Weisstein, [Transcendental Number, Wolfram MathWorld](https://mathworld.wolfram.com/TranscendentalNumber.html): explicitly lists e + π and eπ as unresolved individually, while at least one is transcendental.
-2. Helen Joyce, [Mathematical mysteries: Transcendental meditation](https://plus.maths.org/os/issue21/xfile/index) (2002): explains the same sum/product argument and the Gelfond–Schneider result for e^π.
-3. David S. Richeson, [How Math Achieved Transcendence](https://www.quantamagazine.org/recounting-the-history-of-maths-transcendental-numbers-20230627/) (2023): lists e + π among open classification problems.
-4. Runlong Yu, [arXiv:2606.17303](https://arxiv.org/abs/2606.17303) (15 June 2026, preprint): concerns the still-open irrationality of e + π and audits certain Apéry-type approaches. It is not a proof of transcendence.
-5. [A formalization of the Gelfond–Schneider theorem](https://arxiv.org/html/2603.24823) (2026): formalizes a major nearby theorem, but does not establish transcendence of e + π.
+## Key mathlib declarations checked
 
-These references support the status assessment, not a proof. The arXiv items are preprints, not automatically peer-reviewed results.
+- IsAlgebraic.inv_iff and IsAlgebraic.inv in Mathlib/RingTheory/Algebraic/Basic.
+- IsAlgebraic.isIntegral, IsIntegral.pow, and IsIntegral.isAlgebraic for the natural-power proof.
+- IntermediateField.adjoin.finiteDimensional and IntermediateField.finiteDimensional_adjoin in Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.
+- IntermediateField.adjoin.finrank, identifying the dimension of a simple algebraic extension with the minimal-polynomial degree.
+- IntermediateField.fg_top_iff, identifying finite generation as a field with Algebra.EssFiniteType.
+- Algebra.finite_of_essFiniteType_of_isAlgebraic in Mathlib/FieldTheory/IntermediateField/Adjoin/Algebra.
+- Algebra.IsAlgebraic.of_finite in Mathlib/RingTheory/Algebraic/Integral.
+
+## Reproducibility and cost
+
+The project pins Lean and mathlib to the same version and uses the public mathlib cache in GitHub Actions. No paid CAS, private theorem-proving service, or paid cloud solver is part of the proof dependency. Any optional local use of the listed open-source repositories is limited to freely available source releases and does not create a new proof dependency.
