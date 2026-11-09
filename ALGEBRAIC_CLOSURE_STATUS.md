@@ -18,7 +18,7 @@ The hypothesis that the ambient field E is algebraically closed is kept explicit
 
 G/AlgebraicElements.lean packages these results:
 
-1. field_isField: the field structure inherited by the algebraic elements.
+1. field_structure: the field structure inherited by the algebraic elements.
 2. mem_iff: x belongs to algebraicClosure K E iff IsAlgebraic K x.
 3. carrier_eq: the carrier is exactly the set of algebraic elements.
 4. add_closed, neg_closed, sub_closed, mul_closed, inv_closed, div_closed, zpow_closed: closure under all field operations, including inversion and every integer power.
