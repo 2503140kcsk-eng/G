@@ -1,0 +1,26 @@
+name: Lean formalization
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build, independently check, and audit axioms
+        uses: leanprover/lean-action@v1
+        with:
+          build: true
+          use-mathlib-cache: true
+          leanchecker: true
+          nanoda: true
+          nanoda-allow-sorry: false
+          axiom-audit: true
+          axiom-audit-root: G
+          axiom-audit-allow: propext,Classical.choice,Quot.sound
