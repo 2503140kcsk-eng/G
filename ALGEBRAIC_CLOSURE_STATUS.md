@@ -1,6 +1,6 @@
 # Algebraic elements and algebraic closure: formalization status
 
-**Snapshot:** 2026-11-09  
+**Snapshot:** 2026-11-10 (JST)  
 **Lean toolchain:** leanprover/lean4:v4.36.0-rc2  
 **Mathlib:** v4.36.0-rc2
 
@@ -42,14 +42,16 @@ This is stronger and safer than independently rebuilding all field axioms from m
 
 ## Trust and verification
 
-- No project axiom, sorry, or admit is introduced.
-- G/AxiomAudit.lean prints axiom dependencies for every exported theorem in this formalization.
-- .github/workflows/lean.yml runs the Lean kernel build, nanoda with sorry disallowed, and the axiom audit.
-- The allowlist is restricted to Lean's expected foundational axioms: propext, Classical.choice, and Quot.sound.
-- The first successful Lake build compiled all project modules (4,086 Lake jobs). The explicit #print axioms output for each theorem listed at that revision contained only the three allowed foundational axioms.
-- LeanChecker was tested, including with LEAN_NUM_THREADS=1 as recommended by lean-action for Mathlib-dependent projects, but the GitHub-hosted runner process exited with code 139. This independent checker is therefore not part of the required CI job. This is a runner/tool limitation observed in the run, not a Lean proof error.
+- No project axiom, `sorry`, or `admit` is introduced in the current source.
+- `G/AxiomAudit.lean` contains `#print axioms` commands for all 17 exported declarations.
+- The successful Lake build on commit `c7bd602` compiled both `G.AlgebraicElements` and `G.AxiomAudit`; the full workspace reported 4,086 successful build jobs.
+- The explicit axiom output for all 17 declarations was exactly the allowed set: `propext`, `Classical.choice`, and `Quot.sound`.
+- The previous `lean-action@v1` nanoda hook failed with `invalid digit found in string` after exporting a 1.63 GB / 28.76-million-line NDJSON file. The trace points to the action cloning `ammkrn/nanoda_lib` from its stale `debug` branch. Upstream `nanoda_lib` PR #7 ("Switch to ndjson parser") was merged to `master`; upstream lean-action issue #169 records the same incompatibility.
+- The workflow has now been changed to run the normal build and dedicated `axiom-audit` first, then run `lake check --paranoid` as a separate step. This uses Lean 4.36's bundled, version-matched independent checkers (including nanoda) and ensures the axiom audit is not skipped when an external checker fails.
+- The new workflow run #84 for commit `6c8f537` is in progress. It is **not yet a passing CI result**. The exact remaining acceptance condition is a successful `lake check --paranoid` run.
+- LeanChecker was previously tested, including with `LEAN_NUM_THREADS=1`, but its process exited with code 139 on the GitHub-hosted runner. It is not used as a required separate step; the bundled paranoid checks are the replacement independent-check path.
 
-A successful GitHub Actions run for the current head is still required to confirm nanoda and axiom-audit. The presence of the workflow alone is not a passing test.
+The allowlist is deliberately restricted to Lean's expected foundational axioms: `propext`, `Classical.choice`, and `Quot.sound`. A clean `#print axioms` report is necessary but is not a substitute for the CI axiom-audit tool and independent kernel checking.
 
 ## Tool and repository work allocation
 
