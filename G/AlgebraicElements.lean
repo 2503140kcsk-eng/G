@@ -29,6 +29,10 @@ variable [Field K] [Field E] [Algebra K E]
 abbrev field : IntermediateField K E :=
   algebraicClosure K E
 
+/-- The algebraic elements carry the inherited field structure. -/
+theorem field_isField : Field (field K E) :=
+  inferInstance
+
 /-- Membership in this intermediate field is equivalent to algebraicity. -/
 theorem mem_iff {x : E} :
     x ∈ field K E ↔ IsAlgebraic K x := by
