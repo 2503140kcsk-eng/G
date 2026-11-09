@@ -16,7 +16,7 @@ The resource set below is the set of repositories and integrations named for thi
 
 | Resource | Assigned responsibility | Limit |
 |---|---|---|
-| GitHub | Inspect this repository, inspect upstream mathlib source, commit the formalization on an isolated branch, and run GitHub Actions CI. | Git hosting and CI status do not themselves certify a mathematical proof. |
+| GitHub | Inspect this repository and upstream mathlib source, commit on an isolated branch, and run the pinned CI workflow. | Git hosting and CI status do not themselves certify a mathematical proof. |
 | Sider Scholar | Discover algebra/field-theory references and cross-check standard terminology and theorem statements. | Search results are leads; source texts and exact hypotheses must be checked. |
 | Wolfram | Calculate exact illustrative minimal polynomials and check symbolic transformations in sample number fields. | A finite collection of examples cannot prove a universal statement about every field extension. |
 | Context7 | Retrieve current Lean 4 and mathlib documentation, avoiding stale theorem names and signatures. | Documentation helps construct proofs; Lean's elaborator and kernel make the final check. |
@@ -34,6 +34,14 @@ The resource set below is the set of repositories and integrations named for thi
 | [cvc5](https://github.com/cvc5/cvc5) | Check selected polynomial equalities and bounded logical subproblems after they have been encoded in supported SMT theories. | An SMT result for an encoding is not automatically a theorem about all fields; the encoding and theory axioms would need a separate soundness argument. |
 | [LeanDojo-v2](https://github.com/lean-dojo/LeanDojo-v2) | Search Lean/mathlib premises, retrieve related proof traces, and propose tactics or proof candidates if a local, free deployment is available. | An agent's generated tactic or proof candidate is untrusted until Lean elaborates it and the kernel accepts it. |
 | [mathlib4](https://github.com/leanprover-community/mathlib4) | Supply the reusable field-theory results and exact APIs used by the formal development: inverse/power closure, finite-dimensional adjoin, and finite-generation/algebraicity results. | The library theorem names still need to be instantiated with the correct hypotheses; a citation to mathlib is not a substitute for the declarations in this project. |
+
+## Comparator verification and trust boundary
+
+The normal CI uses Lean's built-in `lake comparator --config=comparator.json --paranoid`, not the archived standalone Comparator application. The configuration compares the six theorem declarations in `AlgebraicFieldClosure` against the separately maintained statement module `AlgebraicFieldClosureChallenge`, enforces the allowlist `propext`, `Classical.choice`, and `Quot.sound`, and requests all checkers bundled with the pinned Lean toolchain.
+
+This is a targeted theorem check. The challenge module, the Lake configuration, and their transitive imports are part of the trusted boundary. Mathlib is pinned to Lean-compatible version `v4.36.0-rc2` and is treated as a trusted dependency for this check. The procedure does not claim to independently replay every declaration in the full Mathlib import closure.
+
+A separate `lake check --paranoid` full-closure audit is available as an opt-in manual workflow input. It is stronger in dependency coverage and more expensive. A complete verification report must state which of these scopes actually passed.
 
 ## Unified proof architecture
 
