@@ -32,6 +32,7 @@ abbrev field : IntermediateField K E :=
   algebraicClosure K E
 
 /-- The algebraic elements carry the inherited field structure. -/
+@[instance_reducible]
 def field_structure : Field (field K E) :=
   inferInstance
 
