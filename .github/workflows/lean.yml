@@ -15,17 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Bootstrap pinned Lean toolchain and resolve Lake dependencies
-        shell: bash
-        run: |
-          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf |
-            sh -s -- -y --default-toolchain none --no-modify-path
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-          export PATH="$HOME/.elan/bin:$PATH"
-          lake --version
-          lake update
-          echo "Resolved lake-manifest.json:"
-          cat lake-manifest.json
       - name: Build, independently check, and audit axioms
         uses: leanprover/lean-action@v1
         with:
