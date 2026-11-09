@@ -76,7 +76,7 @@ jobs:
           lake update
           lake exe cache get
 
-      - name: Build the solution module with warnings treated as errors
+      - name: Build solution and downstream-import axiom audit
         shell: bash
         working-directory: lean
         run: |

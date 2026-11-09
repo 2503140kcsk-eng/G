@@ -28,10 +28,18 @@ turning a public theorem into a new axiom for downstream users.
 #guard_msgs in
 #print axioms AlgebraicFieldClosure.finiteDimensional_adjoin_of_algebraic
 
-/-- info: 'AlgebraicFieldClosure.algebraic_extension_of_finiteDimensional' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/--
+info: 'AlgebraicFieldClosure.algebraic_extension_of_finiteDimensional' depends on axioms: [propext,
+  Classical.choice,
+  Quot.sound]
+-/
 #guard_msgs in
 #print axioms AlgebraicFieldClosure.algebraic_extension_of_finiteDimensional
 
-/-- info: 'AlgebraicFieldClosure.finite_iff_essFiniteType_and_algebraic' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/--
+info: 'AlgebraicFieldClosure.finite_iff_essFiniteType_and_algebraic' depends on axioms: [propext,
+  Classical.choice,
+  Quot.sound]
+-/
 #guard_msgs in
 #print axioms AlgebraicFieldClosure.finite_iff_essFiniteType_and_algebraic
