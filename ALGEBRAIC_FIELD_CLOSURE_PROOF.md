@@ -187,8 +187,44 @@ x & \text{minimal polynomial over }\mathbb Q\\
 
 These illustrate the inverse, integer-power, and compositum constructions. They are sanity checks on examples only; the proofs above do not depend on computation.
 
-## 9. Formalization status
+## 9. Formalization and verification status
 
-The companion Lean file is lean/AlgebraicFieldClosure.lean. It uses Mathlib's existing theorems for inverse closure, powers, integral/algebraic equivalence, finite-dimensional adjoin, and finite generation plus algebraicity. Each exported theorem is followed by #print axioms.
+The companion Lean files are:
 
-The source and CI workflow have been committed on the draft PR linked from the repository. GitHub Actions was started, but the observed runs failed before Lean compilation because downloading the pinned Lean 4.36.0-rc2 toolchain returned HTTP 504. Therefore this document contains complete mathematical proofs, while the Lean source remains **awaiting a successful kernel build and axiom audit**.
+- `lean/AlgebraicFieldClosure.lean`: the six solution declarations.
+- `lean/AlgebraicFieldClosureChallenge.lean`: the separately maintained statement baseline.
+- `lean/comparator.json`: exact theorem names and the permitted standard-axiom allowlist.
+
+The solution and challenge modules are built separately. The Comparator check requires the six solution declarations to prove exactly the same proposition types as their challenge declarations, and rejects axioms outside the allowlist
+
+\[
+\{\texttt{propext},\texttt{Classical.choice},\texttt{Quot.sound}\}.
+\]
+
+The normal CI command is:
+
+```sh
+cd lean
+lake update
+lake exe cache get
+lake build --wfail
+lake comparator --config=comparator.json --paranoid
+```
+
+The targeted check verifies the six solution declarations with Lean's kernel and every additional checker bundled with Lean 4.36.0-rc2. Its trust boundary is explicit: the challenge module, the Lake configuration, and their transitive imports must be trusted. Mathlib is pinned to `v4.36.0-rc2` and is treated as a trusted dependency for this targeted run. The six solution declarations are independently replayed; this is not a claim that every declaration in Mathlib's full import closure is independently replayed.
+
+A stronger full-closure run is available separately with `lake check --paranoid`. It is exposed as an opt-in `workflow_dispatch` input because it replays the complete transitive dependency closure and is substantially more expensive.
+
+### Previously observed checks
+
+On commit `e31621e90aae5c92a8c259f2229aa29dfa9b8e6c`, the following were observed in GitHub Actions:
+
+- `lake build --wfail` succeeded.
+- `#print axioms` reported exactly the three standard axioms above for all six solution declarations; no `sorryAx` appeared.
+- Lean's paranoid kernel accepted the solution.
+- lean4lean accepted the export after checking 290,765 declarations.
+- The run was interrupted by a runner shutdown while nanoda was executing. Consequently, nanoda, con-leche, and con-ron were not all confirmed in that run.
+
+This is historical evidence, not a completed pass of the current Comparator workflow. The current PR remains a draft until its exact pinned CI run succeeds.
+
+These formalized results are established field-theory theorems. They do not prove that `e + π` is transcendental.
