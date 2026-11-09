@@ -20,6 +20,8 @@ universe u v w
 
 namespace G.AlgebraicElements
 
+open Polynomial Module
+
 variable (K : Type u) (E : Type v)
 variable [Field K] [Field E] [Algebra K E]
 
@@ -122,9 +124,8 @@ theorem every_polynomial_splits [IsAlgClosed E]
 /-- Every nonconstant polynomial over the algebraic-elements field has a root. -/
 theorem exists_root [IsAlgClosed E]
     (p : Polynomial (field K E)) (hp : p.degree ≠ 0) :
-    ∃ x : field K E, IsRoot p x := by
-  letI : IsAlgClosed (field K E) := field_isAlgClosed K E
-  exact IsAlgClosed.exists_root p hp
+    ∃ x : field K E, IsRoot p x :=
+  @IsAlgClosed.exists_root (field K E) inferInstance (field_isAlgClosed K E) p hp
 
 /-- Any two algebraic closures of the same base field are isomorphic over that field. -/
 theorem uniqueness_up_to_algEquiv
