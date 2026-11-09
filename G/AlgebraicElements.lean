@@ -45,49 +45,49 @@ theorem carrier_eq :
 theorem add_closed {x y : E}
     (hx : IsAlgebraic K x) (hy : IsAlgebraic K y) :
     IsAlgebraic K (x + y) :=
-  (mem_iff K E).mp <
+  (mem_iff K E).mp <|
     (field K E).add_mem ((mem_iff K E).mpr hx) ((mem_iff K E).mpr hy)
 
 /-- Algebraic elements are closed under additive inverses. -/
 theorem neg_closed {x : E}
     (hx : IsAlgebraic K x) :
     IsAlgebraic K (-x) :=
-  (mem_iff K E).mp <
+  (mem_iff K E).mp <|
     (field K E).neg_mem ((mem_iff K E).mpr hx)
 
 /-- Algebraic elements are closed under subtraction. -/
 theorem sub_closed {x y : E}
     (hx : IsAlgebraic K x) (hy : IsAlgebraic K y) :
     IsAlgebraic K (x - y) :=
-  (mem_iff K E).mp <
+  (mem_iff K E).mp <|
     (field K E).sub_mem ((mem_iff K E).mpr hx) ((mem_iff K E).mpr hy)
 
 /-- Algebraic elements are closed under multiplication. -/
 theorem mul_closed {x y : E}
     (hx : IsAlgebraic K x) (hy : IsAlgebraic K y) :
     IsAlgebraic K (x * y) :=
-  (mem_iff K E).mp <
+  (mem_iff K E).mp <|
     (field K E).mul_mem ((mem_iff K E).mpr hx) ((mem_iff K E).mpr hy)
 
 /-- The inverse of every algebraic element is algebraic, including the zero case. -/
 theorem inv_closed {x : E}
     (hx : IsAlgebraic K x) :
     IsAlgebraic K x⁻¹ :=
-  (mem_iff K E).mp <
+  (mem_iff K E).mp <|
     (field K E).inv_mem ((mem_iff K E).mpr hx)
 
 /-- Algebraic elements are closed under division. -/
 theorem div_closed {x y : E}
     (hx : IsAlgebraic K x) (hy : IsAlgebraic K y) :
     IsAlgebraic K (x / y) :=
-  (mem_iff K E).mp <
+  (mem_iff K E).mp <|
     (field K E).div_mem ((mem_iff K E).mpr hx) ((mem_iff K E).mpr hy)
 
 /-- Algebraic elements are closed under all integer powers. -/
 theorem zpow_closed {x : E}
     (hx : IsAlgebraic K x) (n : ℤ) :
     IsAlgebraic K (x ^ n) :=
-  (mem_iff K E).mp <
+  (mem_iff K E).mp <|
     (field K E).pow_mem ((mem_iff K E).mpr hx) n
 
 /-- The relative algebraic closure is an algebraic field extension of the base. -/
