@@ -1,0 +1,17 @@
+{
+  "challenge_module": "AlgebraicFieldClosureChallenge",
+  "solution_module": "AlgebraicFieldClosure",
+  "theorem_names": [
+    "AlgebraicFieldClosure.isAlgebraic_inv",
+    "AlgebraicFieldClosure.isAlgebraic_nat_pow",
+    "AlgebraicFieldClosure.isAlgebraic_int_pow",
+    "AlgebraicFieldClosure.finiteDimensional_adjoin_of_algebraic",
+    "AlgebraicFieldClosure.algebraic_extension_of_finiteDimensional",
+    "AlgebraicFieldClosure.finite_iff_essFiniteType_and_algebraic"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ]
+}
