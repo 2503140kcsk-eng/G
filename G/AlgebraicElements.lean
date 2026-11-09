@@ -1,5 +1,7 @@
-import Mathlib.FieldTheory.AlgebraicClosure
-import Mathlib.FieldTheory.IsAlgClosed.Basic
+module
+
+public import Mathlib.FieldTheory.AlgebraicClosure
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
 
 /-!
 # The field of algebraic elements and its algebraic-closure structure
