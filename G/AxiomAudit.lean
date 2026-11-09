@@ -3,10 +3,10 @@ module
 public import G.AlgebraicElements
 
 /-!
-The declarations below are audited by Lean's kernel and by the CI
-axiom-audit / nanoda checks. The expected foundational classical axioms
-are listed explicitly by the CI configuration; no project axiom,
-sorry, or admit is introduced.
+The declarations below are inspected by Lean's `#print axioms` command
+and audited by the CI axiom-audit / `lake check --paranoid` workflow.
+The expected foundational classical axioms are listed explicitly by the
+CI configuration; no project axiom, sorry, or admit is introduced.
 -/
 
 #print axioms G.AlgebraicElements.field_structure
