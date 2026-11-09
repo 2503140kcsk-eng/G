@@ -5,7 +5,7 @@ public import Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra
 public import Mathlib.RingTheory.Algebraic.Integral
 public import Mathlib.Algebra.Field.Defs
 
-public section
+@[expose] public section
 
 /-!
 # Closure properties of algebraic elements and finite extensions
