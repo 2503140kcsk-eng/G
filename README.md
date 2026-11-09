@@ -3,6 +3,7 @@
 > **Research status (2026-11-07): OPEN. No proof of the transcendence of e + π is known in the sources checked.**
 
 This repository investigates the arithmetic nature of
+
 \[
 e+\pi=\exp(1)+\pi.
 \]
@@ -34,7 +35,15 @@ a nonzero polynomial over the algebraic numbers. Hence both would be algebraic, 
 ## Repository map
 
 - RESEARCH_STATUS.md: literature audit, theorem boundaries, and research plan.
-- lean/: Lean formalization workspace (to be bootstrapped against a pinned mathlib revision).
+- lean/EPlusPi.lean: exact target definition, intentionally without a theorem asserting it.
+- ALGEBRAIC_FIELD_CLOSURE_PROOF.md: complete hand proofs of inverse closure, integer powers, finite-dimensionality, the degree bound, and the finite-generation criterion.
+- lean/AlgebraicFieldClosure.lean: Lean formalization of the corresponding statements.
+- lean/AlgebraicFieldClosureChallenge.lean and lean/comparator.json: separately maintained theorem-statement baseline and Comparator configuration for the six field-theory declarations.
+- lean/lean-toolchain and lean/lakefile.lean: pinned Lean/mathlib project configuration.
+- .github/workflows/lean.yml: pinned Lean build and targeted multi-kernel Comparator audit on relevant pull requests; the full transitive-dependency audit is an opt-in manual run.
+- TOOLS_AND_PROOF_PROTOCOL.md: roles for the named tools and repositories, their trust boundaries, and the unified proof architecture.
+
+The algebraic-closure file proves standard field-theory results that form infrastructure for the main project. GitHub Actions Run #58 (2026-11-09, commit `315b2f2`) passed the warning-free Lean build, a downstream-import audit that checks the six exported theorem axiom sets, and the targeted Comparator multi-kernel audit. The check uses a separate statement baseline and explicit standard-axiom allowlist. Mathlib is pinned and treated as a trusted dependency for this targeted check; the full dependency-closure audit is a separate, stronger manual option. The field-theory results do **not** prove that e + π is transcendental.
 
 ## Sources checked
 

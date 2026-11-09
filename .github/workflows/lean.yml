@@ -1,0 +1,125 @@
+name: Lean formalization
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "lean/**"
+      - ".github/workflows/lean.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "lean/**"
+      - ".github/workflows/lean.yml"
+  workflow_dispatch:
+    inputs:
+      full_dependency_audit:
+        description: "Also replay the complete transitive Mathlib import closure with lake check --paranoid"
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+
+# Pull-request runs are keyed by PR number; pushes to main are a separate group.
+concurrency:
+  group: lean-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and independently check field-theory proofs
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Avoid lean-action's moving elan-init.sh -> releases/latest/download
+      # bootstrap URL. Pin the installer to a concrete, published release.
+      - name: Install pinned Elan
+        shell: bash
+        run: |
+          set -euo pipefail
+          elan_version="v4.2.4"
+          archive="$RUNNER_TEMP/elan-x86_64-unknown-linux-gnu.tar.gz"
+          url="https://github.com/leanprover/elan/releases/download/${elan_version}/elan-x86_64-unknown-linux-gnu.tar.gz"
+
+          curl --fail --location --silent --show-error \
+            --retry 6 --retry-all-errors --retry-delay 5 \
+            --connect-timeout 30 --max-time 300 \
+            "$url" --output "$archive"
+
+          mkdir -p "$RUNNER_TEMP/elan"
+          tar -xzf "$archive" -C "$RUNNER_TEMP/elan"
+          test -x "$RUNNER_TEMP/elan/elan-init"
+          "$RUNNER_TEMP/elan/elan-init" -y --no-modify-path --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          "$HOME/.elan/bin/elan" --version
+
+      - name: Install exact Lean toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          toolchain="$(cat lean/lean-toolchain)"
+          "$HOME/.elan/bin/elan" toolchain install "$toolchain"
+          cd lean
+          lean --version
+          lake --version
+
+      - name: Resolve dependencies and fetch the matching Mathlib cache
+        shell: bash
+        working-directory: lean
+        run: |
+          set -euo pipefail
+          lake update
+          lake exe cache get
+
+      - name: Build solution and downstream-import axiom audit
+        shell: bash
+        working-directory: lean
+        run: |
+          set -euo pipefail
+          lake build --wfail
+
+      # Comparator checks the exact six theorem statements against the
+      # separately maintained challenge module, enforces the standard-axiom
+      # allowlist, and replays only the solution declarations through all
+      # kernels shipped with Lean. The Mathlib import closure is an explicit,
+      # pinned trusted dependency; see lean/README.md for the trust boundary.
+      - name: Install bubblewrap sandbox prerequisites
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y bubblewrap apparmor-profiles apparmor-utils
+
+          profile="/usr/share/apparmor/extra-profiles/bwrap-userns-restrict"
+          if [[ -f "$profile" && -r /sys/module/apparmor/parameters/enabled ]] &&
+             [[ "$(cat /sys/module/apparmor/parameters/enabled)" == "Y" ]]; then
+            sudo install -m 0644 "$profile" /etc/apparmor.d/bwrap-userns-restrict
+            sudo apparmor_parser -r /etc/apparmor.d/bwrap-userns-restrict
+          fi
+
+          bwrap --version
+          bwrap --unshare-all --die-with-parent --ro-bind / / /bin/true
+
+      - name: Comparator challenge and paranoid multi-kernel audit
+        shell: bash
+        working-directory: lean
+        run: |
+          set -euo pipefail
+          lake comparator --config=comparator.json --paranoid
+
+      # This optional, substantially heavier audit rechecks every transitive
+      # imported Mathlib declaration as well as the local solution. It is
+      # deliberately opt-in; the exact six theorems always get the full
+      # Comparator multi-kernel check above.
+      - name: Full transitive-dependency audit (manual opt-in)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_dependency_audit }}
+        shell: bash
+        working-directory: lean
+        run: |
+          set -euo pipefail
+          lake check --paranoid
