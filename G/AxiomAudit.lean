@@ -7,7 +7,7 @@ are listed explicitly by the CI configuration; no project axiom,
 sorry, or admit is introduced.
 -/
 
-#print axioms G.AlgebraicElements.field_isField
+#print axioms G.AlgebraicElements.field_structure
 #print axioms G.AlgebraicElements.mem_iff
 #print axioms G.AlgebraicElements.carrier_eq
 #print axioms G.AlgebraicElements.add_closed
