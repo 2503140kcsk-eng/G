@@ -49,10 +49,10 @@ Lean fields use totalized inversion, so `0⁻¹ = 0`, and integer powers are tot
 
 ## Proof integrity and status
 
-The solution file includes `#print axioms` for every theorem. In the previously completed build on commit `e31621e`, all six declarations compiled with `lake build --wfail`; their reported axioms were exactly `propext`, `Classical.choice`, and `Quot.sound`, with no `sorryAx`.
+The solution file includes `#print axioms` for every theorem. On the successful Comparator run at commit `c1616f0777acbe7da4643d2115918e7b32c136a2` (GitHub Actions Run #54), all six declarations compiled with `lake build --wfail`; their reported axioms were exactly `propext`, `Classical.choice`, and `Quot.sound`, with no `sorryAx`.
 
-That historical run also reported that Lean's paranoid kernel accepted the solution and that lean4lean accepted it after checking 290,765 declarations. The runner shut down while nanoda was running, so nanoda, con-leche, and con-ron were **not** all confirmed on that run. Do not treat the historical run as a complete five-checker pass.
+The same run completed `lake comparator --config=comparator.json --paranoid` successfully. The log records acceptance by Lean's paranoid kernel, lean4lean (18,884 declarations), nanoda, con-leche (18,883 declarations, marked `--verified`), con-ron (18,883 declarations, marked `--verified`), and the Lean default kernel. Comparator concluded: `Your solution is okay!`.
 
-The current CI uses the targeted Comparator challenge described above. A result is considered fully verified under that trust boundary only after the current pinned CI run succeeds. The optional full-closure audit is a separate stronger check.
+This pass is scoped to the six solution declarations and the fixed challenge statements. Mathlib's pinned transitive import closure is treated as trusted; it was not independently replayed in full during Run #54. The optional full-closure audit remains a separate stronger check.
 
 These are classical field-theory results. They do not settle the repository's separate open target that `e + π` is transcendental.

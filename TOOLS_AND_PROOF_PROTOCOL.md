@@ -39,6 +39,8 @@ The resource set below is the set of repositories and integrations named for thi
 
 The normal CI uses Lean's built-in `lake comparator --config=comparator.json --paranoid`, not the archived standalone Comparator application. The configuration compares the six theorem declarations in `AlgebraicFieldClosure` against the separately maintained statement module `AlgebraicFieldClosureChallenge`, enforces the allowlist `propext`, `Classical.choice`, and `Quot.sound`, and requests all checkers bundled with the pinned Lean toolchain.
 
+The targeted pipeline passed on 2026-11-09 in GitHub Actions Run #54 at commit `c1616f0777acbe7da4643d2115918e7b32c136a2`. The log recorded successful acceptance by Lean's paranoid kernel, lean4lean, nanoda, con-leche, con-ron, and the Lean default kernel. The `lake build --wfail` stage also passed, and the six declarations reported only the three permitted axioms. The optional full transitive-dependency audit was not run as part of this pass.
+
 This is a targeted theorem check. The challenge module, the Lake configuration, and their transitive imports are part of the trusted boundary. Mathlib is pinned to Lean-compatible version `v4.36.0-rc2` and is treated as a trusted dependency for this check. The procedure does not claim to independently replay every declaration in the full Mathlib import closure.
 
 A separate `lake check --paranoid` full-closure audit is available as an opt-in manual workflow input. It is stronger in dependency coverage and more expensive. A complete verification report must state which of these scopes actually passed.

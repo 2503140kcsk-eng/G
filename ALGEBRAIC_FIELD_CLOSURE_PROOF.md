@@ -225,6 +225,12 @@ On commit `e31621e90aae5c92a8c259f2229aa29dfa9b8e6c`, the following were observe
 - lean4lean accepted the export after checking 290,765 declarations.
 - The run was interrupted by a runner shutdown while nanoda was executing. Consequently, nanoda, con-leche, and con-ron were not all confirmed in that run.
 
-This is historical evidence, not a completed pass of the current Comparator workflow. The current PR remains a draft until its exact pinned CI run succeeds.
+### Current targeted Comparator result
+
+GitHub Actions Run #54, on commit `c1616f0777acbe7da4643d2115918e7b32c136a2`, completed successfully. It ran `lake build --wfail` and `lake comparator --config=comparator.json --paranoid`. The comparator log explicitly records acceptance by Lean's paranoid kernel, lean4lean (18,884 declarations), nanoda, con-leche (18,883 declarations, `--verified`), con-ron (18,883 declarations, `--verified`), and the Lean default kernel, followed by `Your solution is okay!`.
+
+This establishes the six declarations against the separate challenge statements and the permitted-axiom allowlist. The transitive Mathlib dependency remains part of the trusted boundary and was not independently replayed in full by this targeted run. The optional `lake check --paranoid` manual workflow input is retained for that stronger audit.
+
+The PR remains a draft for human review; the targeted proof verification has passed.
 
 These formalized results are established field-theory theorems. They do not prove that `e + π` is transcendental.

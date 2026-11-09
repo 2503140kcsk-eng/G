@@ -43,7 +43,7 @@ a nonzero polynomial over the algebraic numbers. Hence both would be algebraic, 
 - .github/workflows/lean.yml: pinned Lean build and targeted multi-kernel Comparator audit on relevant pull requests; the full transitive-dependency audit is an opt-in manual run.
 - TOOLS_AND_PROOF_PROTOCOL.md: roles for the named tools and repositories, their trust boundaries, and the unified proof architecture.
 
-The algebraic-closure file proves standard field-theory results that form infrastructure for the main project. The targeted Comparator run checks the six declarations against the separate statement baseline and an explicit standard-axiom allowlist. Mathlib is pinned and treated as a trusted dependency for this targeted check; the full dependency-closure audit is a separate, stronger manual option. The field-theory results do **not** prove that e + π is transcendental.
+The algebraic-closure file proves standard field-theory results that form infrastructure for the main project. GitHub Actions Run #54 (2026-11-09, commit `c1616f0`) passed the targeted Comparator multi-kernel audit for all six declarations, in addition to the warning-free Lean build. The check uses the separate statement baseline and explicit standard-axiom allowlist. Mathlib is pinned and treated as a trusted dependency for this targeted check; the full dependency-closure audit is a separate, stronger manual option. The field-theory results do **not** prove that e + π is transcendental.
 
 ## Sources checked
 
