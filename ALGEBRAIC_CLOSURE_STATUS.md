@@ -53,20 +53,61 @@ A successful GitHub Actions run for the current head is still required to confir
 
 ## Tool and repository work allocation
 
-| Resource | Assigned role | What it can establish |
-|---|---|---|
-| GitHub | versioned changes, branch/PR, CI logs | repository state and reproducible verification |
-| Sider Scholar | academic discovery | source discovery, not kernel proof |
-| Parallel Search | current documentation/source cross-check | locate and compare authoritative references |
-| Context7 | version-matched Lean/mathlib API guidance | API details; not proof verification |
-| Wolfram | symbolic and example-level checks | computational corroboration only |
-| Macaulay2 | polynomial ideals, elimination and resultants | exploratory algebra |
-| GAP | finite groups and Galois-group experiments | finite examples and group computations |
-| SymPy | symbolic polynomials and resultants | exploratory counterexample/candidate discovery |
-| SageMath | exact number fields, embeddings and minimal polynomials | independent computational experiments |
-| Naproche | natural-language proof structuring | proof-plan checking, not Lean kernel verification |
-| cvc5 | SMT checks of bounded algebraic identities | bounded checking, not universal field-theory proof |
-| LeanDojo-v2 | premise retrieval and tactic exploration | proof-search suggestions, not a trusted kernel |
-| mathlib4 | formal algebra and algebraic-closure library | primary reusable kernel-checked theorems |
+The public GitHub Stars API was inspected on 2026-11-10 JST. It returned 30 repositories (page 1); pages 2 and 3 were empty. The following assigns every observed starred repository a concrete role, while explicitly distinguishing direct proof dependencies from auxiliary or peripheral tools.
 
-The starred repositories above are those identified in the existing project context; this is not a live enumeration of every item in the account's GitHub Stars page.
+### Primary formal proof and independent proof-system cross-check
+
+| Starred repository | Assigned role in this project | Boundary |
+|---|---|---|
+| [leanprover-community/mathlib4](https://github.com/leanprover-community/mathlib4) | Primary Lean library: IntermediateField, algebraicClosure, IsAlgebraic, IsAlgClosed, IsAlgClosure, and polynomial splitting | Trusted imported declarations; must pin exact revision |
+| [google-deepmind/cryptids](https://github.com/google-deepmind/cryptids) | Mine examples of Lean definitions, proofs, and theorem organization | Not a dependency of the current module |
+| [VladimirReshetnikov/ProveIt](https://github.com/VladimirReshetnikov/ProveIt) | Compare Lean proof scripts and formal proof organization | Not a replacement for kernel checking |
+| [graph-theory-AI/graph-theory-rocq](https://github.com/graph-theory-AI/graph-theory-rocq) | Rocq cross-checking patterns and tactic/proof-structure comparison | The current theorem is field theory, not graph theory |
+| [rocq-community/fourcolor](https://github.com/rocq-community/fourcolor) | Example of large-scale proof engineering and extraction boundaries | No direct algebraic-closure dependency |
+| [math-comp/math-comp](https://github.com/math-comp/math-comp) | Independent algebraic hierarchy and field-structure comparison in Rocq | Cross-system validation only |
+| [rocq-community/graph-theory](https://github.com/rocq-community/graph-theory) | General Rocq library organization and finite-structure examples | Peripheral to the field proof |
+| [MizarSystem/MML](https://github.com/MizarSystem/MML) | Compare formal definitions of fields, algebraic extensions, and algebraic closure | Independent library; no shared kernel |
+| [rocq-archive/zfc](https://github.com/rocq-archive/zfc) | Set-theoretic foundations and encodings for optional foundational comparisons | Not needed for the current field argument |
+| [metamath/metamath-exe](https://github.com/metamath/metamath-exe) | Run/check Metamath proof databases if a foundational lemma is recast | Not used to verify Lean declarations |
+| [metamath/set.mm](https://github.com/metamath/set.mm) | Independent set-theoretic and algebraic theorem reference | No Lean kernel integration |
+| [isabelle-prover/mirror-isabelle](https://github.com/isabelle-prover/mirror-isabelle) | Isabelle/HOL algebra and proof-method comparison | Independent proof assistant |
+| [isabelle-prover/mirror-afp-devel](https://github.com/isabelle-prover/mirror-afp-devel) | Search AFP for field-theoretic formalization patterns | Literature/code comparison, not a build dependency |
+| [bbchallenge/bbchallenge-proofs](https://github.com/bbchallenge/bbchallenge-proofs) | Compare explicit proof audit and axiom discipline | Unrelated theorem domain |
+| [jeff87654/busy-beaver](https://github.com/jeff87654/busy-beaver) | Compare proof artifact structure and axiom-free Rocq workflow | Unrelated theorem domain |
+
+### Exact symbolic algebra and computational corroboration
+
+| Starred repository | Assigned role in this project | Boundary |
+|---|---|---|
+| [Macaulay2/M2](https://github.com/Macaulay2/M2) | Ideals, quotient rings, elimination, resultants, and polynomial-system exploration | Experiments do not prove the universal theorem |
+| [Singular/Singular](https://github.com/Singular/Singular) | Gröbner bases, polynomial ideals, and elimination as an independent algebra engine | No kernel-level proof |
+| [flintlib/flint](https://github.com/flintlib/flint) | Fast exact integer/polynomial arithmetic for test instances | Computational support only |
+| [sympy/sympy](https://github.com/sympy/sympy) | Minimal polynomials, exact algebraic numbers, resultants, and sanity tests | Does not prove general field closure |
+| [sagemath/sage](https://github.com/sagemath/sage) | Number fields, embeddings, composita, minimal polynomials, and Galois groups | Independent computational corroboration |
+| [gap-system/gap](https://github.com/gap-system/gap) | Finite fields, finite groups, and Galois-group example checking | Not central to an arbitrary field extension theorem |
+| [emil79/flagmatic](https://github.com/emil79/flagmatic) | Optional flag-algebra experiments if combinatorial examples arise | Peripheral; not required here |
+| [graphillion/graphillion](https://github.com/graphillion/graphillion) | Graph-set experiments only if an auxiliary finite combinatorial encoding is introduced | Not required for algebraic closure |
+| [graph-theory-AI/graph-conjectures](https://github.com/graph-theory-AI/graph-conjectures) | Browse graph-theory formal conjecture workflows as a methodology reference | No direct role in the field proof |
+
+### Proof search, natural-language formalization, and large-number utilities
+
+| Starred repository | Assigned role in this project | Boundary |
+|---|---|---|
+| [lean-dojo/LeanDojo-v2](https://github.com/lean-dojo/LeanDojo-v2) | Premise retrieval, theorem matching, and tactic suggestion for Lean | Suggestions must be kernel-checked |
+| [naproche/naproche](https://github.com/naproche/naproche) | Structure a readable natural-language proof plan and compare formal statements | Not a substitute for Lean checking |
+| [cvc5/cvc5](https://github.com/cvc5/cvc5) | Check bounded first-order/algebraic side conditions and counterexample candidates | Cannot establish arbitrary-field algebraic closure by itself |
+| [MeniRosenfeld/TransfiniteOrdinalCalculator](https://github.com/MeniRosenfeld/TransfiniteOrdinalCalculator) | Ordinal calculations for unrelated large-number research | No role in this field proof |
+| [koteitan/basmat-2.x](https://github.com/koteitan/basmat-2.x) | Integer/matrix growth experiments for unrelated googology work | No role in this field proof |
+| [hypcos/incremental-googology](https://github.com/hypcos/incremental-googology) | Large-number/ordinal game exploration | No role in this field proof |
+
+### Installed research and development tools
+
+| Tool | Assigned role | What it can establish |
+|---|---|---|
+| GitHub | Source changes, pinned dependencies, CI, PR history | Exact repository state and reproducible builds |
+| Sider Scholar | Search papers on formal algebra and proof assistants | Literature discovery; this search did not surface a paper directly proving this specific result |
+| Parallel Search/Fetch | Read current mathlib docs and CI documentation | Exact source/documentation cross-check |
+| Context7 | Query current Lean/mathlib documentation | Useful for general API concepts; exact algebraic-closure queries returned no matching snippets in this session |
+| Wolfram | Check concrete minimal polynomials, algebraic-number fields, and identities | Independent examples, not universal proof |
+
+The project uses mathlib as its sole direct formal mathematics dependency. All other tools are assigned auxiliary roles and do not enter the trusted Lean dependency graph. The user's Star list is confirmed to contain 30 public repositories as of the retrieval snapshot; additional private or non-public starred repositories, if any, are not asserted here.
