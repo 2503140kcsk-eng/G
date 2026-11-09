@@ -34,11 +34,22 @@ jobs:
 
       # lake check runs its export checker inside bubblewrap. Install the
       # sandbox runtime instead of disabling the sandbox.
-      - name: Install bubblewrap sandbox runtime
+      - name: Install bubblewrap sandbox runtime and grant its AppArmor userns profile
         run: |
           sudo apt-get update
-          sudo apt-get install --yes bubblewrap
+          sudo apt-get install --yes bubblewrap apparmor
+          sudo tee /etc/apparmor.d/bwrap >/dev/null <<'EOF'
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile bwrap /usr/bin/bwrap flags=(unconfined) {
+            userns,
+            include if exists <local/bwrap>
+          }
+          EOF
+          sudo apparmor_parser -r /etc/apparmor.d/bwrap
           bwrap --version
+          bwrap --unshare-user --uid 0 --gid 0 --ro-bind / / --dev /dev --proc /proc true
 
       # Lean >= 4.35 bundles version-matched independent checkers.
       # --paranoid runs the full checker set, including nanoda, without
