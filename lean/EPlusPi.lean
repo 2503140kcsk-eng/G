@@ -2,6 +2,8 @@ module
 import Mathlib
 import AlgebraicClosure
 
+@[expose] public section
+
 /-!
 # The arithmetic status of e + π
 
