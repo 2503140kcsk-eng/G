@@ -65,6 +65,15 @@ theorem algebraicNumbers_mul
     x * y ∈ algebraicNumbersSubalgebra K A :=
   (algebraicNumbersSubalgebra K A).mul_mem hx hy
 
+/-- Negation preserves algebraicity, using the algebraic-closure subalgebra. -/
+theorem isAlgebraic_neg
+    {K A : Type*} [Field K] [Field A] [Algebra K A]
+    {x : A} (hx : IsAlgebraic K x) :
+    IsAlgebraic K (-x) := by
+  exact (Subalgebra.mem_algebraicClosure K A).mp <|
+    (Subalgebra.algebraicClosure K A).neg_mem <|
+      (Subalgebra.mem_algebraicClosure K A).mpr hx
+
 /-! ## Roots of polynomials with algebraic coefficients -/
 
 /--
@@ -136,6 +145,63 @@ theorem isAlgebraic_of_root_over_algebraic_extension
     IsAlgebraic K x := by
   exact (show IsAlgebraic S x from ⟨p, hp, hroot⟩).restrictScalars K
 
+/-! ## An unconditional sum/product alternative -/
+
+/--
+If two elements are both transcendental over a field, their sum and product
+cannot both be algebraic. Equivalently, at least one of the sum and product
+is transcendental.
+
+The proof uses the quadratic polynomial
+  T^2 - (x + y) T + x*y,
+of which x is a root. If both coefficients x+y and x*y were algebraic,
+the root-of-algebraic-coefficients theorem would make x algebraic.
+-/
+theorem transcendental_add_or_mul
+    {K A : Type*} [Field K] [Field A] [Algebra K A]
+    {x y : A}
+    (hx : Transcendental K x) (hy : Transcendental K y) :
+    Transcendental K (x + y) ∨ Transcendental K (x * y) := by
+  by_contra h
+  have hs : IsAlgebraic K (x + y) := by
+    by_contra hs'
+    exact h (Or.inl hs')
+  have hp : IsAlgebraic K (x * y) := by
+    by_contra hp'
+    exact h (Or.inr hp')
+
+  let q : A[X] :=
+    Polynomial.monomial 2 (1 : A) -
+      Polynomial.monomial 1 (x + y) +
+      Polynomial.monomial 0 (x * y)
+
+  have hq_ne : q ≠ 0 := by
+    intro hq
+    have h2 : q.coeff 2 = 1 := by simp [q]
+    rw [hq] at h2
+    norm_num at h2
+
+  have hcoeff : ∀ n : ℕ, IsAlgebraic K (q.coeff n) := by
+    intro n
+    by_cases h0 : n = 0
+    · subst n
+      simpa [q] using hp
+    · by_cases h1 : n = 1
+      · subst n
+        simpa [q] using isAlgebraic_neg (K := K) (A := A) hs
+      · by_cases h2 : n = 2
+        · subst n
+          simpa [q] using (isAlgebraic_one (R := K) (A := A))
+        · have hzero : q.coeff n = 0 := by simp [q, h0, h1, h2]
+          rw [hzero]
+          exact isAlgebraic_zero
+
+  have hroot : aeval x q = 0 := by
+    simp [q, aeval_def]
+    ring
+
+  exact hx (isAlgebraic_of_root_of_algebraic_coefficients hq_ne hcoeff hroot)
+
 /-!
 ## Kernel audit
 
@@ -147,5 +213,6 @@ visible in the Lean build log.
 #print axioms isAlgebraic_mul
 #print axioms isAlgebraic_of_root_of_algebraic_coefficients
 #print axioms isAlgebraic_of_root_over_algebraic_extension
+#print axioms transcendental_add_or_mul
 
 end AlgebraicNumberClosureFormalization
