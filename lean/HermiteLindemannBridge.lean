@@ -40,6 +40,7 @@ theorem transcendental_e_of_hermite_lindemann
     Transcendental ℚ (Real.exp 1) := by
   have hcomplex : Transcendental ℚ (Complex.exp (1 : ℂ)) :=
     hHL 1 (isAlgebraic_one (R := ℚ) (A := ℂ)) (by norm_num)
+  change ¬ IsAlgebraic ℚ (Real.exp 1)
   intro he
   have heC : IsAlgebraic ℚ (algebraMap ℝ ℂ (Real.exp 1)) := he.algebraMap
   have hmap : algebraMap ℝ ℂ (Real.exp 1) = Complex.exp (1 : ℂ) := by
