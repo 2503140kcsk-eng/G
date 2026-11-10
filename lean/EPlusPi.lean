@@ -1,6 +1,6 @@
 module
-import Mathlib
-import AlgebraicClosure
+public import Mathlib
+public import AlgebraicClosure
 
 @[expose] public section
 
