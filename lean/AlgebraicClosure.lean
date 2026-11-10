@@ -1,6 +1,8 @@
 module
 import Mathlib.RingTheory.Algebraic.Integral
 
+@[expose] public section
+
 /-!
 # Closure properties of algebraic elements
 
