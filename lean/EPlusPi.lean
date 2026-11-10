@@ -1,16 +1,17 @@
 module
 public import Mathlib
 public import AlgebraicClosure
+public import HermiteLindemannBridge
 
 @[expose] public section
 
 /-!
 # The arithmetic status of e + π
 
-This file defines the exact real number and the target property.
-It intentionally contains no axiom, sorry, or theorem claiming that
-the target is unconditionally transcendental.
--/ 
+The unconditional open target is stated in this file, separately from
+the conditional Hermite–Lindemann input and from Schanuel's conjecture.
+No axiom, sorry, or admit is used to claim the open target.
+-/
 
 /-- The real number e + π, represented using Mathlib's real exponential and pi. -/
 noncomputable def ePlusPi : ℝ := Real.exp 1 + Real.pi
@@ -18,20 +19,14 @@ noncomputable def ePlusPi : ℝ := Real.exp 1 + Real.pi
 /-- The corresponding product e * π. -/
 noncomputable def eTimesPi : ℝ := Real.exp 1 * Real.pi
 
-/-- A real number is transcendental over ℚ if no nonzero rational polynomial
-    vanishes at it. -/
-def IsTranscendentalOverQ (x : ℝ) : Prop :=
-  ∀ p : Polynomial ℚ, p ≠ 0 → Polynomial.aeval x p ≠ 0
-
-/-- The open target: prove that e + π is transcendental over ℚ. -/
+/-- The open target: e + π is transcendental over ℚ. -/
 def EPlusPiTranscendental : Prop :=
-  IsTranscendentalOverQ ePlusPi
+  Transcendental ℚ ePlusPi
 
 /--
-Unconditionally in the algebraic sense, transcendence of e implies that
-at least one of e+π and e*π is transcendental. The proof does not yet
-supply the Hermite–Lindemann input for e; that is kept as an explicit
-hypothesis rather than an axiom.
+If e is transcendental, at least one of e+π and e*π is transcendental.
+This is an unconditional algebraic implication; its only hypothesis is
+the independently established transcendence of e.
 -/
 theorem e_add_pi_or_mul_transcendental
     (he : Transcendental ℚ (Real.exp 1)) :
@@ -40,12 +35,33 @@ theorem e_add_pi_or_mul_transcendental
     AlgebraicNumberClosureFormalization.transcendental_add_or_mul_of_left
       (K := ℚ) (A := ℝ) (x := Real.exp 1) (y := Real.pi) he
 
-/-!
-This is a statement, not a theorem:
-  #check EPlusPiTranscendental
+/--
+Hermite–Lindemann gives the separate transcendence statements for e and π.
+The analytic Hermite–Lindemann statement is a hypothesis here, not an axiom.
+-/
+theorem e_and_pi_transcendental_of_hermite_lindemann
+    (hHL : HermiteLindemannBridge.HermiteLindemannInput) :
+    Transcendental ℚ (Real.exp 1) ∧ Transcendental ℚ Real.pi :=
+  ⟨HermiteLindemannBridge.transcendental_e_of_hermite_lindemann hHL,
+   HermiteLindemannBridge.transcendental_pi_of_hermite_lindemann hHL⟩
 
-Do not add axiom, sorry, or admit to turn the target into an apparent
-proof. The target remains open as of the literature snapshot dated 2026-11-10.
+/--
+Combining the explicit Hermite–Lindemann input with the quadratic
+algebraic argument proves the sum/product alternative.
+This does not identify which of the two numbers is transcendental.
+-/
+theorem e_add_pi_or_mul_transcendental_of_hermite_lindemann
+    (hHL : HermiteLindemannBridge.HermiteLindemannInput) :
+    Transcendental ℚ ePlusPi ∨ Transcendental ℚ eTimesPi :=
+  e_add_pi_or_mul_transcendental
+    (HermiteLindemannBridge.transcendental_e_of_hermite_lindemann hHL)
+
+/-!
+EPlusPiTranscendental is only the target proposition, not a proved theorem.
+The question whether it holds unconditionally remains open in the checked
+literature. Do not replace this status with an axiom, sorry, or admit.
 -/
 
 #print axioms e_add_pi_or_mul_transcendental
+#print axioms e_and_pi_transcendental_of_hermite_lindemann
+#print axioms e_add_pi_or_mul_transcendental_of_hermite_lindemann
