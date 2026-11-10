@@ -1,5 +1,7 @@
 module
-import Mathlib.RingTheory.Algebraic.Integral
+public import Mathlib.Algebra.Field.Defs
+public import Mathlib.Algebra.Ring.Defs
+public import Mathlib.RingTheory.Algebraic.Integral
 
 @[expose] public section
 
