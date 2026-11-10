@@ -198,7 +198,9 @@ theorem transcendental_add_or_mul_of_left
           rw [hq2]
           exact isAlgebraic_one (R := K) (A := A)
         · have hzero : q.coeff n = 0 := by
-            simp [q, h0, h1, h2]
+            change (X ^ 2 - C (x + y) * X + C (x * y)).coeff n = 0
+            simp only [coeff_add, coeff_sub, coeff_X_pow, coeff_C_mul_X, coeff_C]
+            simp [h0, h1, h2]
           rw [hzero]
           exact isAlgebraic_zero
 
@@ -231,6 +233,7 @@ visible in the Lean build log.
 #print axioms isAlgebraic_mul
 #print axioms isAlgebraic_of_root_of_algebraic_coefficients
 #print axioms isAlgebraic_of_root_over_algebraic_extension
+#print axioms transcendental_add_or_mul_of_left
 #print axioms transcendental_add_or_mul
 
 end AlgebraicNumberClosureFormalization
