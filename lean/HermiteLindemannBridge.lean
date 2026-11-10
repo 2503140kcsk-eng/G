@@ -16,23 +16,9 @@ analytic theorem has been independently established.
 
 namespace HermiteLindemannBridge
 
-/--
-The existing analytic approximation step in Mathlib's Lindemann–Weierstrass
-development. It constructs integer linear forms with factorially small
-errors at algebraic roots of an integer polynomial whose constant term is
-nonzero. This is the analytic machinery, not the full
-Hermite–Lindemann conclusion: the remaining arithmetic contradiction is
-separate.
--/
-/-- The proposition supplied by Mathlib's analytic approximation lemma. -/
-abbrev LindemannAnalyticApproximation
-    (f : ℤ[X]) (hf : f.eval 0 ≠ 0) : Prop :=
-  LindemannWeierstrass.exp_polynomial_approx f hf
-
-/-- The project-level interface to Mathlib's analytic approximation lemma. -/
-theorem lindemann_analytic_approximation
+lemma lindemann_analytic_approximation
     (f : ℤ[X]) (hf : f.eval 0 ≠ 0) :
-    LindemannAnalyticApproximation f hf :=
+    LindemannWeierstrass.exp_polynomial_approx f hf :=
   LindemannWeierstrass.exp_polynomial_approx f hf
 
 #print axioms lindemann_analytic_approximation
