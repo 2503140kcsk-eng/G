@@ -33,11 +33,12 @@ def SchanuelConjecture : Prop :=
 
 /-- The two inputs 1 and πi used in the n = 2 specialization. -/
 noncomputable def ePiSchanuelInputs : Fin 2 → ℂ :=
-  ![1, (Real.pi : ℂ) * Complex.I]
+  Fin.cases (1 : ℂ) (fun _ : Fin 1 => (Real.pi : ℂ) * Complex.I)
 
 /-- The two exponential values exp(1)=e and exp(πi)=-1. -/
 noncomputable def ePiSchanuelPair : Fin 2 → ℂ :=
-  ![Complex.exp (1 : ℂ), (Real.pi : ℂ) * Complex.I]
+  Fin.cases (Complex.exp (1 : ℂ))
+    (fun _ : Fin 1 => (Real.pi : ℂ) * Complex.I)
 
 /-- 1 and πi are linearly independent over ℚ: their real and imaginary
     coordinates force the two rational coefficients to vanish. -/
@@ -70,22 +71,29 @@ theorem generatedField_ePi_eq :
     · rcases hx with ⟨i, rfl⟩
       fin_cases i
       · exact one_mem _
-      · exact IntermediateField.subset_adjoin ℚ _ (Set.mem_range_self 1)
+      · exact IntermediateField.subset_adjoin ℚ _ (Or.inl ⟨1, rfl⟩)
     · rcases hx with ⟨i, rfl⟩
       fin_cases i
-      · exact IntermediateField.subset_adjoin ℚ _ (Set.mem_range_self 0)
-      · have hExp : Complex.exp (ePiSchanuelInputs 1) = -1 := by
-          simpa [ePiSchanuelInputs] using Complex.exp_pi_mul_I
-        rw [hExp]
+      · exact IntermediateField.subset_adjoin ℚ _ (Or.inr ⟨0, rfl⟩)
+      · change Complex.exp ((Real.pi : ℂ) * Complex.I) ∈
+          IntermediateField.adjoin ℚ (Set.range ePiSchanuelPair)
+        rw [Complex.exp_pi_mul_I]
         exact neg_mem _ (one_mem _)
   · rw [IntermediateField.adjoin_le_iff]
     rintro x ⟨i, rfl⟩
     fin_cases i
-    · have he : Complex.exp 1 = ePiSchanuelPair 0 := by simp [ePiSchanuelPair]
-      exact IntermediateField.subset_adjoin ℚ _ (Or.inr ⟨0, he⟩)
-    · have hp : (Real.pi : ℂ) * Complex.I = ePiSchanuelPair 1 := by
-        simp [ePiSchanuelPair]
-      exact IntermediateField.subset_adjoin ℚ _ (Or.inl ⟨1, hp⟩)
+    · change Complex.exp (1 : ℂ) ∈ generatedField ePiSchanuelInputs
+      change Complex.exp (1 : ℂ) ∈
+        IntermediateField.adjoin ℚ
+          (Set.range ePiSchanuelInputs ∪
+            Set.range (fun i : Fin 2 => Complex.exp (ePiSchanuelInputs i)))
+      exact IntermediateField.subset_adjoin ℚ _ (Or.inr ⟨0, rfl⟩)
+    · change (Real.pi : ℂ) * Complex.I ∈ generatedField ePiSchanuelInputs
+      change (Real.pi : ℂ) * Complex.I ∈
+        IntermediateField.adjoin ℚ
+          (Set.range ePiSchanuelInputs ∪
+            Set.range (fun i : Fin 2 => Complex.exp (ePiSchanuelInputs i)))
+      exact IntermediateField.subset_adjoin ℚ _ (Or.inl ⟨1, rfl⟩)
 
 /-- Schanuel's conjecture forces transcendence degree at least two for
     the field ℚ(e,πi). -/
@@ -93,8 +101,11 @@ theorem ePi_generatedField_trdeg_ge_two (hSC : SchanuelConjecture) :
     (2 : Cardinal) ≤ Algebra.trdeg ℚ
       (IntermediateField.adjoin ℚ (Set.range ePiSchanuelPair)) := by
   have h := hSC 2 ePiSchanuelInputs ePiSchanuelInputs_linearIndependent
-  exact generatedField_ePi_eq ▸ h
-
+  calc
+    (2 : Cardinal) ≤ Algebra.trdeg ℚ (generatedField ePiSchanuelInputs) := h
+    _ = Algebra.trdeg ℚ (IntermediateField.adjoin ℚ (Set.range ePiSchanuelPair)) := by
+      congr 1
+      exact generatedField_ePi_eq
 /-- The field ℚ(e,πi) used for the finite transcendence-basis argument. -/
 noncomputable def ePiGeneratedField : IntermediateField ℚ ℂ :=
   IntermediateField.adjoin ℚ (Set.range ePiSchanuelPair)
@@ -148,7 +159,7 @@ theorem ePi_pair_algebraicIndependent (hSC : SchanuelConjecture) :
     exact Subtype.ext h
   have hAIC : AlgebraicIndependent ℚ
       (fun i => (ePiPairInGeneratedField i : ℂ)) :=
-    hAIK.map' hinj (IsScalarTower.toAlgHom ℚ ePiGeneratedField ℂ)
+    hAIK.map' (f := IsScalarTower.toAlgHom ℚ ePiGeneratedField ℂ) hinj
   simpa [ePiPairInGeneratedField] using hAIC
 /-- The quadratic field ℚ(i) inside ℂ is algebraic over ℚ. -/
 noncomputable def QAdjoinI : IntermediateField ℚ ℂ :=
@@ -217,9 +228,24 @@ theorem transcendental_ePlusPi_of_schanuel
     intro hm
     have hc := congrArg (fun v : Fin 2 →₀ ℕ => v 0) hm
     simp at hc
-  have hPcoeff : P.coeff (Finsupp.single (0 : Fin 2) 1) = 1 := by
-    classical
-    simp [P, hmon.symm]
+  let m : Fin 2 →₀ ℕ := Finsupp.single (0 : Fin 2) 1
+  have hm : m ≠ 0 := hmon
+  have hX0 : (MvPolynomial.X (0 : Fin 2) : MvPolynomial (Fin 2) M).coeff m = 1 := by
+    simp [m]
+  have hC : (MvPolynomial.C sM : MvPolynomial (Fin 2) M).coeff m = 0 :=
+    MvPolynomial.coeff_C_of_ne_zero hm sM
+  have hdegree : (Finsupp.single (1 : Fin 2) 1 : Fin 2 →₀ ℕ) ≠ m := by
+    intro h
+    have hc := congrArg (fun d : Fin 2 →₀ ℕ => d 1) h
+    simp [m] at hc
+  have hterm : (MvPolynomial.C iM * MvPolynomial.X (1 : Fin 2) :
+      MvPolynomial (Fin 2) M).coeff m = 0 := by
+    rw [MvPolynomial.coeff_C_mul, MvPolynomial.coeff_X]
+    simp [m, hdegree]
+  have hPcoeff : P.coeff m = 1 := by
+    simp only [P, MvPolynomial.coeff_sub]
+    rw [hX0, hC, hterm]
+    simp
   have hPzero : P = 0 := hAI_M.eq_zero_of_aeval_eq_zero P hEval
   have hcoeff0 : P.coeff (Finsupp.single (0 : Fin 2) 1) = 0 := by
     rw [hPzero]
