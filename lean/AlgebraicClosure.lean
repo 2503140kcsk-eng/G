@@ -148,19 +148,18 @@ theorem isAlgebraic_of_root_over_algebraic_extension
 /-! ## An unconditional sum/product alternative -/
 
 /--
-If two elements are both transcendental over a field, their sum and product
-cannot both be algebraic. Equivalently, at least one of the sum and product
-is transcendental.
+If x is transcendental over K, then x+y and x*y cannot both be algebraic.
 
-The proof uses the quadratic polynomial
-  T^2 - (x + y) T + x*y,
-of which x is a root. If both coefficients x+y and x*y were algebraic,
-the root-of-algebraic-coefficients theorem would make x algebraic.
+The polynomial
+  X^2 - C (x+y) * X + C (x*y)
+has x as a root. If its coefficients are algebraic over K, then the
+root-of-algebraic-coefficients theorem makes x algebraic, a contradiction.
+The hypothesis on y is not needed.
 -/
-theorem transcendental_add_or_mul
+theorem transcendental_add_or_mul_of_left
     {K A : Type*} [Field K] [Field A] [Algebra K A]
     {x y : A}
-    (hx : Transcendental K x) (hy : Transcendental K y) :
+    (hx : Transcendental K x) :
     Transcendental K (x + y) ∨ Transcendental K (x * y) := by
   by_contra h
   have hs : IsAlgebraic K (x + y) := by
@@ -170,29 +169,36 @@ theorem transcendental_add_or_mul
     by_contra hp'
     exact h (Or.inr hp')
 
-  let q : A[X] :=
-    Polynomial.monomial 2 (1 : A) -
-      Polynomial.monomial 1 (x + y) +
-      Polynomial.monomial 0 (x * y)
+  let q : A[X] := X ^ 2 - C (x + y) * X + C (x * y)
+
+  have hq0 : q.coeff 0 = x * y := by
+    simp [q]
+  have hq1 : q.coeff 1 = -(x + y) := by
+    simp [q]
+  have hq2 : q.coeff 2 = 1 := by
+    simp [q]
 
   have hq_ne : q ≠ 0 := by
     intro hq
-    have h2 : q.coeff 2 = 1 := by simp [q]
-    rw [hq] at h2
-    norm_num at h2
+    rw [hq] at hq2
+    norm_num at hq2
 
   have hcoeff : ∀ n : ℕ, IsAlgebraic K (q.coeff n) := by
     intro n
     by_cases h0 : n = 0
     · subst n
-      simpa [q] using hp
+      rw [hq0]
+      exact hp
     · by_cases h1 : n = 1
       · subst n
-        simpa [q] using isAlgebraic_neg (K := K) (A := A) hs
+        rw [hq1]
+        exact isAlgebraic_neg (K := K) (A := A) hs
       · by_cases h2 : n = 2
         · subst n
-          simpa [q] using (isAlgebraic_one (R := K) (A := A))
-        · have hzero : q.coeff n = 0 := by simp [q, h0, h1, h2]
+          rw [hq2]
+          exact isAlgebraic_one (R := K) (A := A)
+        · have hzero : q.coeff n = 0 := by
+            simp [q, h0, h1, h2]
           rw [hzero]
           exact isAlgebraic_zero
 
@@ -201,6 +207,18 @@ theorem transcendental_add_or_mul
     ring
 
   exact hx (isAlgebraic_of_root_of_algebraic_coefficients hq_ne hcoeff hroot)
+
+/--
+The sum/product alternative for two transcendental elements. The proof
+uses only the transcendence of x; the second hypothesis is retained in
+this wrapper to keep the original two-input interface.
+-/
+theorem transcendental_add_or_mul
+    {K A : Type*} [Field K] [Field A] [Algebra K A]
+    {x y : A}
+    (hx : Transcendental K x) (_hy : Transcendental K y) :
+    Transcendental K (x + y) ∨ Transcendental K (x * y) :=
+  transcendental_add_or_mul_of_left hx
 
 /-!
 ## Kernel audit
