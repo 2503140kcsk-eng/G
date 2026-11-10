@@ -43,9 +43,9 @@ theorem transcendental_e_of_hermite_lindemann
   change ¬ IsAlgebraic ℚ (Real.exp 1)
   intro he
   have heC : IsAlgebraic ℚ (algebraMap ℝ ℂ (Real.exp 1)) := he.algebraMap
-  have heComplex : IsAlgebraic ℚ (Complex.exp (1 : ℂ)) := by
-    simpa only [← Complex.ofReal_exp] using heC
-  exact hcomplex heComplex
+  have hmap : algebraMap ℝ ℂ (Real.exp 1) = Complex.exp (1 : ℂ) := by
+    exact Complex.ofReal_exp 1
+  exact hcomplex (hmap ▸ heC)
 
 /--
 Assuming Hermite–Lindemann, π is transcendental.
