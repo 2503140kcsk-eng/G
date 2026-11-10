@@ -27,9 +27,9 @@ def HermiteLindemannInput : Prop :=
 theorem isAlgebraic_complex_I : IsAlgebraic ℚ (Complex.I : ℂ) := by
   refine ⟨Polynomial.X ^ 2 + 1, ?_, ?_⟩
   · intro hp
-    have hc := congrArg (fun p : Polynomial ℚ => p.coeff 2) hp
+    have hc := congrArg (fun p : Polynomial ℚ => p.eval 0) hp
     norm_num at hc
-  · simp [Complex.I_mul_I]
+  · simp
 
 /--
 Hermite–Lindemann at 1 gives transcendence of e.
@@ -43,7 +43,9 @@ theorem transcendental_e_of_hermite_lindemann
   intro he
   apply hcomplex
   have heC : IsAlgebraic ℚ (algebraMap ℝ ℂ (Real.exp 1)) := he.algebraMap
-  simpa only [Complex.ofReal_exp] using heC
+  have hmap : algebraMap ℝ ℂ (Real.exp 1) = Complex.exp (1 : ℂ) := by
+    exact Complex.ofReal_exp 1
+  exact hcomplex (hmap ▸ heC)
 
 /--
 Assuming Hermite–Lindemann, π is transcendental.
@@ -60,7 +62,7 @@ theorem transcendental_pi_of_hermite_lindemann
       isAlgebraic_complex_I hpiC
   have hαne : Complex.I * algebraMap ℝ ℂ Real.pi ≠ 0 := by
     apply mul_ne_zero Complex.I_ne_zero
-    simpa using (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero)
+    exact Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
   have hexp_trans : Transcendental ℚ
       (Complex.exp (Complex.I * algebraMap ℝ ℂ Real.pi)) :=
     hHL _ hαalg hαne
