@@ -1,6 +1,7 @@
 module
 public import Mathlib
 public import AlgebraicClosure
+public import Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart
 
 @[expose] public section
 
@@ -14,6 +15,21 @@ analytic theorem has been independently established.
 -/
 
 namespace HermiteLindemannBridge
+
+/--
+The existing analytic approximation step in Mathlib's Lindemann–Weierstrass
+development. It constructs integer linear forms with factorially small
+errors at algebraic roots of an integer polynomial whose constant term is
+nonzero. This is the analytic machinery, not the full
+Hermite–Lindemann conclusion: the remaining arithmetic contradiction is
+separate.
+-/
+theorem lindemann_analytic_approximation
+    (f : ℤ[X]) (hf : f.eval 0 ≠ 0) :=
+  LindemannWeierstrass.exp_polynomial_approx f hf
+
+#print axioms lindemann_analytic_approximation
+
 
 /--
 The Hermite–Lindemann statement over ℚ and ℂ:
