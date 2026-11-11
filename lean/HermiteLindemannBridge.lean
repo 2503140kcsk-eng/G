@@ -17,7 +17,7 @@ analytic theorem has been independently established.
 namespace HermiteLindemannBridge
 
 lemma lindemann_analytic_approximation
-    (f : ℤ[X]) (hf : f.eval 0 ≠ 0) :
+    (f : Polynomial ℤ) (hf : Polynomial.eval 0 f ≠ 0) :
     LindemannWeierstrass.exp_polynomial_approx f hf :=
   LindemannWeierstrass.exp_polynomial_approx f hf
 
