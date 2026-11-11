@@ -37,7 +37,8 @@ def SchanuelConjecture : Prop :=
 noncomputable def ePiSchanuelInputs : Fin 2 → ℂ :=
   ![(1 : ℂ), (Real.pi : ℂ) * Complex.I]
 
-/-- The two exponential values exp(1)=e and exp(πi)=-1. -/
+/-- The pair consisting of e = exp(1) and iπ.  The other exponential
+    exp(iπ) = -1 is already rational and adds no generator. -/
 noncomputable def ePiSchanuelPair : Fin 2 → ℂ :=
   ![Complex.exp (1 : ℂ), (Real.pi : ℂ) * Complex.I]
 
@@ -157,11 +158,8 @@ theorem ePiPairInGeneratedField_isAlgebraic :
     Algebra.adjoin ℚ (Set.range ePiPairInGeneratedField)
   let I : IntermediateField ℚ ePiGeneratedField :=
     IntermediateField.adjoin ℚ (Set.range ePiPairInGeneratedField)
-  letI : Algebra B I := inferInstance
-  letI : IsScalarTower B I ePiGeneratedField := inferInstance
   have hI : I = ⊤ := by
     exact ePiPairInGeneratedField_adjoin_eq_top
-  have hBI : Algebra.IsAlgebraic B I := inferInstance
   -- Since I = ⊤, its inclusion into ePiGeneratedField is an
   -- isomorphism of B-algebras. Algebraicity transports across it.
   let e : I ≃ₐ[B] ePiGeneratedField :=
@@ -244,7 +242,7 @@ theorem transcendental_ePlusPi_of_schanuel
     (ePi_pair_algebraicIndependent_over_QAdjoinI hSC).extendScalars M
   have hIinL : Complex.I ∈ L := by
     change Complex.I ∈ QAdjoinI
-    exact IntermediateField.subset_adjoin ℚ ({Complex.I} : Set ℂ) (by simp [QAdjoinI])
+    exact IntermediateField.subset_adjoin ℚ ({Complex.I} : Set ℂ) (by simp)
   let iL : L := ⟨Complex.I, hIinL⟩
   let iM : M := algebraMap L M iL
   let sM : M := ⟨s, IntermediateField.subset_adjoin L ({s} : Set ℂ) (by simp)⟩
