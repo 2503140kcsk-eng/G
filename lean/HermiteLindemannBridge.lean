@@ -19,6 +19,14 @@ namespace HermiteLindemannBridge
 
 open scoped Nat
 
+/-- The imaginary unit is algebraic over ℚ, since it is a root of X² + 1. -/
+theorem isAlgebraic_complex_I : IsAlgebraic ℚ (Complex.I : ℂ) := by
+  refine ⟨Polynomial.X ^ 2 + 1, ?_, ?_⟩
+  · intro hp
+    have hc := congrArg (fun p : Polynomial ℚ => p.eval 0) hp
+    norm_num at hc
+  · simp
+
 lemma lindemann_analytic_approximation
     (f : Polynomial ℤ) (hf : Polynomial.eval 0 f ≠ 0) :
     ∃ c,
@@ -83,8 +91,8 @@ theorem transcendental_pi : Transcendental ℚ Real.pi := by
       (isAlgebraic_one (R := ℚ) (A := ℂ))
   exact hexp_trans (hexp_eq ▸ hminus)
 /-! ## Kernel audit -/
-#print axioms LindemannWeierstrass.linearIndependent_exp
-#print axioms LindemannWeierstrass.algebraicIndependent_exp
+#print axioms Complex.linearIndependent_exp
+#print axioms Complex.algebraicIndependent_exp
 #print axioms isAlgebraic_complex_I
 #print axioms transcendental_exp_of_algebraic
 #print axioms transcendental_e
