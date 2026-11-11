@@ -40,6 +40,12 @@ noncomputable def ePiSchanuelPair : Fin 2 → ℂ :=
   Fin.cases (Complex.exp (1 : ℂ))
     (fun _ : Fin 1 => (Real.pi : ℂ) * Complex.I)
 
+@[simp] theorem ePiSchanuelPair_zero :
+    ePiSchanuelPair 0 = Complex.exp (1 : ℂ) := rfl
+
+@[simp] theorem ePiSchanuelPair_one :
+    ePiSchanuelPair 1 = (Real.pi : ℂ) * Complex.I := rfl
+
 /-- 1 and πi are linearly independent over ℚ: their real and imaginary
     coordinates force the two rational coefficients to vanish. -/
 theorem ePiSchanuelInputs_linearIndependent :
@@ -228,7 +234,7 @@ theorem transcendental_ePlusPi_of_schanuel
       _ = (Real.pi : ℂ) * (Complex.I * Complex.I) := by rw [← mul_assoc]
       _ = -(Real.pi : ℂ) := by rw [Complex.I_mul_I]; ring
   have hEval : MvPolynomial.aeval ePiSchanuelPair P = 0 := by
-    simp [P, ePiSchanuelPair, s, sM, iM, iL, hIpi]
+    simp [P, ePiSchanuelPair_zero, ePiSchanuelPair_one, s, sM, iM, iL, hIpi]
   have hmon : (Finsupp.single (0 : Fin 2) 1 : Fin 2 →₀ ℕ) ≠ 0 := by
     intro hm
     have hc := congrArg (fun v : Fin 2 →₀ ℕ => v 0) hm
