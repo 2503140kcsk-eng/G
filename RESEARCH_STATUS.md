@@ -83,9 +83,9 @@ The unconditional proposition `EPlusPiTranscendental` remains open. There is no 
 - Direct formal mathematics dependency: Mathlib only. Other starred repositories and connected tools are assigned auxiliary roles in `TOOLS_AND_PROOF_PROTOCOL.md`.
 - CI installs the exact Lean toolchain and uses the committed Lake manifest. It does not run `lake update` as a dependency-refresh step.
 
-CI runs #168 and #169 on 2026-11-11 completed successfully on the lockfile commit and built all 18,195 jobs. The build logs show that `AlgebraicClosure`, `HermiteLindemannBridge`, `EPlusPi`, and `SchanuelConditional` declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`. The configured automated `axiom-audit` step audited 13 declarations under `AlgebraicClosure`; it did not independently audit every theorem in every module or the full transitive Mathlib closure. This scope is stated explicitly rather than overstated.
+CI runs #168 and #169 on 2026-11-11 completed successfully on the committed lockfile and built all 18,195 jobs. The workflow was then changed to remove `lake update` entirely, so CI no longer performs a dependency-refresh operation. Runs #172 and #173 confirmed that the build uses the exact revisions in `lake-manifest.json` without running `lake update`. The later documentation-complete run #178 also succeeded on commit `17e5669af5c0c38d55d53c9725d3f543761e290f`: all 18,195 jobs built, the additional audit build completed, and the configured `axiom-audit` step succeeded.
 
-A later CI run is required after the workflow change that removes `lake update`; that run is the confirmation that CI builds solely from the committed lockfile without refreshing dependency revisions.
+The build logs show that declarations in `AlgebraicClosure`, `HermiteLindemannBridge`, `EPlusPi`, and `SchanuelConditional` depend only on `propext`, `Classical.choice`, and `Quot.sound`. The configured automated `axiom-audit` step audited 13 declarations under `AlgebraicClosure`; it did not independently audit every theorem in every module or the full transitive Mathlib closure. This scope is stated explicitly rather than overstated.
 
 ## 5. Open research directions (not claimed proofs)
 
