@@ -2,6 +2,7 @@ module
 public import Mathlib
 public import AlgebraicClosure
 public import Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart
+public import LindemannBasic
 
 @[expose] public section
 
@@ -15,6 +16,8 @@ analytic theorem has been independently established.
 -/
 
 namespace HermiteLindemannBridge
+
+open scoped Nat
 
 lemma lindemann_analytic_approximation
     (f : Polynomial ℤ) (hf : Polynomial.eval 0 f ≠ 0) :
