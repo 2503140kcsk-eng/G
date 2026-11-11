@@ -19,5 +19,13 @@ lean_lib EPlusPi where
   srcDir := "lean"
 
 @[default_target]
+lean_lib LindemannAlgebraicPart where
+  srcDir := "lean"
+
+@[default_target]
+lean_lib LindemannBasic where
+  srcDir := "lean"
+
+@[default_target]
 lean_lib SchanuelConditional where
   srcDir := "lean"
