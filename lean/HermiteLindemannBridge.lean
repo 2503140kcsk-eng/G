@@ -9,10 +9,9 @@ public import LindemannBasic
 /-!
 # The Hermite–Lindemann interface and its elementary specializations
 
-This module isolates the exact analytic input needed from Hermite–Lindemann.
-It does NOT postulate that input as an axiom and does NOT claim to prove it.
-The propositions below are the algebraic consequences that follow once the
-analytic theorem has been independently established.
+This module connects Mathlib's analytic approximation lemma to the
+vendored Lindemann–Weierstrass proof. It derives the Hermite–Lindemann
+conclusion, then specializes it to the transcendence of e and π.
 -/
 
 namespace HermiteLindemannBridge
