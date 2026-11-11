@@ -184,7 +184,7 @@ theorem ePi_pair_algebraicIndependent (hSC : SchanuelConjecture) :
   have htr : (2 : Cardinal) ≤ Algebra.trdeg ℚ ePiGeneratedField :=
     ePi_generatedField_trdeg_ge_two hSC
   letI : Algebra.IsAlgebraic
-      (IntermediateField.adjoin ℚ (Set.range ePiPairInGeneratedField))
+      (Algebra.adjoin ℚ (Set.range ePiPairInGeneratedField))
       ePiGeneratedField := ePiPairInGeneratedField_isAlgebraic
   have hbasis : IsTranscendenceBasis ℚ ePiPairInGeneratedField :=
     Algebra.IsAlgebraic.isTranscendenceBasis_of_le_trdeg_of_finite
