@@ -34,30 +34,27 @@ lemma lindemann_analytic_approximation
 
 
 /--
-The Hermite–Lindemann statement over ℚ and ℂ:
-the exponential of every nonzero algebraic complex number is transcendental.
-This is a proposition, not an axiom.
+Hermite–Lindemann over ℚ, obtained from the vendored Lindemann–Weierstrass
+linear-independence theorem. This is a theorem, not an assumed input.
 -/
-def HermiteLindemannInput : Prop :=
-  ∀ z : ℂ, IsAlgebraic ℚ z → z ≠ 0 → Transcendental ℚ (Complex.exp z)
+theorem transcendental_exp_of_algebraic
+    {z : ℂ} (hz0 : z ≠ 0) (hz : IsAlgebraic ℚ z) :
+    Transcendental ℚ (Complex.exp z) := by
+  intro h
+  let expz : integralClosure ℚ ℂ := ⟨Complex.exp z, h.isIntegral⟩
+  have hli : LinearIndependent (integralClosure ℚ ℂ)
+      (fun i : Fin 2 => Complex.exp (![z, 0] i)) :=
+    Complex.linearIndependent_exp ![z, 0]
+      (by simp [hz, isAlgebraic_zero])
+      (by simpa [Subtype.ext_iff])
+  have hrel := Fintype.linearIndependent_iff.mp hli ![1, -expz] (by
+    simp [expz, Algebra.smul_def])
+  simp at hrel
 
-/-- The imaginary unit is algebraic over ℚ, since it is a root of X² + 1. -/
-theorem isAlgebraic_complex_I : IsAlgebraic ℚ (Complex.I : ℂ) := by
-  refine ⟨Polynomial.X ^ 2 + 1, ?_, ?_⟩
-  · intro hp
-    have hc := congrArg (fun p : Polynomial ℚ => p.eval 0) hp
-    norm_num at hc
-  · simp
-
-/--
-Hermite–Lindemann at 1 gives transcendence of e.
-The real-to-complex passage uses Mathlib's Complex.ofReal_exp.
--/
-theorem transcendental_e_of_hermite_lindemann
-    (hHL : HermiteLindemannInput) :
-    Transcendental ℚ (Real.exp 1) := by
+/-- The real number e is transcendental over ℚ. -/
+theorem transcendental_e : Transcendental ℚ (Real.exp 1) := by
   have hcomplex : Transcendental ℚ (Complex.exp (1 : ℂ)) :=
-    hHL 1 (isAlgebraic_one (R := ℚ) (A := ℂ)) (by norm_num)
+    transcendental_exp_of_algebraic (by norm_num) (isAlgebraic_one (R := ℚ) (A := ℂ))
   change ¬ IsAlgebraic ℚ (Real.exp 1)
   intro he
   have heC : IsAlgebraic ℚ (algebraMap ℝ ℂ (Real.exp 1)) := he.algebraMap
@@ -65,14 +62,8 @@ theorem transcendental_e_of_hermite_lindemann
     exact Complex.ofReal_exp 1
   exact hcomplex (hmap ▸ heC)
 
-/--
-Assuming Hermite–Lindemann, π is transcendental.
-If π were algebraic, then iπ would be nonzero algebraic, while
-exp(iπ) = -1 is algebraic, contradicting Hermite–Lindemann.
--/
-theorem transcendental_pi_of_hermite_lindemann
-    (hHL : HermiteLindemannInput) :
-    Transcendental ℚ Real.pi := by
+/-- The real number π is transcendental over ℚ. -/
+theorem transcendental_pi : Transcendental ℚ Real.pi := by
   intro hpi
   have hpiC : IsAlgebraic ℚ (algebraMap ℝ ℂ Real.pi) := hpi.algebraMap
   have hαalg : IsAlgebraic ℚ (Complex.I * algebraMap ℝ ℂ Real.pi) :=
@@ -83,7 +74,7 @@ theorem transcendental_pi_of_hermite_lindemann
     exact Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
   have hexp_trans : Transcendental ℚ
       (Complex.exp (Complex.I * algebraMap ℝ ℂ Real.pi)) :=
-    hHL _ hαalg hαne
+    transcendental_exp_of_algebraic hαne hαalg
   have hexp_eq : Complex.exp (Complex.I * algebraMap ℝ ℂ Real.pi) = -1 := by
     change Complex.exp (Complex.I * (Real.pi : ℂ)) = -1
     rw [mul_comm, Complex.exp_pi_mul_I]
@@ -91,10 +82,12 @@ theorem transcendental_pi_of_hermite_lindemann
     AlgebraicNumberClosureFormalization.isAlgebraic_neg
       (isAlgebraic_one (R := ℚ) (A := ℂ))
   exact hexp_trans (hexp_eq ▸ hminus)
-
 /-! ## Kernel audit -/
+#print axioms LindemannWeierstrass.linearIndependent_exp
+#print axioms LindemannWeierstrass.algebraicIndependent_exp
 #print axioms isAlgebraic_complex_I
-#print axioms transcendental_e_of_hermite_lindemann
-#print axioms transcendental_pi_of_hermite_lindemann
+#print axioms transcendental_exp_of_algebraic
+#print axioms transcendental_e
+#print axioms transcendental_pi
 
 end HermiteLindemannBridge
