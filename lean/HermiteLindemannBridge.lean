@@ -18,7 +18,13 @@ namespace HermiteLindemannBridge
 
 lemma lindemann_analytic_approximation
     (f : Polynomial ℤ) (hf : Polynomial.eval 0 f ≠ 0) :
-    LindemannWeierstrass.exp_polynomial_approx f hf :=
+    ∃ c,
+      ∀ p > (Polynomial.eval 0 f).natAbs, p.Prime →
+        ∃ nₚ : ℤ, ¬ ↑p ∣ nₚ ∧ ∃ gₚ : Polynomial ℤ,
+          gₚ.natDegree ≤ p * f.natDegree - 1 ∧
+          ∀ {r : ℂ}, r ∈ Polynomial.aroots f ℂ →
+            ‖nₚ • Complex.exp r - p • Polynomial.aeval r gₚ‖ ≤
+              c ^ p / (p - 1)! :=
   LindemannWeierstrass.exp_polynomial_approx f hf
 
 #print axioms lindemann_analytic_approximation
