@@ -87,26 +87,30 @@ The span contains \(m_D+1\) displayed numbers, so its dimension is exactly \(m_D
 
 This is a **specialization of an existing criterion**, not a newly proved transcendence theorem. Its research content would lie in constructing the forms \(L_{D,n}\) for the actual pair \((e,\pi)\) with the stated exponent inequality. No such family is known here.
 
-A single-rate estimate
+A precise asymptotic estimate
 \[
 |L_{D,n}|=\exp\bigl(-\tau_D\sigma_D(n)+o(\sigma_D(n))\bigr)
 \]
-does **not** meet (2.1): it corresponds to \(\tau_{1,D}=\tau_{2,D}=\tau_D\), so the dimension lower bound is exactly \(1\). The two-sided estimate must retain a genuine exponent gap.
+**does** imply the two-sided hypotheses of Nesterenko's criterion with a small exponent margin. For any sufficiently small \(\varepsilon>0\), eventually
+\[
+e^{-(\tau_D+\varepsilon)\sigma_D(n)}
+\leq |L_{D,n}|
+\leq e^{-(\tau_D-\varepsilon)\sigma_D(n)}.
+\]
+Thus take \(\tau_{1,D}=\tau_D+\varepsilon\) and \(\tau_{2,D}=\tau_D-\varepsilon\). The resulting dimension lower bound is
+\[
+\frac{1+\tau_D+\varepsilon}{1+2\varepsilon}
+\longrightarrow 1+\tau_D
+\qquad(\varepsilon\downarrow0).
+\]
+Consequently, if \(\tau_D>m_D-1\), choose
+\[
+0<\varepsilon<
+\min\!\left(\tau_D,\frac{\tau_D-(m_D-1)}{2m_D-1}\right)
+\]
+to make (2.1) hold. For example, when \(D=1\), \(m_D=2\), and \(\tau_D=9/5\), choosing \(\varepsilon=1/5\) gives \((\tau_{1,D},\tau_{2,D})=(2,8/5)\) and the lower bound \(15/7>2\).
 
-For \(m_D\geq2\), condition (2.1) is equivalent, when its denominator is positive, to
-\[
-\tau_{2,D}>\frac{m_D-1}{m_D}(1+\tau_{1,D}).
-\]
-Consistency of the two-sided estimate requires \(\tau_{1,D}\geq\tau_{2,D}\). Thus the interval for \(\tau_{2,D}\) is nonempty only if
-\[
-\tau_{1,D}>m_D-1,
-\]
-and this condition alone is **not sufficient**: \(\tau_{2,D}\) must also be sufficiently close to \(\tau_{1,D}\) to satisfy the displayed strict inequality. For example, when \(D=1\), \(m_D=2\), and \((\tau_{1,D},\tau_{2,D})=(2,8/5)\), the lower bound for the dimension is
-\[
-\frac{1+2}{1+2-8/5}=\frac{15}{7}>2.
-\]
-Since \(m_D={D+2\choose2}-1\), even the necessary lower exponent threshold \(\tau_{1,D}>m_D-1\) grows quadratically with \(D\). The real bottleneck is constructing a family with this *two-rate separation*, not merely obtaining one small-error exponent.
-
+The distinction is that one must not literally substitute \(\tau_{1,D}=\tau_{2,D}=\tau_D\) into the fixed-exponent formula: the asymptotic \(o(\sigma_D(n))\) term permits bracketing by \(\tau_D\pm\varepsilon\), and the limiting criterion is obtained only after taking arbitrarily small positive \(\varepsilon\). Since \(m_D={D+2\choose2}-1\), the required asymptotic decay rate \(\tau_D\) grows quadratically with \(D\). This remains a conditional criterion: constructing such a family for the actual monomials \(e^i\pi^j\) is the unresolved part.
 ## 3. A primitive denominator-survival criterion for \(e+\pi\)
 
 Put \(\alpha=e+\pi\). Let \(a_n,b_n\in\mathbb Q\), and let \(D_n\geq1\) be a common denominator, so that
