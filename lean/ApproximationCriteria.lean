@@ -1,5 +1,6 @@
 module
 public import Mathlib.NumberTheory.Transcendental.Liouville.Basic
+public import Mathlib.Order.Filter.AtTopBot.Basic
 public import Mathlib.RingTheory.Algebraic.Integral
 
 @[expose] public section
@@ -49,7 +50,8 @@ theorem liouville_of_superpolynomial_integer_linear_forms
   intro k
   have hden : ∀ᶠ n : ℕ in atTop, 1 < a n :=
     ha.eventually (eventually_gt_atTop 1)
-  filter_upwards [hden, hnz, hsmall k] with n hden hnz hsmall
+  obtain ⟨n, hden, hnz, hsmall⟩ :=
+    (hden.and (hnz.and (hsmall k))).exists
   refine ⟨-b n, (a n : ℤ), ?_, ?_, ?_⟩
   · exact_mod_cast hden
   · intro hEq
