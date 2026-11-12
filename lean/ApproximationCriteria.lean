@@ -2,6 +2,7 @@ module
 public import Mathlib.NumberTheory.Transcendental.Liouville.Basic
 public import Mathlib.Order.Filter.AtTopBot.Basic
 public import Mathlib.RingTheory.Algebraic.Integral
+public import Mathlib.RingTheory.Localization.FractionRing
 
 @[expose] public section
 
@@ -63,6 +64,7 @@ theorem liouville_of_superpolynomial_integer_linear_forms
       exact_mod_cast hEq
     rw [hEq']
     field_simp
+    ring
   · have haPos : (0 : ℝ) < (a n : ℝ) :=
       Nat.cast_pos.mpr (Nat.zero_lt_of_lt hden)
     have hHeight : a n ≤ integerLinearFormHeight (a n) (b n) := by
@@ -83,7 +85,9 @@ theorem liouville_of_superpolynomial_integer_linear_forms
       unfold integerLinearFormValue
       field_simp
       ring
-    rw [hForm, abs_div, abs_of_pos haPos]
+    have hNum : ((-b n : ℤ) : ℝ) = -(b n : ℝ) := by norm_cast
+    have hDenCast : ((a n : ℤ) : ℝ) = (a n : ℝ) := by norm_cast
+    rw [hNum, hDenCast, hForm, abs_div, abs_of_pos haPos]
     calc
       |integerLinearFormValue x (a n) (b n)| / (a n : ℝ)
           < (1 / (integerLinearFormHeight (a n) (b n) : ℝ) ^ k) /
@@ -112,6 +116,8 @@ theorem transcendental_of_superpolynomial_integer_linear_forms
   have hL : Liouville x :=
     liouville_of_superpolynomial_integer_linear_forms ha hnz hsmall
   have hZ : Transcendental ℤ x := Liouville.transcendental hL
+  haveI : Algebra.IsAlgebraic ℤ ℚ :=
+    IsLocalization.isAlgebraic ℚ (nonZeroDivisors ℤ)
   exact hZ.extendScalars ℚ
 
 #print axioms liouville_of_superpolynomial_integer_linear_forms
