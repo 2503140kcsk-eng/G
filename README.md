@@ -15,7 +15,7 @@ The Lean workspace contains a kernel-checked development of these results.
 1. **Individual transcendence.** **Complex.transcendental_e** proves that $e=\exp(1)$, viewed in $\mathbb C$, is transcendental over $\mathbb Z$. **Real.transcendental_pi** proves that $\pi$ is transcendental over $\mathbb Z$. The bridge theorems **HermiteLindemannBridge.transcendental_e** and **HermiteLindemannBridge.transcendental_pi** derive the corresponding results over $\mathbb Q$.
 2. **Algebraic closure.** Algebraic elements are closed under addition and multiplication. A root of a nonzero polynomial whose coefficients are algebraic over the base field is algebraic over that field.
 3. **An unconditional disjunction.**
-   $$\boxed{\text{At least one of }e+\pi\text{ and }e\pi\text{ is transcendental.}$$
+   $\boxed{\text{At least one of }e+\pi\text{ and }e\pi\text{ is transcendental.}}$
    If both were algebraic, $e$ and $\pi$ would be roots of $X^2-(e+\pi)X+e\pi$, a polynomial over the algebraic numbers, contradicting their individual transcendence.
 4. **A conditional theorem.** **SchanuelConditional.transcendental_ePlusPi_of_schanuel** proves that Schanuel's conjecture implies $e+\pi$ is transcendental. The conjecture is an explicit hypothesis to this theorem, not an axiom added to Lean's environment.
 
