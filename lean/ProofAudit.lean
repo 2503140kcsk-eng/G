@@ -8,6 +8,8 @@ public import ApproximationCriteria
 
 @[expose] public section
 
+open Filter
+
 /-!
 # Central proof-dependency audit
 
