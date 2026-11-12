@@ -4,6 +4,7 @@ public import LindemannBasic
 public import HermiteLindemannBridge
 public import EPlusPi
 public import SchanuelConditional
+public import ApproximationCriteria
 
 @[expose] public section
 
@@ -51,5 +52,19 @@ theorem schanuel_implies_e_plus_pi_transcendental
     (hSC : SchanuelConditional.SchanuelConjecture) :
     Transcendental ℚ ePlusPi :=
   SchanuelConditional.transcendental_ePlusPi_of_schanuel hSC
+
+/-- A sequence of integer linear forms with super-polynomial decay relative
+to coefficient height forces transcendence of the target real number. -/
+theorem superpolynomial_forms_imply_transcendence
+    {x : ℝ} {a : ℕ → ℕ} {b : ℕ → ℤ}
+    (ha : Tendsto a atTop atTop)
+    (hnz : ∀ᶠ n : ℕ in atTop,
+      EPlusPiApproximation.integerLinearFormValue x (a n) (b n) ≠ 0)
+    (hsmall : ∀ k : ℕ, ∀ᶠ n : ℕ in atTop,
+      |EPlusPiApproximation.integerLinearFormValue x (a n) (b n)| <
+        1 / (EPlusPiApproximation.integerLinearFormHeight (a n) (b n) : ℝ) ^ k) :
+    Transcendental ℚ x :=
+  EPlusPiApproximation.transcendental_of_superpolynomial_integer_linear_forms
+    ha hnz hsmall
 
 end ProofAudit
