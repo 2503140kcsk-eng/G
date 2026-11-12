@@ -1,89 +1,78 @@
 # Lean formalization workspace
 
-This folder contains a layered formalization of established transcendence results and their consequences for (e+pi). It does **not** contain an unconditional proof that (e+pi) is irrational or transcendental.
+This folder contains a layered formalization of established transcendence results and their consequences for \(e+\pi\). It does **not** contain an unconditional proof that \(e+\pi\) is irrational or transcendental.
 
 ## Module map
 
-- `LindemannAlgebraicPart.lean`: algebraic part of the Lindemann–Weierstrass argument, combined with Mathlib's analytic estimates.
-- `LindemannBasic.lean`: linear/algebraic independence of exponentials of algebraic inputs, and the individual theorems `Complex.transcendental_e` and `Real.transcendental_pi`.
-- `HermiteLindemannBridge.lean`: transfers those statements to transcendence over (mathbb Q), including `HermiteLindemannBridge.transcendental_e` and `HermiteLindemannBridge.transcendental_pi`.
-- `AlgebraicClosure.lean`: closure of algebraic elements under field operations and descent of algebraicity for roots of polynomials with algebraic coefficients.
-- `EPlusPi.lean`: defines (e+pi) and (epi), records the open target, and proves the unconditional sum/product disjunction.
-- `SchanuelConditional.lean`: proves the conditional implication from Schanuel's conjecture to transcendence of (e+pi). The conjecture is a theorem hypothesis, not a project axiom.
+- LindemannAlgebraicPart.lean: algebraic part of the Lindemann–Weierstrass argument, combined with Mathlib's analytic estimates.
+- LindemannBasic.lean: linear/algebraic independence of exponentials of algebraic inputs, and the individual theorems Complex.transcendental_e and Real.transcendental_pi.
+- HermiteLindemannBridge.lean: transfers those statements to transcendence over \(\mathbb Q\), including HermiteLindemannBridge.transcendental_e and HermiteLindemannBridge.transcendental_pi.
+- AlgebraicClosure.lean: closure of algebraic elements under field operations and descent of algebraicity for roots of polynomials with algebraic coefficients.
+- EPlusPi.lean: defines \(e+\pi\) and \(e\pi\), records the open target, and proves the unconditional sum/product disjunction.
+- SchanuelConditional.lean: proves the conditional implication from Schanuel's conjecture to transcendence of \(e+\pi\). The conjecture is a theorem hypothesis, not a project axiom.
+- ProofAudit.lean: exposes six explicitly typed principal theorems for the CI transitive axiom audit.
 
 ## Main formally checked statements
 
 ### Individual transcendence
 
-`Complex.transcendental_e` establishes transcendence of (exp(1)) in (mathbb C), and `Real.transcendental_pi` establishes transcendence of (pi) in (mathbb R), in the source statements over (mathbb Z). The bridge module derives the corresponding (mathbb Q)-transcendence claims.
+Complex.transcendental_e establishes transcendence of \(\exp(1)\) in \(\mathbb C\), and Real.transcendental_pi establishes transcendence of \(\pi\) in \(\mathbb R\), in the source statements over \(\mathbb Z\). The bridge module derives the corresponding \(\mathbb Q\)-transcendence claims.
 
-The proof is not obtained by importing a completed Lean Lindemann–Weierstrass theorem from Mathlib. The project combines Mathlib's analytic approximation/estimate layer with the algebraic argument in `LindemannAlgebraicPart.lean`; `LindemannBasic.lean` assembles these ingredients into the named results. See the source headers for attribution and licensing.
+The proof is not obtained by importing a completed Lean Lindemann–Weierstrass theorem from Mathlib. The project combines Mathlib's analytic approximation/estimate layer with the algebraic argument in LindemannAlgebraicPart.lean; LindemannBasic.lean assembles these ingredients into the named results. The original copyright and author notices are retained in the vendored proof source.
 
 ### Unconditional sum/product disjunction
 
-`EPlusPi.e_add_pi_or_mul_transcendental` proves:
+EPlusPi.e_add_pi_or_mul_transcendental proves:
 
-[
-(e+pi)	ext{ is transcendental} lor (epi)	ext{ is transcendental}.
-]
+\[
+(e+\pi)\text{ is transcendental}\ \lor\ (e\pi)\text{ is transcendental}.
+\]
 
-The field-theoretic argument is that if both the sum and product were algebraic, then (e,pi) would be the roots of the quadratic (X^2-(e+pi)X+epi), making both algebraic. This contradicts the individual transcendence theorems.
+The field-theoretic argument is that if both the sum and product were algebraic, then \(e,\pi\) would be the roots of \(X^2-(e+\pi)X+e\pi\), making both algebraic. This contradicts the individual transcendence theorems.
 
 This is a disjunction and does not select the sum.
 
 ### Conditional Schanuel implication
 
-`SchanuelConditional.transcendental_ePlusPi_of_schanuel` is a full Lean proof of
+SchanuelConditional.transcendental_ePlusPi_of_schanuel is a full Lean proof of
 
-[
-	ext{SchanuelConjecture}	o
-	ext{Transcendental}_{mathbb Q}(e+pi).
-]
+\[
+\text{SchanuelConjecture}\to
+\text{Transcendental}_{\mathbb Q}(e+\pi).
+\]
 
 Its structure is:
 
-1. Verify that (1) and (ipi) are linearly independent over (mathbb Q).
-2. Apply the formalized Schanuel hypothesis to obtain transcendence degree at least two for the field generated by (e) and (ipi).
+1. Verify that \(1\) and \(i\pi\) are linearly independent over \(\mathbb Q\).
+2. Apply the formalized Schanuel hypothesis to obtain transcendence degree at least two for the field generated by \(e\) and \(i\pi\).
 3. Use the fact that the field is generated by two elements to derive their algebraic independence.
-4. Transfer algebraic independence across the algebraic extension (mathbb Q(i)/mathbb Q).
-5. Assume (e+pi) is algebraic and derive a nonzero polynomial relation, contradicting algebraic independence.
+4. Transfer algebraic independence across the algebraic extension \(\mathbb Q(i)/\mathbb Q\).
+5. Assume \(e+\pi\) is algebraic and derive a nonzero polynomial relation, contradicting algebraic independence.
 
 The result remains conditional because Schanuel's conjecture is not known unconditionally.
 
 ## Open target
 
-`EPlusPiTranscendental` is a proposition expressing the desired unconditional transcendence of (e+pi). It remains unproved. No axiom, `sorry`, or `admit` is used to claim this result.
+EPlusPiTranscendental is a proposition expressing the desired unconditional transcendence of \(e+\pi\). It remains unproved. No axiom, sorry, or admit is used to claim this result.
 
-The literature checked as of 2026-11-11 also regards even the irrationality of (e+pi) as open. See the root `RESEARCH_STATUS.md` for the current literature boundary and references.
+The literature checked as of 2026-11-12 also regards even the irrationality of \(e+\pi\) as open. See the root RESEARCH_STATUS.md for the current literature boundary and references.
 
-## Algebraic closure lemma architecture
+## Focused imports
 
-The generic root theorem in `AlgebraicClosure.lean` reuses Mathlib's canonical predicate `IsAlgebraic K x`. For a nonzero polynomial over an extension field whose coefficients are algebraic over the base field:
+HermiteLindemannBridge.lean, EPlusPi.lean, and SchanuelConditional.lean no longer import all of Mathlib. They import the project modules and the focused Mathlib interfaces they use. SchanuelConditional.lean explicitly imports the transcendence-basis API and Mathlib.Algebra.MvPolynomial.CommRing, which supplies the coefficient operations required by its polynomial-relation proof. The pinned full workspace build verifies these import choices.
 
-1. Place all coefficients in the relative algebraic-closure subalgebra.
-2. Reinterpret the polynomial over that subalgebra with `Polynomial.toSubring`.
-3. Transfer the root equation and nonzeroness.
-4. Descend algebraicity to the base field using `IsAlgebraic.restrictScalars`.
-
-This avoids constructing minimal polynomials by hand and gives a reusable algebraicity-descent theorem.
-
-## Reproducible build
+## Reproducible build and audit
 
 The project pins:
 
-- Lean: `leanprover/lean4:v4.36.0-rc2`
-- Mathlib: `v4.36.0-rc2`
-- Mathlib's concrete commit and eight transitive Lake dependency revisions: root `lake-manifest.json`.
+- Lean: leanprover/lean4:v4.36.0-rc2
+- Mathlib: v4.36.0-rc2
+- Mathlib's concrete commit and eight transitive Lake dependency revisions: root lake-manifest.json.
 
-The CI workflow uses the committed manifest; it does not execute `lake update` to refresh dependencies.
+The CI workflow uses the committed manifest; it does not execute lake update to refresh dependencies.
 
-From the repository root:
+From the repository root, run lake exe cache get and lake build.
 
-```sh
-lake exe cache get
-lake build
-```
+The GitHub Actions workflow additionally runs axiom-audit with root ProofAudit. On the successful 2026-11-12 push run #210 and PR run #211, all 6,126 build jobs succeeded and the audit accepted six explicitly typed principal theorem wrappers. Their transitive proof dependencies stayed within propext, Classical.choice, and Quot.sound; no sorryAx, project-specific axiom, or Lean warning was reported. This does not claim that all of Mathlib's full transitive import closure was independently replayed.
 
-The GitHub Actions workflow additionally runs the configured `axiom-audit`. On the 2026-11-11 successful build snapshot, the relevant declarations in all four theorem modules printed only the allowlisted standard axioms `propext`, `Classical.choice`, and `Quot.sound`; no `sorryAx` was shown. The action's automated audit specifically audited 13 declarations under `AlgebraicClosure`, not every declaration or the entire Mathlib import closure. Consult the CI logs for exact scope.
-
-The project trust policy and role assignment for the recorded starred repositories and connected research tools is documented in `TOOLS_AND_PROOF_PROTOCOL.md`.
+The project trust policy, all recorded starred-repository roles, and all connected integration roles are documented in TOOLS_AND_PROOF_PROTOCOL.md.
