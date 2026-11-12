@@ -87,13 +87,25 @@ The span contains \(m_D+1\) displayed numbers, so its dimension is exactly \(m_D
 
 This is a **specialization of an existing criterion**, not a newly proved transcendence theorem. Its research content would lie in constructing the forms \(L_{D,n}\) for the actual pair \((e,\pi)\) with the stated exponent inequality. No such family is known here.
 
-In the symmetric asymptotic case
-
+A single-rate estimate
 \[
-|L_{D,n}|=\exp\bigl(-\tau_D\sigma_D(n)+o(\sigma_D(n))\bigr),
+|L_{D,n}|=\exp\bigl(-\tau_D\sigma_D(n)+o(\sigma_D(n))\bigr)
 \]
+does **not** meet (2.1): it corresponds to \(\tau_{1,D}=\tau_{2,D}=\tau_D\), so the dimension lower bound is exactly \(1\). The two-sided estimate must retain a genuine exponent gap.
 
-the criterion is met if \(\tau_D>m_D-1\). Since \(m_D={D+2\choose2}-1\), the required decay exponent grows quadratically with \(D\). This is the quantitative bottleneck, not the formal application of the criterion.
+For \(m_D\geq2\), condition (2.1) is equivalent, when its denominator is positive, to
+\[
+\tau_{2,D}>\frac{m_D-1}{m_D}(1+\tau_{1,D}).
+\]
+Consistency of the two-sided estimate requires \(\tau_{1,D}\geq\tau_{2,D}\). Thus the interval for \(\tau_{2,D}\) is nonempty only if
+\[
+\tau_{1,D}>m_D-1,
+\]
+and this condition alone is **not sufficient**: \(\tau_{2,D}\) must also be sufficiently close to \(\tau_{1,D}\) to satisfy the displayed strict inequality. For example, when \(D=1\), \(m_D=2\), and \((\tau_{1,D},\tau_{2,D})=(2,8/5)\), the lower bound for the dimension is
+\[
+\frac{1+2}{1+2-8/5}=\frac{15}{7}>2.
+\]
+Since \(m_D={D+2\choose2}-1\), even the necessary lower exponent threshold \(\tau_{1,D}>m_D-1\) grows quadratically with \(D\). The real bottleneck is constructing a family with this *two-rate separation*, not merely obtaining one small-error exponent.
 
 ## 3. A primitive denominator-survival criterion for \(e+\pi\)
 
