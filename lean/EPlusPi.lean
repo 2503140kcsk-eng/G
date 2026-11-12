@@ -1,5 +1,4 @@
 module
-public import Mathlib
 public import AlgebraicClosure
 public import HermiteLindemannBridge
 
