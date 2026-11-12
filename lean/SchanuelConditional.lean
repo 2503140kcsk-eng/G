@@ -182,7 +182,7 @@ theorem ePi_pair_algebraicIndependent (hSC : SchanuelConjecture) :
     AlgebraicIndependent ℚ ePiSchanuelPair := by
   have htr : (2 : Cardinal) ≤ Algebra.trdeg ℚ ePiGeneratedField :=
     ePi_generatedField_trdeg_ge_two hSC
-  letI : Algebra.IsAlgebraic
+  haveI : Algebra.IsAlgebraic
       (Algebra.adjoin ℚ (Set.range ePiPairInGeneratedField))
       ePiGeneratedField := ePiPairInGeneratedField_isAlgebraic
   have hbasis : IsTranscendenceBasis ℚ ePiPairInGeneratedField :=
@@ -213,7 +213,7 @@ theorem QAdjoinI_isAlgebraic : Algebra.IsAlgebraic ℚ QAdjoinI := by
 theorem ePi_pair_algebraicIndependent_over_QAdjoinI
     (hSC : SchanuelConjecture) :
     AlgebraicIndependent QAdjoinI ePiSchanuelPair := by
-  letI : Algebra.IsAlgebraic ℚ QAdjoinI := QAdjoinI_isAlgebraic
+  haveI : Algebra.IsAlgebraic ℚ QAdjoinI := QAdjoinI_isAlgebraic
   exact (ePi_pair_algebraicIndependent hSC).extendScalars QAdjoinI
 
 /-- Under Schanuel's conjecture, e + π is transcendental over ℚ. -/
@@ -227,7 +227,7 @@ theorem transcendental_ePlusPi_of_schanuel
       simp [s, ePlusPi, Complex.ofReal_exp]
     exact hmap ▸ hsum.algebraMap
   let L : IntermediateField ℚ ℂ := QAdjoinI
-  letI : Algebra.IsAlgebraic ℚ L := by
+  haveI : Algebra.IsAlgebraic ℚ L := by
     simpa [L] using QAdjoinI_isAlgebraic
   have hsumL : IsAlgebraic L s :=
     hsumC.extendScalars (algebraMap ℚ L).injective
@@ -238,7 +238,7 @@ theorem transcendental_ePlusPi_of_schanuel
     intro x hx
     rcases Set.mem_singleton_iff.mp hx with rfl
     exact hsumL
-  letI : Algebra.IsAlgebraic L M := hMalg
+  haveI : Algebra.IsAlgebraic L M := hMalg
   have hAI_M : AlgebraicIndependent M ePiSchanuelPair :=
     (ePi_pair_algebraicIndependent_over_QAdjoinI hSC).extendScalars M
   have hIinL : Complex.I ∈ L := by
