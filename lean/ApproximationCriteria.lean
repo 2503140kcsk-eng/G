@@ -4,6 +4,7 @@ public import Mathlib.NumberTheory.Real.Irrational
 public import Mathlib.Order.Filter.AtTopBot.Basic
 public import Mathlib.RingTheory.Algebraic.Integral
 public import Mathlib.RingTheory.Localization.FractionRing
+public import Mathlib.Topology.Basic
 
 @[expose] public section
 
