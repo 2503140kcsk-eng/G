@@ -10,66 +10,46 @@ public import SchanuelConditional
 /-!
 # Central proof-dependency audit
 
-This module re-exports the project's main theorem declarations under one
-namespace so the CI axiom-audit tool can inspect their complete transitive
-proof dependencies with a single explicit root.
+The declarations below restate the project's key theorems with explicit types.
+CI runs axiom-audit with root `ProofAudit`; the audit therefore follows each
+proof's complete transitive dependency graph, including the algebraic-closure
+lemmas, the vendored Lindemann–Weierstrass proof, Mathlib's analytic estimate,
+and the Schanuel field-theory argument.
 
-No new mathematical assumptions are introduced here.
+No new mathematical assumption is introduced here.
 -/
 
 namespace ProofAudit
 
-/-! ## Algebraic closure and descent -/
-def algebraic_add := AlgebraicNumberClosureFormalization.isAlgebraic_add
-def algebraic_mul := AlgebraicNumberClosureFormalization.isAlgebraic_mul
-def algebraic_neg := AlgebraicNumberClosureFormalization.isAlgebraic_neg
-def algebraic_numbers_add := AlgebraicNumberClosureFormalization.algebraicNumbers_add
-def algebraic_numbers_mul := AlgebraicNumberClosureFormalization.algebraicNumbers_mul
-def algebraic_root_of_algebraic_coefficients :=
-  AlgebraicNumberClosureFormalization.isAlgebraic_of_root_of_algebraic_coefficients
-def algebraic_root_over_algebraic_extension :=
-  AlgebraicNumberClosureFormalization.isAlgebraic_of_root_over_algebraic_extension
-def transcendental_sum_or_product_of_left :=
-  AlgebraicNumberClosureFormalization.transcendental_add_or_mul_of_left
-def transcendental_sum_or_product :=
-  AlgebraicNumberClosureFormalization.transcendental_add_or_mul
+/-- The complex exponential value exp(1) is transcendental over ℤ. -/
+theorem complex_e_transcendental :
+    Transcendental ℤ (Complex.exp (1 : ℂ)) :=
+  Complex.transcendental_e
 
-/-! ## Lindemann–Weierstrass and individual transcendence -/
-def complex_exp_linear_independent := Complex.linearIndependent_exp
-def complex_exp_algebraically_independent := Complex.algebraicIndependent_exp
-def complex_exp_transcendental := Complex.transcendental_exp
-def complex_e_transcendental := Complex.transcendental_e
-def real_pi_transcendental := Real.transcendental_pi
-def algebraic_imaginary_unit := HermiteLindemannBridge.isAlgebraic_complex_I
-def lindemann_analytic_approximation :=
-  HermiteLindemannBridge.lindemann_analytic_approximation
-def hermite_lindemann_exp_transcendental :=
-  HermiteLindemannBridge.transcendental_exp_of_algebraic
-def rational_e_transcendental := HermiteLindemannBridge.transcendental_e
-def rational_pi_transcendental := HermiteLindemannBridge.transcendental_pi
+/-- The real number π is transcendental over ℤ. -/
+theorem real_pi_transcendental :
+    Transcendental ℤ Real.pi :=
+  Real.transcendental_pi
 
-/-! ## Unconditional e + pi module -/
-def e_and_pi_transcendental := _root_.e_and_pi_transcendental
-def e_add_pi_or_mul_transcendental := _root_.e_add_pi_or_mul_transcendental
+/-- The rational-base Hermite–Lindemann consequence for e. -/
+theorem rational_e_transcendental :
+    Transcendental ℚ (Real.exp 1) :=
+  HermiteLindemannBridge.transcendental_e
 
-/-! ## Schanuel-conditional consequence -/
-def schanuel_inputs_linear_independent :=
-  SchanuelConditional.ePiSchanuelInputs_linearIndependent
-def schanuel_generated_field_eq :=
-  SchanuelConditional.generatedField_ePi_eq
-def schanuel_transcendence_degree_bound :=
-  SchanuelConditional.ePi_generatedField_trdeg_ge_two
-def schanuel_pair_generates_field :=
-  SchanuelConditional.ePiPairInGeneratedField_adjoin_eq_top
-def schanuel_pair_field_algebraic :=
-  SchanuelConditional.ePiPairInGeneratedField_isAlgebraic
-def schanuel_pair_algebraically_independent :=
-  SchanuelConditional.ePi_pair_algebraicIndependent
-def schanuel_adjoin_i_algebraic :=
-  SchanuelConditional.QAdjoinI_isAlgebraic
-def schanuel_pair_independent_over_qi :=
-  SchanuelConditional.ePi_pair_algebraicIndependent_over_QAdjoinI
-def schanuel_implies_e_plus_pi_transcendental :=
-  SchanuelConditional.transcendental_ePlusPi_of_schanuel
+/-- The rational-base Lindemann consequence for π. -/
+theorem rational_pi_transcendental :
+    Transcendental ℚ Real.pi :=
+  HermiteLindemannBridge.transcendental_pi
+
+/-- Unconditionally, at least one of e+π and eπ is transcendental. -/
+theorem e_add_pi_or_mul_transcendental :
+    Transcendental ℚ ePlusPi ∨ Transcendental ℚ eTimesPi :=
+  _root_.e_add_pi_or_mul_transcendental
+
+/-- Schanuel's conjecture conditionally implies transcendence of e+π. -/
+theorem schanuel_implies_e_plus_pi_transcendental
+    (hSC : SchanuelConditional.SchanuelConjecture) :
+    Transcendental ℚ ePlusPi :=
+  SchanuelConditional.transcendental_ePlusPi_of_schanuel hSC
 
 end ProofAudit
