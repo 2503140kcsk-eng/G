@@ -118,8 +118,9 @@ theorem transcendental_of_superpolynomial_integer_linear_forms
   have hZ : Transcendental ℤ x := Liouville.transcendental hL
   have hAlg : Algebra.IsAlgebraic ℤ ℚ :=
     IsLocalization.isAlgebraic ℚ (nonZeroDivisors ℤ)
-  letI := hAlg
-  exact hZ.extendScalars ℚ
+  have hExtend [inst : Algebra.IsAlgebraic ℤ ℚ] :
+      Transcendental ℚ x := hZ.extendScalars ℚ
+  exact @hExtend hAlg
 
 #print axioms liouville_of_superpolynomial_integer_linear_forms
 #print axioms transcendental_of_superpolynomial_integer_linear_forms
