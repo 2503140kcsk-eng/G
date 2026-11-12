@@ -34,6 +34,6 @@ lean_lib SchanuelConditional where
 lean_lib ApproximationCriteria where
   srcDir := "lean"
 
-[default_target]
+@[default_target]
 lean_lib ProofAudit where
   srcDir := "lean"
