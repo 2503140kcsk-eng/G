@@ -5,6 +5,8 @@ public import Mathlib.RingTheory.Algebraic.Integral
 
 @[expose] public section
 
+open Filter
+
 /-!
 # Integer linear forms and a super-polynomial approximation criterion
 
