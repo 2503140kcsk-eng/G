@@ -1,6 +1,6 @@
 # Tool allocation and proof-integrity protocol
 
-**Project snapshot:** 2026-11-11 (JST)  
+**Project snapshot:** 2026-11-12 (JST)  
 **Repository:** `2503140kcsk-eng/G`  
 **Formal environment:** Lean `v4.36.0-rc2`; Mathlib `v4.36.0-rc2`; exact dependency revisions recorded in `lake-manifest.json`.
 
@@ -107,3 +107,56 @@ The exact Lean toolchain is recorded in `lean-toolchain`. Mathlib is fixed at `v
 The accepted standard-axiom allowlist is `propext`, `Classical.choice`, and `Quot.sound`. The relevant declarations also print their axiom dependencies in the build log. A clean log is not a claim that all transitive Mathlib declarations have been independently replayed.
 
 No numerical approximation, symbolic experiment, theorem-search output, or conditional hypothesis is treated as an unconditional proof of (e+pi)'s transcendence.
+
+
+## 8. Final import, audit, and licensing state (2026-11-12)
+
+The files HermiteLindemannBridge.lean, EPlusPi.lean, and SchanuelConditional.lean no longer use the umbrella public import Mathlib. They import project modules plus focused Mathlib APIs. The Schanuel module explicitly imports the transcendence-basis and multivariate-polynomial interfaces required by its proof. The committed Lake manifest pins the Mathlib tag and all eight transitive packages by git revision; the workflow does not run lake update.
+
+The CI library ProofAudit re-exports six explicitly typed principal theorem statements. The workflow sets axiom-audit-root: ProofAudit, so the audit follows those statements into their transitive project proof dependencies. On 2026-11-12, push run #210 and PR run #211 both passed on commit bd3336f71729581a0a4484e04703878f2acaa1a7. Each built 6,126 jobs; the automated axiom audit accepted all six declarations under the standard allowlist propext, Classical.choice, and Quot.sound. This is not an independent replay of every declaration in Mathlib's complete import closure.
+
+- [Push CI #210](https://github.com/2503140kcsk-eng/G/actions/runs/43198316263)
+- [PR CI #211](https://github.com/2503140kcsk-eng/G/actions/runs/43198324014)
+
+The root LICENSE file is the exact Apache License 2.0 text from Mathlib tag v4.36.0-rc2. The vendored Lindemann proof sources retain their original copyright and author headers.
+
+## 9. All connected integration namespaces: assigned roles
+
+The following role matrix covers the connected app/tool namespaces visible in this workspace at the time of this project snapshot. A role assignment does not mean every integration was invoked or that it contributes a theorem to the trust base. The formal proof dependency remains Mathlib plus the Lean source in this repository.
+
+| Connected integration | Assigned role for this project | Status / boundary |
+|---|---|---|
+| GitHub | Repository inspection, exact source changes, branch/PR management, Lake CI and action-log retrieval. | **Used**; source and CI evidence. |
+| Sider Scholar | Search formal transcendence proofs and adjacent Lean/Isabelle developments; inspect arXiv metadata. | **Used**; literature discovery, not proof checking. |
+| Wolfram | Check exact polynomial identities and illustrative algebraic calculations. | **Used**; for example, factor the quadratic with roots e and π. Symbolic output is not a transcendence proof. |
+| Context7 | Retrieve Lean 4 and Mathlib API documentation and version-sensitive import guidance. | **Used**; documentation only, exact source and CI remain authoritative. |
+| Parallel | Search and independently cross-check the open-problem status and Schanuel proof outline. | **Used**; research/search is not a kernel proof. |
+| Tavily | Optional second-source web discovery or URL extraction if primary search snippets are insufficient. | Available; not required for the verified Lean proof. |
+| Malwarebytes | Check suspicious dependency/release URLs or downloaded tools before running them. | Available; security hygiene only, not mathematical verification. |
+| Notion | Store a longer project notebook, proof outline, or research decision log if the user requests workspace capture. | Available; no proof dependency. |
+| Slack | Coordinate review notes or send a concise status summary if the user requests team communication. | Available; no proof dependency. |
+| Asana | Track formalization milestones and review tasks if project management is requested. | Available; no proof dependency. |
+| Atlassian Rovo | Search or maintain Jira/Confluence records if an external project specification or review process exists. | Available; no proof dependency. |
+| Linear | Track technical issues, milestones, and CI failures if the user chooses Linear for project management. | Available; no proof dependency. |
+| Adobe | Prepare polished diagrams or a paper/slide visual only if a presentation deliverable is requested. | Available; visual output is not a proof certificate. |
+| Canva | Prepare a poster or presentation of the theorem architecture if requested. | Available; visual output is not a proof certificate. |
+| Figma | Design a navigable proof-dependency map or project dashboard if requested. | Available; design layers are not proof terms. |
+| Amplitude | Analyze product interaction analytics only if the project later has a user-facing application. | Not relevant to the current theorem-only repository. |
+| PostHog | Analyze usage/telemetry only if a user-facing app or proof explorer is later built. | Not relevant to the current theorem-only repository. |
+| Convex | Provide a reactive backend only if a separate collaborative proof dashboard is built. | Not relevant; not imported. |
+| Neon | Host a Postgres database only if proof metadata/search history needs persistent storage. | Not relevant; not imported. |
+| Supabase | Provide database/auth/storage only if a separate web application is built. | Not relevant; not imported. |
+| Vercel | Deploy a future proof-explorer web front end. | Not relevant; no deployment is needed for Lean CI. |
+| Automations | Remind the user about a review date or monitor a future event only if specifically requested. | Not used; scheduled work does not establish theorems. |
+| Plugin Management | Discover/connect an additional service only when a concrete capability is missing. | Administrative only; no proof dependency. |
+
+### Core file and utility tools (not app plugins)
+
+The connected file/library functions can inspect or manage uploaded project artifacts on explicit request; no user library file is a dependency of this repository. Skills lookup is documentation discovery. User settings and reference-image functions have no role in this mathematical project. They are intentionally not used to invent or modify proof evidence.
+
+### Free-scope and cost boundary
+
+The proof itself is built from the open-source Lean toolchain, the pinned public Mathlib source, and the repository's GitHub Actions workflow. Macaulay2, GAP, SymPy, SageMath, Naproche, cvc5, and LeanDojo-v2 are treated as optional open-source auxiliary tools, not required paid proof services. The current verification does not depend on a paid CAS or a hosted commercial theorem prover.
+
+One Parallel Research-mode request was used during the literature cross-check. The connector documentation distinguishes Research from Search and indicates that Research may require a connected account; I cannot see the user's billing/quota status, so I cannot guarantee that this specific request fell within a free allowance. No further Research-mode request is needed for the already completed formal build and axiom audit. Check the provider's usage page for any account-level charge or quota effect.
+
