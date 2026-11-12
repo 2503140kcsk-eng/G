@@ -1,6 +1,8 @@
 module
 public import EPlusPi
 public import Mathlib.RingTheory.AlgebraicIndependent.AlgebraicClosure
+public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
+public import Mathlib.Algebra.MvPolynomial.CommRing
 
 @[expose] public section
 
