@@ -29,3 +29,7 @@ lean_lib LindemannBasic where
 @[default_target]
 lean_lib SchanuelConditional where
   srcDir := "lean"
+
+@[default_target]
+lean_lib ProofAudit where
+  srcDir := "lean"
