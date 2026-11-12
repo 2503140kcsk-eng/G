@@ -69,4 +69,18 @@ theorem superpolynomial_forms_imply_transcendence
   EPlusPiApproximation.transcendental_of_superpolynomial_integer_linear_forms
     ha hnz hsmall
 
+
+/-- A nonzero integer-linear-form sequence tending to zero proves irrationality. -/
+theorem integer_forms_tending_to_zero_imply_irrationality
+    {x : ℝ} {A B : ℕ → ℤ}
+    (hnz : ∀ᶠ n : ℕ in atTop,
+      EPlusPiApproximation.signedIntegerLinearFormValue x (A n) (B n) ≠ 0)
+    (hsmall : Tendsto
+      (fun n : ℕ =>
+        |EPlusPiApproximation.signedIntegerLinearFormValue x (A n) (B n)|)
+      atTop (𝓝 0)) :
+    Irrational x :=
+  EPlusPiApproximation.irrational_of_tendsto_zero_signed_integer_linear_forms
+    hnz hsmall
+
 end ProofAudit
