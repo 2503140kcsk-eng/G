@@ -1,5 +1,4 @@
 module
-public import Mathlib
 public import AlgebraicClosure
 public import Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart
 public import LindemannBasic
