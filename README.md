@@ -21,6 +21,8 @@ The Lean workspace contains a kernel-checked development of these results.
 
 The conditional proof applies Schanuel's conjecture to $1$ and $i\pi$, obtains algebraic independence of $e$ and $i\pi$, transfers this through the algebraic extension $\mathbb Q(i)/\mathbb Q$, and derives a contradiction from any assumed algebraicity of $e+\pi$. This is a conditional implication, not an unconditional solution.
 
+5. **Generic integer-linear-form criteria.** In `ApproximationCriteria.lean`, an eventually nonzero sequence of integer linear forms whose values tend to zero is proved to imply irrationality of its target real number. A stronger hypothesis—decay faster than every fixed inverse power of coefficient height—implies the Liouville property and hence transcendence. These are conditional criteria; the repository does not construct such a sequence for $e+\pi$.
+
 ## What is not proved
 
 The proposition **EPlusPiTranscendental** records the desired unconditional statement. No theorem in this repository proves it. It is not introduced as an axiom and is not hidden behind sorry, admit, or an unsound placeholder.
@@ -39,18 +41,17 @@ From the repository root, after installing the pinned Lean toolchain, run lake e
 
 ### Latest verified CI
 
-On 2026-11-12, both push run #210 and PR run #211 succeeded on commit bd3336f71729581a0a4484e04703878f2acaa1a7.
+On 2026-11-12, push run #258 and PR run #259 both succeeded on commit `f38989247ec9fdcc3351def8adf53e2f216c12d4`.
 
-- All 6,126 Lake build jobs completed.
-- ProofAudit compiled.
-- axiom-audit audited six explicitly typed principal theorem wrappers under the ProofAudit root.
-- All audited declarations and their transitive proof dependencies stayed within propext, Classical.choice, and Quot.sound.
-- The relevant axiom output for the individual transcendence, unconditional disjunction, and conditional Schanuel theorems showed only those same standard axioms.
-- No sorryAx, admitAx, project-specific axiom, or Lean linter warning was reported.
+- All 6,137 Lake build jobs completed successfully.
+- `ProofAudit` compiled, and `axiom-audit` audited eight explicitly typed theorem wrappers.
+- All audited declarations and their transitive project-proof dependencies stayed within the allowlist `propext`, `Classical.choice`, and `Quot.sound`.
+- The two new generic approximation criteria were included in the transitive audit; no `sorryAx`, `admitAx`, or project-specific axiom was reported.
+- No Lean compiler or linter warning appeared in the build output. GitHub Actions emitted a separate Node.js 20 deprecation notice from `actions/checkout`.
 
-The six audited entry points cover the complex e result, real π result, rational-base e result, rational-base π result, unconditional sum/product disjunction, and Schanuel-conditional e+π theorem. This is a project-proof dependency audit, **not** an independent replay of every declaration in Mathlib's entire transitive import closure.
+The eight audited entry points cover the complex e result, real π result, rational-base e result, rational-base π result, unconditional sum/product disjunction, Schanuel-conditional e+π theorem, super-polynomial integer-linear-form criterion for transcendence, and nonzero-linear-forms-to-irrationality certificate. This is a project-proof dependency audit, **not** an independent replay of every declaration in Mathlib's entire transitive import closure.
 
-[Successful push CI #210](https://github.com/2503140kcsk-eng/G/actions/runs/43198316263) · [Successful PR CI #211](https://github.com/2503140kcsk-eng/G/actions/runs/43198324014)
+[Successful push CI #258](https://github.com/2503140kcsk-eng/G/actions/runs/43239896375) · [Successful PR CI #259](https://github.com/2503140kcsk-eng/G/actions/runs/43239908647)
 
 ## Import minimization and source attribution
 
