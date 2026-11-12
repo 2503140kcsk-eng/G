@@ -38,8 +38,8 @@ def integerLinearFormHeight (a : ℕ) (b : ℤ) : ℕ :=
 /--
 Super-polynomial integer linear forms make x a Liouville number.
 
-The hypotheses are intentionally stated after primitive reduction and with
-positive leading coefficient. The height dominates the denominator a.
+No coprimality assumption is needed. The positive leading coefficient makes
+the rational denominator positive, and the height dominates that denominator.
 -/
 theorem liouville_of_superpolynomial_integer_linear_forms
     {x : ℝ} {a : ℕ → ℕ} {b : ℕ → ℤ}
@@ -116,8 +116,9 @@ theorem transcendental_of_superpolynomial_integer_linear_forms
   have hL : Liouville x :=
     liouville_of_superpolynomial_integer_linear_forms ha hnz hsmall
   have hZ : Transcendental ℤ x := Liouville.transcendental hL
-  haveI : Algebra.IsAlgebraic ℤ ℚ :=
+  have hAlg : Algebra.IsAlgebraic ℤ ℚ :=
     IsLocalization.isAlgebraic ℚ (nonZeroDivisors ℤ)
+  letI := hAlg
   exact hZ.extendScalars ℚ
 
 #print axioms liouville_of_superpolynomial_integer_linear_forms
