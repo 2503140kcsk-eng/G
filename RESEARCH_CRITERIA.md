@@ -137,7 +137,7 @@ then \(\alpha=e+\pi\) is transcendental.
 \left|\alpha-\frac pq\right|\geq c_\alpha q^{-d}.
 \]
 
-For all sufficiently large \(n\), \(A_n^\circ\neq0\): otherwise primitiveness forces \(B_n^\circ=\pm1\), hence \(|L_n|=1\), contradicting (3.1). Apply the inequality with \(p=-B_n^\circ\) and \(q=|A_n^\circ|\). Since the pair is primitive,
+For all sufficiently large \(n\), \(A_n^\circ\neq0\): otherwise primitiveness forces \(B_n^\circ=\pm1\), hence \(|L_n|=1\), contradicting (3.1). Apply the inequality to the reduced rational number $-B_n^\circ/A_n^\circ=p_n/q_n$, where $q_n=|A_n^\circ|$ and $p_n=-\operatorname{sgn}(A_n^\circ)B_n^\circ$. Then $p_n,q_n$ are coprime integers and $q_n\geq1$.
 
 \[
 |L_n|
