@@ -9,6 +9,7 @@ public import ApproximationCriteria
 @[expose] public section
 
 open Filter
+open scoped Topology
 
 /-!
 # Central proof-dependency audit
