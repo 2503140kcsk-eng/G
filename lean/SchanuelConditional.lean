@@ -1,5 +1,4 @@
 module
-public import Mathlib
 public import EPlusPi
 public import Mathlib.RingTheory.AlgebraicIndependent.AlgebraicClosure
 
