@@ -74,7 +74,6 @@ theorem irrational_of_tendsto_zero_signed_integer_linear_forms
     rw [hEq]
     push_cast
     field_simp
-    ring
   have hC : C ≠ 0 := by
     intro hC
     apply hnz
