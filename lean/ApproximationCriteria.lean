@@ -9,6 +9,7 @@ public import Mathlib.Topology.Basic
 @[expose] public section
 
 open Filter
+open scoped Topology
 
 /-!
 # Integer linear forms and a super-polynomial approximation criterion
