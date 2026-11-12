@@ -49,8 +49,8 @@ theorem rational_e_transcendental := HermiteLindemannBridge.transcendental_e
 theorem rational_pi_transcendental := HermiteLindemannBridge.transcendental_pi
 
 /-! ## Unconditional e + pi module -/
-theorem e_and_pi_transcendental := e_and_pi_transcendental
-theorem e_add_pi_or_mul_transcendental := e_add_pi_or_mul_transcendental
+theorem e_and_pi_transcendental := _root_.e_and_pi_transcendental
+theorem e_add_pi_or_mul_transcendental := _root_.e_add_pi_or_mul_transcendental
 
 /-! ## Schanuel-conditional consequence -/
 theorem schanuel_inputs_linear_independent :=
