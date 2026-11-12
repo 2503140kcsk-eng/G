@@ -1,5 +1,6 @@
 module
 public import Mathlib.NumberTheory.Transcendental.Liouville.Basic
+public import Mathlib.NumberTheory.Real.Irrational
 public import Mathlib.Order.Filter.AtTopBot.Basic
 public import Mathlib.RingTheory.Algebraic.Integral
 public import Mathlib.RingTheory.Localization.FractionRing
@@ -34,6 +35,64 @@ def integerLinearFormValue (x : ℝ) (a : ℕ) (b : ℤ) : ℝ :=
 /-- The coefficient height of a * x + b. -/
 def integerLinearFormHeight (a : ℕ) (b : ℤ) : ℕ :=
   max a b.natAbs
+
+
+/-- The real value of a signed integer linear form A * x + B. -/
+def signedIntegerLinearFormValue (x : ℝ) (A B : ℤ) : ℝ :=
+  (A : ℝ) * x + B
+
+/--
+A nonzero integer-linear-form sequence converging to zero is an irrationality
+certificate. This is the elementary Apéry-type criterion: if x were p/q,
+then q * (A_n*x+B_n) would be a nonzero integer and hence have absolute value
+at least one.
+-/
+theorem irrational_of_tendsto_zero_signed_integer_linear_forms
+    {x : ℝ} {A B : ℕ → ℤ}
+    (hnz : ∀ᶠ n : ℕ in atTop,
+      signedIntegerLinearFormValue x (A n) (B n) ≠ 0)
+    (hsmall : Tendsto
+      (fun n : ℕ => |signedIntegerLinearFormValue x (A n) (B n)|)
+      atTop (𝓝 0)) :
+    Irrational x := by
+  apply (irrational_iff_ne_rational x).2
+  intro p q hq hEq
+  have hqR : (q : ℝ) ≠ 0 := Int.cast_ne_zero.mpr hq
+  have hbound : 0 < 1 / |(q : ℝ)| :=
+    one_div_pos.mpr (abs_pos.mpr hqR)
+  have hevent : ∀ᶠ n : ℕ in atTop,
+      |signedIntegerLinearFormValue x (A n) (B n)| < 1 / |(q : ℝ)| :=
+    hsmall.eventually (Iio_mem_nhds hbound)
+  obtain ⟨n, hnz, hevent⟩ := (hnz.and hevent).exists
+  let C : ℤ := A n * p + q * B n
+  have hFormEq :
+      signedIntegerLinearFormValue x (A n) (B n) =
+        (C : ℝ) / (q : ℝ) := by
+    dsimp [signedIntegerLinearFormValue, C]
+    rw [hEq]
+    push_cast
+    field_simp
+    ring
+  have hC : C ≠ 0 := by
+    intro hC
+    apply hnz
+    rw [hFormEq, hC]
+    norm_num
+  have hCabs : (1 : ℝ) ≤ |(C : ℝ)| := by
+    exact_mod_cast (Int.one_le_abs hC)
+  have hAbsEq :
+      |(C : ℝ)| =
+        |signedIntegerLinearFormValue x (A n) (B n)| * |(q : ℝ)| := by
+    rw [hFormEq, abs_div]
+    field_simp
+  have hCabsLt : |(C : ℝ)| < 1 := by
+    rw [hAbsEq]
+    calc
+      |signedIntegerLinearFormValue x (A n) (B n)| * |(q : ℝ)|
+          < (1 / |(q : ℝ)|) * |(q : ℝ)| :=
+        mul_lt_mul_of_pos_right hevent (abs_pos.mpr hqR)
+      _ = 1 := by field_simp
+  linarith
 
 /--
 Super-polynomial integer linear forms make x a Liouville number.
