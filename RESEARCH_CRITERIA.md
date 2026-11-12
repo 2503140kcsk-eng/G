@@ -270,10 +270,10 @@ Thus the following are proved, but the decisive existence statement remains open
 
 ## 6. Formalization boundary
 
-Two **general implications** from the approximation discussion are now Lean declarations in \`lean/ApproximationCriteria.lean\`, and are included in the \`ProofAudit\` dependency root:
+Two **general implications** from the approximation discussion are now Lean declarations in `lean/ApproximationCriteria.lean`, and are included in the `ProofAudit` dependency root:
 
-1. \`irrational_of_tendsto_zero_signed_integer_linear_forms\`: if an integer-linear-form sequence is eventually nonzero and its absolute values tend to zero, then its target real number is irrational. The proof is the denominator-clearing contradiction: a hypothetical rational value would turn each form into a nonzero integer after multiplication by the fixed denominator.
-2. \`transcendental_of_superpolynomial_integer_linear_forms\`: if the positive leading coefficients tend to infinity, the forms are eventually nonzero, and their absolute values are eventually smaller than every fixed inverse power of the coefficient height, then the target is a Liouville number and hence transcendental. This uses Mathlib's \`Liouville.transcendental\` theorem.
+1. `irrational_of_tendsto_zero_signed_integer_linear_forms`: if an integer-linear-form sequence is eventually nonzero and its absolute values tend to zero, then its target real number is irrational. The proof is the denominator-clearing contradiction: a hypothetical rational value would turn each form into a nonzero integer after multiplication by the fixed denominator.
+2. `transcendental_of_superpolynomial_integer_linear_forms`: if the positive leading coefficients tend to infinity, the forms are eventually nonzero, and their absolute values are eventually smaller than every fixed inverse power of the coefficient height, then the target is a Liouville number and hence transcendental. This uses Mathlib's `Liouville.transcendental` theorem.
 
 These are conditional **criteria**, not constructions of approximants for \(e+\pi\). The exact paper-level work still not formalized includes:
 
@@ -282,6 +282,6 @@ These are conditional **criteria**, not constructions of approximants for \(e+\p
 3. the derivative-sum identity and mixed integral identity (4.1) in Section 4, including the integer-coefficient specialization;
 4. an explicit sequence of nonzero integer forms for \(e+\pi\) whose values tend to zero (for irrationality), or meet the stronger super-polynomial condition (for transcendence).
 
-The CI on 2026-11-12 built 6,137 Lake jobs and audited eight declarations under the standard allowlist \(\{\texttt{propext},\texttt{Classical.choice},\texttt{Quot.sound}\}\). This audit covers the project proof dependencies reachable from \`ProofAudit\`; it does not independently replay the entire Mathlib import closure.
+The CI on 2026-11-12 built 6,137 Lake jobs and audited eight declarations under the standard allowlist \(\{\texttt{propext},\texttt{Classical.choice},\texttt{Quot.sound}\}\). This audit covers the project proof dependencies reachable from `ProofAudit`; it does not independently replay the entire Mathlib import closure.
 
-No axioms, \`sorry\`, \`admit\`, or theorem asserting irrationality/transcendence of \(e+\pi\) are introduced by these criteria.
+No axioms, `sorry`, `admit`, or theorem asserting irrationality/transcendence of \(e+\pi\) are introduced by these criteria.
