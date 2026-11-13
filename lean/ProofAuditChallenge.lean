@@ -19,7 +19,7 @@ solution module is checked with the standard-axiom allowlist and independent
 kernels by lake comparator.
 -/
 
-open Filter
+open Filter Module Polynomial
 open scoped Topology
 
 namespace ProofAudit
