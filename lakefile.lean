@@ -11,6 +11,14 @@ lean_lib AlgebraicClosure where
   srcDir := "lean"
 
 @[default_target]
+lean_lib AlgebraicElements where
+  srcDir := "lean"
+
+@[default_target]
+lean_lib AlgebraicFieldClosure where
+  srcDir := "lean"
+
+@[default_target]
 lean_lib HermiteLindemannBridge where
   srcDir := "lean"
 
@@ -36,4 +44,9 @@ lean_lib ApproximationCriteria where
 
 @[default_target]
 lean_lib ProofAudit where
+  srcDir := "lean"
+
+-- The Comparator challenge intentionally contains sorry placeholders.
+-- It is excluded from default builds and used only by the lake comparator command.
+lean_lib ProofAuditChallenge where
   srcDir := "lean"
