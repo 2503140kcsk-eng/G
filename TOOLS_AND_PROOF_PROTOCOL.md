@@ -160,3 +160,20 @@ The proof itself is built from the open-source Lean toolchain, the pinned public
 
 One Parallel Research-mode request was used during the literature cross-check. The connector documentation distinguishes Research from Search and indicates that Research may require a connected account; I cannot see the user's billing/quota status, so I cannot guarantee that this specific request fell within a free allowance. No further Research-mode request is needed for the already completed formal build and axiom audit. Check the provider's usage page for any account-level charge or quota effect.
 
+
+
+## 10. PR integration decision and verification boundary (2026-11-14)
+
+PR #1 is the canonical Lake workspace and proof trunk. PR #2 and PR #3 are treated as source contributions, not as branch configurations to merge wholesale.
+
+- **PR #2 contribution:** retain the general finite-extension results: finite algebraic generators give a finite-dimensional intermediate field; a finite-dimensional extension is algebraic; and finite-dimensionality is equivalent to essential finite type plus algebraicity. Its separate nested Lake workspace and CI command `lake update` are not copied, because they would undermine the requirement to consume PR #1's frozen root manifest. The degree-product estimate in the PR #2 exposition remains a hand proof, not a theorem exported by the integrated Lean module.
+- **PR #3 contribution:** retain the Mathlib representation `algebraicClosure K E : IntermediateField K E` and its field operations, maximality, and algebraic-closure consequences. The code is placed in PR #1's existing `lean/` source tree and is built against PR #1's manifest. PR #3's manifest and CI file are not copied.
+- **Overlap policy:** PR #3's inverse and integer-power closure cover the same broad operations as PR #2's inverse and integer-power declarations. The integrated finite-extension module therefore contains only the three distinct finite-dimensionality results, avoiding a second copy of the same closure lemmas.
+- **Audit policy:** eight original theorem wrappers plus 16 relative-algebraic-closure theorems and three finite-extension theorems are exposed under `ProofAudit`. A field-structure wrapper is also included for axiom auditing. The independent challenge module fixes the 27 theorem statements; its `sorry` placeholders are deliberate specification holes, never imported into the solution. The accepted solution-axiom set is exactly `propext`, `Classical.choice`, and `Quot.sound`.
+- **Reproducibility:** `lake-manifest.json` is left byte-for-byte unchanged. CI verifies its Git blob hash and `lean-toolchain`, runs the warning-failing build and axiom audit, then runs the Lake Comparator in paranoid mode. No dependency update command is part of the workflow.
+
+### Evidence status for the source PRs
+
+PR #1 had a successful earlier CI run on its pre-integration commit. PR #2 had a successful targeted Comparator run on its then-current commit, but its workflow refreshed dependencies with `lake update`; that run is not evidence for the frozen PR #1 environment. PR #3's axiom audit and first two independent checker stages succeeded, but the runner was shut down while nanoda was running; the full paranoid run therefore did not complete. Only the new CI run on the integrated PR #1 head can establish that this combined tree passes.
+
+The named starred repositories keep the roles in section 3: Mathlib4 is the only direct mathematical package dependency; Macaulay2, GAP, SymPy, SageMath, cvc5, Naproche, and LeanDojo-v2 are auxiliary exploration or proof-search resources, not trusted proof dependencies. Their software was not executed by merely consulting their GitHub sources. The connected-tool roles and free-scope boundaries remain in section 9.
