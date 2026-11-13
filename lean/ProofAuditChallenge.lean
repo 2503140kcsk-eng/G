@@ -1,22 +1,18 @@
 module
-public import AlgebraicClosure
-public import AlgebraicElements
-public import AlgebraicFieldClosure
-public import LindemannBasic
-public import HermiteLindemannBridge
-public import EPlusPi
-public import SchanuelConditional
-public import ApproximationCriteria
+public import Mathlib
 
 @[expose] public section
 
 /-!
-# Trusted statement baseline for the project's public theorem surface
+# Independent statement baseline for the project's public theorem surface
 
-The challenge module fixes the types that the solution module must prove.
-The proof placeholders occur only in this specification module; the
-solution module is checked with the standard-axiom allowlist and independent
-kernels by lake comparator.
+This module intentionally imports Mathlib only. It contains no project-local
+definitions in theorem types. The solution module proves these exact public
+statements by bridging to the project's named developments.
+
+The sorry placeholders are challenge specifications only; the solution
+module is checked by Lake Comparator, its permitted-axiom policy, Lean's
+kernel, and every checker enabled by paranoid mode.
 -/
 
 open Filter Module Polynomial
@@ -41,45 +37,48 @@ theorem rational_pi_transcendental :
   sorry
 
 theorem e_add_pi_or_mul_transcendental :
-    Transcendental ℚ ePlusPi ∨ Transcendental ℚ eTimesPi := by
+    Transcendental ℚ (Real.exp 1 + Real.pi) ∨
+      Transcendental ℚ (Real.exp 1 * Real.pi) := by
   sorry
 
 theorem schanuel_implies_e_plus_pi_transcendental
-    (hSC : SchanuelConditional.SchanuelConjecture) :
-    Transcendental ℚ ePlusPi := by
+    (hSC : ∀ (n : ℕ) (z : Fin n → ℂ),
+      LinearIndependent ℚ z →
+      (n : Cardinal) ≤ Algebra.trdeg ℚ
+        (IntermediateField.adjoin ℚ
+          (Set.range z ∪ Set.range (fun i : Fin n => Complex.exp (z i))))) :
+    Transcendental ℚ (Real.exp 1 + Real.pi) := by
   sorry
 
 theorem superpolynomial_forms_imply_transcendence
     {x : ℝ} {a : ℕ → ℕ} {b : ℕ → ℤ}
     (ha : Tendsto a atTop atTop)
     (hnz : ∀ᶠ n : ℕ in atTop,
-      EPlusPiApproximation.integerLinearFormValue x (a n) (b n) ≠ 0)
+      (a n : ℝ) * x + (b n : ℝ) ≠ 0)
     (hsmall : ∀ k : ℕ, ∀ᶠ n : ℕ in atTop,
-      |EPlusPiApproximation.integerLinearFormValue x (a n) (b n)| <
-        1 / (EPlusPiApproximation.integerLinearFormHeight (a n) (b n) : ℝ) ^ k) :
+      |(a n : ℝ) * x + (b n : ℝ)| <
+        1 / ((max (a n) (b n).natAbs : ℕ) : ℝ) ^ k) :
     Transcendental ℚ x := by
   sorry
 
 theorem integer_forms_tending_to_zero_imply_irrationality
     {x : ℝ} {A B : ℕ → ℤ}
     (hnz : ∀ᶠ n : ℕ in atTop,
-      EPlusPiApproximation.signedIntegerLinearFormValue x (A n) (B n) ≠ 0)
+      (A n : ℝ) * x + (B n : ℝ) ≠ 0)
     (hsmall : Tendsto
-      (fun n : ℕ =>
-        |EPlusPiApproximation.signedIntegerLinearFormValue x (A n) (B n)|)
+      (fun n : ℕ => |(A n : ℝ) * x + (B n : ℝ)|)
       atTop (𝓝 0)) :
     Irrational x := by
   sorry
 
 theorem algebraic_elements_mem_iff
     (K E : Type*) [Field K] [Field E] [Algebra K E] {x : E} :
-    x ∈ G.AlgebraicElements.field K E ↔ IsAlgebraic K x := by
+    x ∈ algebraicClosure K E ↔ IsAlgebraic K x := by
   sorry
 
 theorem algebraic_elements_carrier_eq
     (K E : Type*) [Field K] [Field E] [Algebra K E] :
-    G.AlgebraicElements.carrier K E =
-      (G.AlgebraicElements.field K E : Set E) := by
+    {x : E | IsAlgebraic K x} = (algebraicClosure K E : Set E) := by
   sorry
 
 theorem algebraic_elements_add_closed
@@ -126,36 +125,35 @@ theorem algebraic_elements_zpow_closed
 
 theorem algebraic_elements_field_is_algebraic
     (K E : Type*) [Field K] [Field E] [Algebra K E] :
-    Algebra.IsAlgebraic K (G.AlgebraicElements.field K E) := by
+    Algebra.IsAlgebraic K (algebraicClosure K E) := by
   sorry
 
 theorem algebraic_elements_maximality
     (K E : Type*) [Field K] [Field E] [Algebra K E]
     (L : IntermediateField K E) :
-    L ≤ G.AlgebraicElements.field K E ↔
-      Algebra.IsAlgebraic K L := by
+    L ≤ algebraicClosure K E ↔ Algebra.IsAlgebraic K L := by
   sorry
 
 theorem algebraic_elements_isAlgClosure_of_algClosed_ambient
     (K E : Type*) [Field K] [Field E] [Algebra K E] [IsAlgClosed E] :
-    IsAlgClosure K (G.AlgebraicElements.field K E) := by
+    IsAlgClosure K (algebraicClosure K E) := by
   sorry
 
 theorem algebraic_elements_field_isAlgClosed
     (K E : Type*) [Field K] [Field E] [Algebra K E] [IsAlgClosed E] :
-    IsAlgClosed (G.AlgebraicElements.field K E) := by
+    IsAlgClosed (algebraicClosure K E) := by
   sorry
 
 theorem algebraic_elements_every_polynomial_splits
     (K E : Type*) [Field K] [Field E] [Algebra K E] [IsAlgClosed E]
-    (p : Polynomial (G.AlgebraicElements.field K E)) :
+    (p : Polynomial (algebraicClosure K E)) :
     p.Splits := by
   sorry
 
 theorem algebraic_elements_exists_root
     (K E : Type*) [Field K] [Field E] [Algebra K E] [IsAlgClosed E]
-    (p : Polynomial (G.AlgebraicElements.field K E)) (hp : p.degree ≠ 0) :
-    ∃ x : G.AlgebraicElements.field K E, IsRoot p x := by
+    (p : Polynomial (algebraicClosure K E)) (hp : p.degree ≠ 0) :
+    ∃ x : algebraicClosure K E, IsRoot p x := by
   sorry
 
 universe u v
