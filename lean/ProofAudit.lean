@@ -10,7 +10,7 @@ public import ApproximationCriteria
 
 @[expose] public section
 
-open Filter
+open Filter Module Polynomial
 open scoped Topology
 
 /-!
@@ -87,6 +87,7 @@ theorem integer_forms_tending_to_zero_imply_irrationality
 
 /-! ## Relative algebraic closure as an intermediate field -/
 
+@[instance_reducible]
 noncomputable def algebraic_elements_field_structure
     (K E : Type*) [Field K] [Field E] [Algebra K E] :
     Field (G.AlgebraicElements.field K E) :=
