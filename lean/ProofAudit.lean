@@ -64,8 +64,7 @@ theorem schanuel_implies_e_plus_pi_transcendental
     Transcendental ℚ (Real.exp 1 + Real.pi) := by
   have hSC' : SchanuelConditional.SchanuelConjecture := by
     intro n z hz
-    simpa [SchanuelConditional.SchanuelConjecture,
-      SchanuelConditional.generatedField] using hSC n z hz
+    exact hSC n z hz
   simpa [ePlusPi] using
     SchanuelConditional.transcendental_ePlusPi_of_schanuel hSC'
 
