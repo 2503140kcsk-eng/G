@@ -7,25 +7,74 @@ on:
       - formalize-algebraic-number-closure
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: lean-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: Build, audit, and compare public theorem contracts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
 
-      # The committed lake-manifest.json pins Mathlib and every transitive
-      # Lake dependency to exact git revisions. Do not run "lake update" in CI:
-      # that would turn verification into a dependency-refresh operation.
+      # The manifest is a lockfile, not a dependency-refresh request.
+      # This blob hash is the PR #1 fixed manifest; any dependency drift fails.
+      - name: Verify frozen Lake manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="5625e0bc21b731d5737a903c674bf4b6fb0e018c"
+          actual="$(git hash-object lake-manifest.json)"
+          test "$actual" = "$expected"
+          test "$(cat lean-toolchain)" = "leanprover/lean4:v4.36.0-rc2"
+
       - name: Install pinned Lean toolchain
         shell: bash
         run: |
+          set -euo pipefail
           curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
-          export PATH="$HOME/.elan/bin:$PATH"
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-          elan toolchain install "$(cat lean-toolchain)"
+          "$HOME/.elan/bin/elan" toolchain install "$(cat lean-toolchain)"
+          "$HOME/.elan/bin/lean" --version
+          "$HOME/.elan/bin/lake" --version
 
       - uses: leanprover/lean-action@v1
         with:
           use-mathlib-cache: true
           axiom-audit: true
           axiom-audit-root: ProofAudit
+          axiom-audit-allow: propext,Classical.choice,Quot.sound
+
+      - name: Require warning-free default build
+        shell: bash
+        run: lake build --wfail
+
+      # Lake comparator validates statement contracts, enforces the axiom
+      # allowlist, and invokes all external checkers in paranoid mode.
+      - name: Install bubblewrap sandbox runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install --yes bubblewrap apparmor
+          sudo tee /etc/apparmor.d/bwrap >/dev/null <<'EOF'
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile bwrap /usr/bin/bwrap flags=(unconfined) {
+            userns,
+            include if exists <local/bwrap>
+          }
+          EOF
+          sudo apparmor_parser -r /etc/apparmor.d/bwrap
+          bwrap --version
+          bwrap --unshare-user --uid 0 --gid 0 --ro-bind / / --dev /dev --proc /proc true
+
+      - name: Compare all public theorem statements and run paranoid checkers
+        shell: bash
+        run: lake comparator --config=comparator.json --paranoid
