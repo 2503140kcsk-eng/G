@@ -50,40 +50,52 @@ theorem rational_pi_transcendental :
 
 /-- Unconditionally, at least one of e+π and eπ is transcendental. -/
 theorem e_add_pi_or_mul_transcendental :
-    Transcendental ℚ ePlusPi ∨ Transcendental ℚ eTimesPi :=
-  _root_.e_add_pi_or_mul_transcendental
+    Transcendental ℚ (Real.exp 1 + Real.pi) ∨
+      Transcendental ℚ (Real.exp 1 * Real.pi) := by
+  simpa [ePlusPi, eTimesPi] using _root_.e_add_pi_or_mul_transcendental
 
 /-- Schanuel's conjecture conditionally implies transcendence of e+π. -/
 theorem schanuel_implies_e_plus_pi_transcendental
-    (hSC : SchanuelConditional.SchanuelConjecture) :
-    Transcendental ℚ ePlusPi :=
-  SchanuelConditional.transcendental_ePlusPi_of_schanuel hSC
+    (hSC : ∀ (n : ℕ) (z : Fin n → ℂ),
+      LinearIndependent ℚ z →
+      (n : Cardinal) ≤ Algebra.trdeg ℚ
+        (IntermediateField.adjoin ℚ
+          (Set.range z ∪ Set.range (fun i : Fin n => Complex.exp (z i))))) :
+    Transcendental ℚ (Real.exp 1 + Real.pi) := by
+  have hSC' : SchanuelConditional.SchanuelConjecture := by
+    intro n z hz
+    simpa [SchanuelConditional.SchanuelConjecture,
+      SchanuelConditional.generatedField] using hSC n z hz
+  simpa [ePlusPi] using
+    SchanuelConditional.transcendental_ePlusPi_of_schanuel hSC'
 
 /-- Super-polynomial decay of nonzero integer forms forces transcendence. -/
 theorem superpolynomial_forms_imply_transcendence
     {x : ℝ} {a : ℕ → ℕ} {b : ℕ → ℤ}
     (ha : Tendsto a atTop atTop)
     (hnz : ∀ᶠ n : ℕ in atTop,
-      EPlusPiApproximation.integerLinearFormValue x (a n) (b n) ≠ 0)
+      (a n : ℝ) * x + (b n : ℝ) ≠ 0)
     (hsmall : ∀ k : ℕ, ∀ᶠ n : ℕ in atTop,
-      |EPlusPiApproximation.integerLinearFormValue x (a n) (b n)| <
-        1 / (EPlusPiApproximation.integerLinearFormHeight (a n) (b n) : ℝ) ^ k) :
-    Transcendental ℚ x :=
-  EPlusPiApproximation.transcendental_of_superpolynomial_integer_linear_forms
-    ha hnz hsmall
+      |(a n : ℝ) * x + (b n : ℝ)| <
+        1 / ((max (a n) (b n).natAbs : ℕ) : ℝ) ^ k) :
+    Transcendental ℚ x := by
+  simpa [EPlusPiApproximation.integerLinearFormValue,
+    EPlusPiApproximation.integerLinearFormHeight] using
+    EPlusPiApproximation.transcendental_of_superpolynomial_integer_linear_forms
+      ha hnz hsmall
 
 /-- A nonzero integer-linear-form sequence tending to zero proves irrationality. -/
 theorem integer_forms_tending_to_zero_imply_irrationality
     {x : ℝ} {A B : ℕ → ℤ}
     (hnz : ∀ᶠ n : ℕ in atTop,
-      EPlusPiApproximation.signedIntegerLinearFormValue x (A n) (B n) ≠ 0)
+      (A n : ℝ) * x + (B n : ℝ) ≠ 0)
     (hsmall : Tendsto
-      (fun n : ℕ =>
-        |EPlusPiApproximation.signedIntegerLinearFormValue x (A n) (B n)|)
+      (fun n : ℕ => |(A n : ℝ) * x + (B n : ℝ)|)
       atTop (𝓝 0)) :
-    Irrational x :=
-  EPlusPiApproximation.irrational_of_tendsto_zero_signed_integer_linear_forms
-    hnz hsmall
+    Irrational x := by
+  simpa [EPlusPiApproximation.signedIntegerLinearFormValue] using
+    EPlusPiApproximation.irrational_of_tendsto_zero_signed_integer_linear_forms
+      hnz hsmall
 
 /-! ## Relative algebraic closure as an intermediate field -/
 
@@ -95,14 +107,14 @@ noncomputable def algebraic_elements_field_structure
 
 theorem algebraic_elements_mem_iff
     (K E : Type*) [Field K] [Field E] [Algebra K E] {x : E} :
-    x ∈ G.AlgebraicElements.field K E ↔ IsAlgebraic K x :=
-  G.AlgebraicElements.mem_iff K E
+    x ∈ algebraicClosure K E ↔ IsAlgebraic K x := by
+  simpa [G.AlgebraicElements.field] using G.AlgebraicElements.mem_iff K E
 
 theorem algebraic_elements_carrier_eq
     (K E : Type*) [Field K] [Field E] [Algebra K E] :
-    G.AlgebraicElements.carrier K E =
-      (G.AlgebraicElements.field K E : Set E) :=
-  G.AlgebraicElements.carrier_eq K E
+    {x : E | IsAlgebraic K x} = (algebraicClosure K E : Set E) := by
+  simpa [G.AlgebraicElements.carrier, G.AlgebraicElements.field] using
+    G.AlgebraicElements.carrier_eq K E
 
 theorem algebraic_elements_add_closed
     (K E : Type*) [Field K] [Field E] [Algebra K E] {x y : E}
@@ -148,36 +160,39 @@ theorem algebraic_elements_zpow_closed
 
 theorem algebraic_elements_field_is_algebraic
     (K E : Type*) [Field K] [Field E] [Algebra K E] :
-    Algebra.IsAlgebraic K (G.AlgebraicElements.field K E) :=
-  G.AlgebraicElements.field_is_algebraic K E
+    Algebra.IsAlgebraic K (algebraicClosure K E) := by
+  simpa [G.AlgebraicElements.field] using
+    G.AlgebraicElements.field_is_algebraic K E
 
 theorem algebraic_elements_maximality
     (K E : Type*) [Field K] [Field E] [Algebra K E]
     (L : IntermediateField K E) :
-    L ≤ G.AlgebraicElements.field K E ↔
-      Algebra.IsAlgebraic K L :=
-  G.AlgebraicElements.maximality K E L
+    L ≤ algebraicClosure K E ↔ Algebra.IsAlgebraic K L := by
+  simpa [G.AlgebraicElements.field] using
+    G.AlgebraicElements.maximality K E L
 
 theorem algebraic_elements_isAlgClosure_of_algClosed_ambient
     (K E : Type*) [Field K] [Field E] [Algebra K E] [IsAlgClosed E] :
-    IsAlgClosure K (G.AlgebraicElements.field K E) :=
-  G.AlgebraicElements.isAlgClosure_of_algClosed_ambient K E
+    IsAlgClosure K (algebraicClosure K E) := by
+  simpa [G.AlgebraicElements.field] using
+    G.AlgebraicElements.isAlgClosure_of_algClosed_ambient K E
 
 theorem algebraic_elements_field_isAlgClosed
     (K E : Type*) [Field K] [Field E] [Algebra K E] [IsAlgClosed E] :
-    IsAlgClosed (G.AlgebraicElements.field K E) :=
-  G.AlgebraicElements.field_isAlgClosed K E
+    IsAlgClosed (algebraicClosure K E) := by
+  simpa [G.AlgebraicElements.field] using
+    G.AlgebraicElements.field_isAlgClosed K E
 
 theorem algebraic_elements_every_polynomial_splits
     (K E : Type*) [Field K] [Field E] [Algebra K E] [IsAlgClosed E]
-    (p : Polynomial (G.AlgebraicElements.field K E)) :
+    (p : Polynomial (algebraicClosure K E)) :
     p.Splits :=
   G.AlgebraicElements.every_polynomial_splits K E p
 
 theorem algebraic_elements_exists_root
     (K E : Type*) [Field K] [Field E] [Algebra K E] [IsAlgClosed E]
-    (p : Polynomial (G.AlgebraicElements.field K E)) (hp : p.degree ≠ 0) :
-    ∃ x : G.AlgebraicElements.field K E, IsRoot p x :=
+    (p : Polynomial (algebraicClosure K E)) (hp : p.degree ≠ 0) :
+    ∃ x : algebraicClosure K E, IsRoot p x :=
   G.AlgebraicElements.exists_root K E p hp
 
 universe u v
