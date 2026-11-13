@@ -180,9 +180,11 @@ theorem algebraic_elements_exists_root
     ∃ x : G.AlgebraicElements.field K E, IsRoot p x :=
   G.AlgebraicElements.exists_root K E p hp
 
+universe u v
+
 theorem algebraic_elements_uniqueness_up_to_algEquiv
-    (K : Type*) [Field K]
-    (A B : Type*) [Field A] [Field B]
+    (K : Type u) [Field K]
+    (A B : Type v) [Field A] [Field B]
     [Algebra K A] [Algebra K B]
     [IsTorsionFree K A] [IsTorsionFree K B]
     [IsAlgClosure K A] [IsAlgClosure K B] :
