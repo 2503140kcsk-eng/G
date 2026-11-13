@@ -1,0 +1,188 @@
+module
+public import AlgebraicClosure
+public import AlgebraicElements
+public import AlgebraicFieldClosure
+public import LindemannBasic
+public import HermiteLindemannBridge
+public import EPlusPi
+public import SchanuelConditional
+public import ApproximationCriteria
+
+@[expose] public section
+
+/-!
+# Trusted statement baseline for the project's public theorem surface
+
+The challenge module fixes the types that the solution module must prove.
+The proof placeholders occur only in this specification module; the
+solution module is checked with the standard-axiom allowlist and independent
+kernels by lake comparator.
+-/
+
+open Filter
+open scoped Topology
+
+namespace ProofAudit
+
+theorem complex_e_transcendental :
+    Transcendental ℤ (Complex.exp (1 : ℂ)) := by
+  sorry
+
+theorem real_pi_transcendental :
+    Transcendental ℤ Real.pi := by
+  sorry
+
+theorem rational_e_transcendental :
+    Transcendental ℚ (Real.exp 1) := by
+  sorry
+
+theorem rational_pi_transcendental :
+    Transcendental ℚ Real.pi := by
+  sorry
+
+theorem e_add_pi_or_mul_transcendental :
+    Transcendental ℚ ePlusPi ∨ Transcendental ℚ eTimesPi := by
+  sorry
+
+theorem schanuel_implies_e_plus_pi_transcendental
+    (hSC : SchanuelConditional.SchanuelConjecture) :
+    Transcendental ℚ ePlusPi := by
+  sorry
+
+theorem superpolynomial_forms_imply_transcendence
+    {x : ℝ} {a : ℕ → ℕ} {b : ℕ → ℤ}
+    (ha : Tendsto a atTop atTop)
+    (hnz : ∀ᶠ n : ℕ in atTop,
+      EPlusPiApproximation.integerLinearFormValue x (a n) (b n) ≠ 0)
+    (hsmall : ∀ k : ℕ, ∀ᶠ n : ℕ in atTop,
+      |EPlusPiApproximation.integerLinearFormValue x (a n) (b n)| <
+        1 / (EPlusPiApproximation.integerLinearFormHeight (a n) (b n) : ℝ) ^ k) :
+    Transcendental ℚ x := by
+  sorry
+
+theorem integer_forms_tending_to_zero_imply_irrationality
+    {x : ℝ} {A B : ℕ → ℤ}
+    (hnz : ∀ᶠ n : ℕ in atTop,
+      EPlusPiApproximation.signedIntegerLinearFormValue x (A n) (B n) ≠ 0)
+    (hsmall : Tendsto
+      (fun n : ℕ =>
+        |EPlusPiApproximation.signedIntegerLinearFormValue x (A n) (B n)|)
+      atTop (𝓝 0)) :
+    Irrational x := by
+  sorry
+
+theorem algebraic_elements_mem_iff
+    (K E : Type*) [Field K] [Field E] [Algebra K E] {x : E} :
+    x ∈ G.AlgebraicElements.field K E ↔ IsAlgebraic K x := by
+  sorry
+
+theorem algebraic_elements_carrier_eq
+    (K E : Type*) [Field K] [Field E] [Algebra K E] :
+    G.AlgebraicElements.carrier K E =
+      (G.AlgebraicElements.field K E : Set E) := by
+  sorry
+
+theorem algebraic_elements_add_closed
+    (K E : Type*) [Field K] [Field E] [Algebra K E] {x y : E}
+    (hx : IsAlgebraic K x) (hy : IsAlgebraic K y) :
+    IsAlgebraic K (x + y) := by
+  sorry
+
+theorem algebraic_elements_neg_closed
+    (K E : Type*) [Field K] [Field E] [Algebra K E] {x : E}
+    (hx : IsAlgebraic K x) :
+    IsAlgebraic K (-x) := by
+  sorry
+
+theorem algebraic_elements_sub_closed
+    (K E : Type*) [Field K] [Field E] [Algebra K E] {x y : E}
+    (hx : IsAlgebraic K x) (hy : IsAlgebraic K y) :
+    IsAlgebraic K (x - y) := by
+  sorry
+
+theorem algebraic_elements_mul_closed
+    (K E : Type*) [Field K] [Field E] [Algebra K E] {x y : E}
+    (hx : IsAlgebraic K x) (hy : IsAlgebraic K y) :
+    IsAlgebraic K (x * y) := by
+  sorry
+
+theorem algebraic_elements_inv_closed
+    (K E : Type*) [Field K] [Field E] [Algebra K E] {x : E}
+    (hx : IsAlgebraic K x) :
+    IsAlgebraic K x⁻¹ := by
+  sorry
+
+theorem algebraic_elements_div_closed
+    (K E : Type*) [Field K] [Field E] [Algebra K E] {x y : E}
+    (hx : IsAlgebraic K x) (hy : IsAlgebraic K y) :
+    IsAlgebraic K (x / y) := by
+  sorry
+
+theorem algebraic_elements_zpow_closed
+    (K E : Type*) [Field K] [Field E] [Algebra K E] {x : E}
+    (hx : IsAlgebraic K x) (n : ℤ) :
+    IsAlgebraic K (x ^ n) := by
+  sorry
+
+theorem algebraic_elements_field_is_algebraic
+    (K E : Type*) [Field K] [Field E] [Algebra K E] :
+    Algebra.IsAlgebraic K (G.AlgebraicElements.field K E) := by
+  sorry
+
+theorem algebraic_elements_maximality
+    (K E : Type*) [Field K] [Field E] [Algebra K E]
+    (L : IntermediateField K E) :
+    L ≤ G.AlgebraicElements.field K E ↔
+      Algebra.IsAlgebraic K L := by
+  sorry
+
+theorem algebraic_elements_isAlgClosure_of_algClosed_ambient
+    (K E : Type*) [Field K] [Field E] [Algebra K E] [IsAlgClosed E] :
+    IsAlgClosure K (G.AlgebraicElements.field K E) := by
+  sorry
+
+theorem algebraic_elements_field_isAlgClosed
+    (K E : Type*) [Field K] [Field E] [Algebra K E] [IsAlgClosed E] :
+    IsAlgClosed (G.AlgebraicElements.field K E) := by
+  sorry
+
+theorem algebraic_elements_every_polynomial_splits
+    (K E : Type*) [Field K] [Field E] [Algebra K E] [IsAlgClosed E]
+    (p : Polynomial (G.AlgebraicElements.field K E)) :
+    p.Splits := by
+  sorry
+
+theorem algebraic_elements_exists_root
+    (K E : Type*) [Field K] [Field E] [Algebra K E] [IsAlgClosed E]
+    (p : Polynomial (G.AlgebraicElements.field K E)) (hp : p.degree ≠ 0) :
+    ∃ x : G.AlgebraicElements.field K E, IsRoot p x := by
+  sorry
+
+theorem algebraic_elements_uniqueness_up_to_algEquiv
+    (K : Type*) [Field K]
+    (A B : Type*) [Field A] [Field B]
+    [Algebra K A] [Algebra K B]
+    [IsTorsionFree K A] [IsTorsionFree K B]
+    [IsAlgClosure K A] [IsAlgClosure K B] :
+    Nonempty (A ≃ₐ[K] B) := by
+  sorry
+
+theorem finiteDimensional_adjoin_of_algebraic
+    {F K : Type*} [Field F] [Field K] [Algebra F K]
+    {S : Set K} [Finite S] (hS : ∀ x ∈ S, IsAlgebraic F x) :
+    FiniteDimensional F (IntermediateField.adjoin F S) := by
+  sorry
+
+theorem algebraic_extension_of_finiteDimensional
+    {F K : Type*} [Field F] [Field K] [Algebra F K]
+    [FiniteDimensional F K] :
+    Algebra.IsAlgebraic F K := by
+  sorry
+
+theorem finite_iff_essFiniteType_and_algebraic
+    {F K : Type*} [Field F] [Field K] [Algebra F K] :
+    Module.Finite F K ↔
+      Algebra.EssFiniteType F K ∧ Algebra.IsAlgebraic F K := by
+  sorry
+
+end ProofAudit
