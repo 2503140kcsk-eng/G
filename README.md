@@ -76,3 +76,23 @@ The cited sources support the research-status assessment and formalization conte
 ## Latest research continuation — 2026-11-14
 
 The mixed-kernel direction has a new exact audit in [MIXED_KERNEL_AUDIT_2026-11-14.md](MIXED_KERNEL_AUDIT_2026-11-14.md). It proves that the degree-one map (P\mapsto(A(P),C(P))) already realizes every integer pair, and that the symmetric endpoint-vanishing choice (P_n(x)=x^n(1-x)^n) gives linear forms whose absolute values grow factorially rather than tend to zero. It also records why the factorial-tail divisibility condition is not a shortcut to irrationality. These are rigorous obstructions to specific approaches, not a proof of the open target.
+
+
+## Integrated algebraic foundation — 2026-11-14
+
+PR #1 remains the canonical proof workspace. Two reusable developments have been added without changing the dependency lockfile:
+
+- `AlgebraicElements.lean` represents the elements of an extension field algebraic over its base as Mathlib's relative algebraic closure `algebraicClosure K E : IntermediateField K E`. Membership is equivalent to `IsAlgebraic K`; field operations therefore give closure under addition, subtraction, negation, multiplication, inverse, division, and integer powers. The module also records algebraicity and maximality of the relative closure, and its algebraic-closure properties when the ambient field is algebraically closed.
+- `AlgebraicFieldClosure.lean` formalizes that a finite set of algebraic elements generates a finite-dimensional intermediate field, that elements of a finite-dimensional extension are algebraic, and that finite-dimensionality is equivalent to essential finite type plus algebraicity.
+
+The PR #2 hand-written exposition also gives a product bound for the degree of a finitely generated extension using the tower law and a finite monomial spanning family. **That degree-product bound is not currently an exported Lean theorem in this integration**; the formal declarations above do not claim it.
+
+### Expanded proof audit and theorem-contract check
+
+`ProofAudit` now contains 27 typed theorem wrappers: the original eight principal e/π and approximation statements, 16 theorem results from the relative algebraic-closure module, and three finite-extension results. It also includes a wrapper definition for the inherited field structure. CI's project axiom audit is rooted at `ProofAudit`.
+
+`ProofAuditChallenge.lean` and the root `comparator.json` provide a separate specification for those 27 theorem statements. The challenge file intentionally contains `sorry` placeholders, as required by Lake Comparator; it is not imported by the solution or by `ProofAudit`, and is excluded from default build targets. The solution side must match every challenge theorem type and satisfy the explicit allowlist `propext`, `Classical.choice`, and `Quot.sound`. The comparator is configured with `--paranoid` so the pinned toolchain's available independent checkers are invoked as well as Lean's kernel.
+
+The workflow also checks the exact Git blob hash of `lake-manifest.json` and the Lean toolchain string before building. It does not run `lake update`. The integration CI run must pass before these newly added declarations can be described as verified in this combined PR.
+
+This audit establishes the formal claims stated above; it does **not** establish unconditional irrationality or transcendence of `e + π`. That target remains explicitly open and is not represented as a proved theorem.
