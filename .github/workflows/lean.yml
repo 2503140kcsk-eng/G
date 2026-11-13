@@ -38,7 +38,7 @@ jobs:
         run: |
           set -euo pipefail
           mapfile -d '' sources < <(find . -type f -name '*.lean' ! -path './.git/*' ! -path './.lake/*' ! -name 'ProofAuditChallenge.lean' -print0)
-          if grep -nHE '^[[:space:]]*(axiom|sorry|admit)([[:space:]]|$)|sorryAx|admitAx|Lean\\.ofReduceBool|native_decide' "${sources[@]}"; then
+          if grep -nHE '^[[:space:]]*(axiom|sorry|admit)([[:space:]]|$)|sorryAx|admitAx|Lean[.]ofReduceBool|native_decide' "${sources[@]}"; then
             echo "A proof hole, custom axiom, or native proof placeholder was found outside the Comparator challenge."
             exit 1
           fi
