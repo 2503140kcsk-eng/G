@@ -1,6 +1,6 @@
 # The Transcendence Status of e + π
 
-> **Research status (2026-11-12): the unconditional transcendence of $e+\pi$ remains open; even its irrationality is not known.**
+> **Research status (2026-11-14): the unconditional transcendence of $e+\pi$ remains open; even its irrationality is not known.**
 
 This repository formalizes established transcendence results and implications surrounding
 
@@ -71,3 +71,8 @@ See [TOOLS_AND_PROOF_PROTOCOL.md](TOOLS_AND_PROOF_PROTOCOL.md) for role assignme
 - Michail Karatarakis and Freek Wiedijk, [A formalization of the Gelfond–Schneider theorem](https://arxiv.org/abs/2603.24823) (2026 preprint), an adjacent Lean formalization that does not establish the transcendence of $e+\pi$.
 
 The cited sources support the research-status assessment and formalization context; they do not prove the open target.
+
+
+## Latest research continuation — 2026-11-14
+
+The mixed-kernel direction has a new exact audit in [MIXED_KERNEL_AUDIT_2026-11-14.md](MIXED_KERNEL_AUDIT_2026-11-14.md). It proves that the degree-one map (P\mapsto(A(P),C(P))) already realizes every integer pair, and that the symmetric endpoint-vanishing choice (P_n(x)=x^n(1-x)^n) gives linear forms whose absolute values grow factorially rather than tend to zero. It also records why the factorial-tail divisibility condition is not a shortcut to irrationality. These are rigorous obstructions to specific approaches, not a proof of the open target.
