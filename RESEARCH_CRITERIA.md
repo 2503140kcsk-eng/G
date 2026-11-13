@@ -285,3 +285,13 @@ These are conditional **criteria**, not constructions of approximants for \(e+\p
 The CI on 2026-11-12 built 6,137 Lake jobs and audited eight declarations under the standard allowlist \(\{\texttt{propext},\texttt{Classical.choice},\texttt{Quot.sound}\}\). This audit covers the project proof dependencies reachable from `ProofAudit`; it does not independently replay the entire Mathlib import closure.
 
 No axioms, `sorry`, `admit`, or theorem asserting irrationality/transcendence of \(e+\pi\) are introduced by these criteria.
+
+
+## 7. 2026-11-14 mixed-kernel continuation
+
+The exact continuation and proof details are recorded in [MIXED_KERNEL_AUDIT_2026-11-14.md](MIXED_KERNEL_AUDIT_2026-11-14.md). Two points are important for future construction work:
+
+- The degree-one polynomial (P(x)=(a-c)x+a) realizes arbitrary endpoint data ((A(P),C(P))=(a,c)). Hence the mixed integral identity does not by itself restrict the integer linear form; an additional degree-growing analytic structure is indispensable.
+- For (P_n(x)=x^n(1-x)^n), the endpoint derivative coefficient satisfies (|A(P_n)|\ge (2n)!/2), while the exponential integral is at most (e(n!)^2/(2n+1)!). Therefore the associated form (A(P_n)(e+\pi)-C(P_n)) has absolute value tending to infinity, not zero.
+
+The addendum also derives the factorial-remainder recurrence behind the eventual divisibility criterion and explains why the continued fractions of \(\pi\) alone do not contradict that criterion. No unconditional irrationality theorem is added.
