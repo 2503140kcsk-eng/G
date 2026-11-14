@@ -3,6 +3,7 @@ public import Mathlib
 public import ProofAuditDefs
 public import PolynomialApproximationDefs
 public import CommonDenominatorApproximationDefs
+public import FactorialTaylorFusionDefs
 
 @[expose] public section
 
@@ -236,6 +237,19 @@ theorem irrational_of_common_denominator_approximations
           x y (q n) (r n) (p n) (s n))
       Filter.atTop (𝓝 0)) :
     Irrational (x + y) := by
+  sorry
+
+
+/-- Any rational pi denominators compatible with the current factorial Taylor
+    approximants to e must be sublinear in the Taylor index if the fused errors
+    are to tend to zero. -/
+theorem factorial_taylor_fusion_forces_sublinear_pi_denominators
+    {r : ℕ → ℕ} {s : ℕ → ℤ}
+    (hsmall : Filter.Tendsto
+      (FactorialTaylorFusion.factorialTaylorFusionError r s)
+      Filter.atTop (𝓝 0)) :
+    Filter.Tendsto (fun n : ℕ => (r n : ℝ) / (n + 1 : ℝ))
+      Filter.atTop (𝓝 0) := by
   sorry
 
 end ProofAudit
