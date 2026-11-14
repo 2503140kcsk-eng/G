@@ -167,7 +167,7 @@ theorem endpointSignature_section (z : ℤ × ℤ) :
   let p : Polynomial ℤ := C (a - c) * X + C a
   let q : Polynomial ℤ := reflect p
   have hq : q = C (c - a) * X + C a := by
-    simp [q, p, reflect]
+    simp [q, p]
     ring
   have hqderiv : q.derivative = C (c - a) := by
     rw [hq]
@@ -192,10 +192,19 @@ theorem endpointSignature_section (z : ℤ × ℤ) :
       _ = p + C (c - a) := by
         rw [hdouble]
         simp [reflect_apply]
-      _ = C (a - c) * X + C c := by dsimp [p]; ring_nf
+      _ = C (a - c) * X + C c := by
+        dsimp [p]
+        have hc : C a + C (c - a) = C c := by
+          rw [← map_add]
+          congr 1
+          omega
+        calc
+          C (a - c) * X + C a + C (c - a) =
+              C (a - c) * X + (C a + C (c - a)) := by ac_rfl
+          _ = C (a - c) * X + C c := by rw [hc]
   change ((signedSumIDeriv p).eval 1, (signedSumIDeriv p).eval 0) = (a, c)
   rw [hS]
-  simp [p]
+  simp
 
 theorem endpointSignature_surjective :
     Function.Surjective endpointSignature := by
@@ -315,11 +324,9 @@ theorem mixedIntegral_identity (p : Polynomial ℤ) :
     hbase.inv₀ (by intro x; positivity)
   have hgCont : Continuous
       (fun x : ℝ => (4 * (endpointA (R := ℤ) p : ℝ)) / (1 + x ^ 2)) := by
-    rw [div_eq_mul_inv]
-    change Continuous
-      ((fun _ : ℝ => 4 * (endpointA (R := ℤ) p : ℝ)) *
-        (fun x : ℝ => (1 + x ^ 2)⁻¹))
-    exact continuous_const.mul hinv
+    exact continuous_const.div hbase (by
+      intro x
+      positivity)
   have hfInt : IntervalIntegrable
       (fun x : ℝ => Real.exp x * pR.eval x) volume 0 1 :=
     hfCont.intervalIntegrable 0 1
