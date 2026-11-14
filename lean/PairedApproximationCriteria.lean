@@ -68,7 +68,7 @@ theorem irrational_of_tendsto_zero_paired_integer_linear_forms
       refine ⟨A (n + 1), C (n + 1), ?_, ?_⟩
       · simpa [pairedIntegerLinearFormValue, L] using hnext
       · simpa [pairedIntegerLinearFormValue, L, hzero] using
-          (le_add_of_nonneg_left (abs_nonneg (L (n + 1))))
+          (le_add_of_nonneg_left (abs_nonneg (L n)))
     · refine ⟨A n, C n, ?_, ?_⟩
       · simpa [pairedIntegerLinearFormValue, L] using hzero
       · simpa [pairedIntegerLinearFormValue, L] using
