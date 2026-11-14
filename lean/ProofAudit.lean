@@ -10,6 +10,7 @@ public import ApproximationCriteria
 public import PairedApproximationCriteria
 public import MixedKernelQuotient
 public import ProofAuditApprox
+public import CommonDenominatorApproximation
 
 @[expose] public section
 
@@ -271,5 +272,29 @@ theorem mixed_integral_factors_through_quotient (p : Polynomial ℤ) :
 #print axioms mixed_integral_identity
 #print axioms mixed_integral_factorization
 #print axioms mixed_integral_factors_through_quotient
+
+
+/-! ## Common-denominator fusion for separate rational approximants -/
+
+/-- The cross-multiplied error budget is sufficient for an irrationality
+    certificate after the two integer denominators are fused. -/
+theorem irrational_of_common_denominator_approximations
+    {x y : ℝ} {q r : ℕ → ℕ} {p s : ℕ → ℤ}
+    (hnz : ∀ᶠ n : ℕ in Filter.atTop,
+      EPlusPiApproximation.signedIntegerLinearFormValue (x + y)
+        (EPlusPiApproximation.commonDenominatorCoefficient (q n) (r n))
+        (EPlusPiApproximation.commonDenominatorConstant
+          (q n) (r n) (p n) (s n)) ≠ 0)
+    (hsmall : Filter.Tendsto
+      (fun n : ℕ =>
+        EPlusPiApproximation.commonDenominatorScaledError
+          x y (q n) (r n) (p n) (s n))
+      Filter.atTop (𝓝 0)) :
+    Irrational (x + y) :=
+  EPlusPiApproximation.irrational_of_common_denominator_approximations
+    hnz hsmall
+
+#print axioms irrational_of_common_denominator_approximations
+
 
 end ProofAudit
