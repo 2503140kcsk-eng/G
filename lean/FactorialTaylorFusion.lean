@@ -215,7 +215,6 @@ theorem factorial_div_seventh_power_tendsto_atTop :
       _ ≤ (n.factorial : ℝ) := hfacReal
   have hnR : (14 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
   have hden : (n + 1 : ℝ) ≤ 2 * (n : ℝ) := by
-    push_cast
     nlinarith
   have hdenPow : (n + 1 : ℝ) ^ 7 ≤ (2 * (n : ℝ)) ^ 7 := by
     gcongr
@@ -290,8 +289,12 @@ theorem factorialTaylor_fusion_not_tendsto_zero_of_pi_lower_bound
                   |(r n : ℝ) * Real.pi - (s n : ℝ)| :=
               mul_le_mul_of_nonneg_left hpi' (by positivity)
         unfold factorialTaylorFusionError EPlusPiApproximation.commonDenominatorScaledError
-        exact le_trans hsecond <| le_add_of_nonneg_left
-          (mul_nonneg (Nat.cast_nonneg _) (abs_nonneg _)))
+        have hfirstNonneg :
+            0 ≤ (r n : ℝ) *
+              |signedIntegerLinearFormValue (Real.exp 1)
+                (factorialTaylorDenominator n) (-factorialTaylorNumerator n)| := by
+          positivity
+        exact le_trans hsecond (le_add_of_nonneg_left hfirstNonneg))
       hbase
   have hsmallOne : ∀ᶠ n : ℕ in atTop,
       factorialTaylorFusionError r s n < 1 :=
