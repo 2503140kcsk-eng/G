@@ -1,6 +1,7 @@
 module
 public import Mathlib
 public import ProofAuditDefs
+public import PolynomialApproximationDefs
 
 @[expose] public section
 
@@ -192,6 +193,30 @@ theorem finite_iff_essFiniteType_and_algebraic
     {F K : Type*} [Field F] [Field K] [Algebra F K] :
     Module.Finite F K ↔
       Algebra.EssFiniteType F K ∧ Algebra.IsAlgebraic F K := by
+  sorry
+
+
+/-- The explicit simultaneous approximation family has integer endpoint data,
+    nonzero endpoint determinant, exact reciprocal representation, and a
+    uniform exponential error tending to zero. -/
+theorem simultaneous_polynomial_approximation_certificate
+    (n : ℕ) (hn : 1 ≤ n) :
+    (SimultaneousPolynomialApproximation.endpointMatrix n).det ≠ 0 ∧
+    (∀ x ∈ Set.Icc (-1) 1,
+      |SimultaneousPolynomialApproximation.evalReal
+          (SimultaneousPolynomialApproximation.denominator n) x * Real.exp x -
+        SimultaneousPolynomialApproximation.evalReal
+          (SimultaneousPolynomialApproximation.numerator n) x|
+          ≤ 4 / (n + 1 : ℝ)) ∧
+    (∀ x : ℝ,
+      SimultaneousPolynomialApproximation.evalReal
+          (SimultaneousPolynomialApproximation.denominator n) x *
+            (1 + x ^ 2)⁻¹ =
+        SimultaneousPolynomialApproximation.evalReal
+          (SimultaneousPolynomialApproximation.reciprocalNumerator n) x) ∧
+    (∀ ε : ℝ, 0 < ε →
+      ∃ N : ℕ, ∀ m : ℕ, N ≤ m →
+        (4 : ℝ) / (m + 1 : ℝ) < ε) := by
   sorry
 
 end ProofAudit
