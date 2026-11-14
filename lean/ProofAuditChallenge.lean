@@ -2,6 +2,7 @@ module
 public import Mathlib
 public import ProofAuditDefs
 public import PolynomialApproximationDefs
+public import CommonDenominatorApproximationDefs
 
 @[expose] public section
 
@@ -217,6 +218,24 @@ theorem simultaneous_polynomial_approximation_certificate
     (∀ ε : ℝ, 0 < ε →
       ∃ N : ℕ, ∀ m : ℕ, N ≤ m →
         (4 : ℝ) / (m + 1 : ℝ) < ε) := by
+  sorry
+
+
+/-- Separate rational approximants can be fused into an integer form for
+    the sum only when the cross-multiplied error budget tends to zero. -/
+theorem irrational_of_common_denominator_approximations
+    {x y : ℝ} {q r : ℕ → ℕ} {p s : ℕ → ℤ}
+    (hnz : ∀ᶠ n : ℕ in Filter.atTop,
+      EPlusPiApproximation.signedIntegerLinearFormValue (x + y)
+        (EPlusPiApproximation.commonDenominatorCoefficient (q n) (r n))
+        (EPlusPiApproximation.commonDenominatorConstant
+          (q n) (r n) (p n) (s n)) ≠ 0)
+    (hsmall : Filter.Tendsto
+      (fun n : ℕ =>
+        EPlusPiApproximation.commonDenominatorScaledError
+          x y (q n) (r n) (p n) (s n))
+      Filter.atTop (𝓝 0)) :
+    Irrational (x + y) := by
   sorry
 
 end ProofAudit
