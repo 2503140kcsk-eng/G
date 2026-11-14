@@ -9,6 +9,7 @@ public import SchanuelConditional
 public import ApproximationCriteria
 public import PairedApproximationCriteria
 public import MixedKernelQuotient
+public import ProofAuditApprox
 
 @[expose] public section
 
