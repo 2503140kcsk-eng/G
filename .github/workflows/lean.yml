@@ -12,6 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install elan and generate the Lake manifest
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/lean-action/main/scripts/install_elan.sh | bash
+          lake update
       - uses: leanprover/lean-action@v1
         with:
           build: true
