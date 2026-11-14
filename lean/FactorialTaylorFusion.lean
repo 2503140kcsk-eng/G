@@ -185,14 +185,16 @@ theorem factorial_div_seventh_power_tendsto_atTop :
   refine Filter.tendsto_atTop_mono' atTop ?_ hlin
   filter_upwards [eventually_ge_atTop 14] with n hn
   have hfacMul := Nat.factorial_mul_pow_le_factorial (m := n - 8) (n := 8)
+  have hsucc : n - 8 + 1 = n - 7 := by omega
+  have hadd : n - 8 + 8 = n := by omega
   have hfacMul' : (n - 8).factorial * (n - 7) ^ 8 ≤ n.factorial := by
-    simpa [Nat.sub_add_cancel (by omega : 8 ≤ n)] using hfacMul
+    simpa [hsucc, hadd] using hfacMul
   have hhalf : n / 2 ≤ n - 7 := by omega
   have hfacHalf : (n / 2) ^ 8 ≤ n.factorial := by
     have hpos : 1 ≤ (n - 8).factorial :=
       Nat.succ_le_iff.mpr (Nat.factorial_pos _)
     calc
-      (n / 2) ^ 8 ≤ (n - 7) ^ 8 := Nat.pow_le_pow_left hhalf
+      (n / 2) ^ 8 ≤ (n - 7) ^ 8 := Nat.pow_le_pow_left hhalf 8
       _ = 1 * (n - 7) ^ 8 := by simp
       _ ≤ (n - 8).factorial * (n - 7) ^ 8 :=
         Nat.mul_le_mul_right _ hpos
@@ -200,7 +202,7 @@ theorem factorial_div_seventh_power_tendsto_atTop :
   have hthird : n / 3 ≤ n / 2 := by omega
   have hfrac : n ≤ 4 * (n / 3) := by omega
   have hfacThird : (n / 3) ^ 8 ≤ n.factorial :=
-    (Nat.pow_le_pow_left hthird).trans hfacHalf
+    (Nat.pow_le_pow_left hthird 8).trans hfacHalf
   have hfacReal : ((n / 3 : ℕ) : ℝ) ^ 8 ≤ (n.factorial : ℝ) := by
     exact_mod_cast hfacThird
   have hlow : (n : ℝ) / 4 ≤ ((n / 3 : ℕ) : ℝ) := by
@@ -211,6 +213,7 @@ theorem factorial_div_seventh_power_tendsto_atTop :
     calc
       ((n : ℝ) / 4) ^ 8 ≤ ((n / 3 : ℕ) : ℝ) ^ 8 := by gcongr
       _ ≤ (n.factorial : ℝ) := hfacReal
+  have hnR : (14 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
   have hden : (n + 1 : ℝ) ≤ 2 * (n : ℝ) := by
     push_cast
     nlinarith
@@ -220,7 +223,6 @@ theorem factorial_div_seventh_power_tendsto_atTop :
       (n : ℝ) / ((4 : ℝ) ^ 8 * (2 : ℝ) ^ 7) =
         ((n : ℝ) / 4) ^ 8 / (2 * (n : ℝ)) ^ 7 := by
     field_simp
-    ring
   rw [hbase]
   exact
     (div_le_div_of_nonneg_right hnum (by positivity)).trans
@@ -251,8 +253,8 @@ theorem factorialTaylor_fusion_not_tendsto_zero_of_pi_lower_bound
       hsub.eventually (Iio_mem_nhds (by norm_num : (0 : ℝ) < 1))
     filter_upwards [hlt] with n hn
     have hden : 0 < (n + 1 : ℝ) := by positivity
-    have hltR : (r n : ℝ) < (n + 1 : ℝ) :=
-      (div_lt_iff₀ hden).mp hn
+    have hltR : (r n : ℝ) < (n + 1 : ℝ) := by
+      simpa using (div_lt_iff₀ hden).mp hn
     exact_mod_cast hltR.le
   have hbase : Tendsto
       (fun n : ℕ =>
@@ -260,22 +262,26 @@ theorem factorialTaylor_fusion_not_tendsto_zero_of_pi_lower_bound
       atTop atTop := by
     have hfac := factorial_div_seventh_power_tendsto_atTop
     have hmul := hfac.atTop_mul_const (mul_pos (by norm_num : (0 : ℝ) < 2) hc)
-    simpa [mul_div_assoc, mul_comm, mul_left_comm, mul_assoc] using hmul
+    convert hmul using 1 <;> ext n <;> ring
   have hF : Tendsto (factorialTaylorFusionError r s) atTop atTop :=
     Filter.tendsto_atTop_mono' atTop
       (by
         filter_upwards [hrBound] with n hn
         have hrR : (r n : ℝ) ≤ (n + 1 : ℝ) := by exact_mod_cast hn
+        have hrposR : 0 < (r n : ℝ) := Nat.cast_pos.mpr (hrpos n)
         have hpow : (r n : ℝ) ^ 7 ≤ (n + 1 : ℝ) ^ 7 := by gcongr
         have hpi' :
             c / (n + 1 : ℝ) ^ 7 ≤
               |(r n : ℝ) * Real.pi - (s n : ℝ)| :=
-          (div_le_div_of_nonneg_left hc.le (by positivity) hpow).trans (hpi n)
+          (div_le_div_of_nonneg_left hc.le (pow_pos hrposR _) hpow).trans (hpi n)
         have hsecond :
             (2 * c * (n.factorial : ℝ)) / (n + 1 : ℝ) ^ 7 ≤
               (factorialTaylorDenominator n : ℝ) *
                 |(r n : ℝ) * Real.pi - (s n : ℝ)| := by
-          rw [factorialTaylorDenominator]
+          have hdenom : (factorialTaylorDenominator n : ℝ) =
+              2 * (n.factorial : ℝ) := by
+            simp [factorialTaylorDenominator]
+          rw [hdenom]
           calc
             (2 * c * (n.factorial : ℝ)) / (n + 1 : ℝ) ^ 7 =
                 (2 * (n.factorial : ℝ)) *
@@ -285,7 +291,7 @@ theorem factorialTaylor_fusion_not_tendsto_zero_of_pi_lower_bound
               mul_le_mul_of_nonneg_left hpi' (by positivity)
         unfold factorialTaylorFusionError EPlusPiApproximation.commonDenominatorScaledError
         exact le_trans hsecond <| le_add_of_nonneg_left
-          (mul_nonneg (by positivity) (abs_nonneg _)))
+          (mul_nonneg (Nat.cast_nonneg _) (abs_nonneg _)))
       hbase
   have hsmallOne : ∀ᶠ n : ℕ in atTop,
       factorialTaylorFusionError r s n < 1 :=
