@@ -67,12 +67,10 @@ theorem irrational_of_tendsto_zero_paired_integer_linear_forms
         exact_mod_cast hdetR
       refine ⟨A (n + 1), C (n + 1), ?_, ?_⟩
       · simpa [pairedIntegerLinearFormValue, L] using hnext
-      · simpa [pairedIntegerLinearFormValue, L, hzero] using
-          (le_add_of_nonneg_left (abs_nonneg (L n)))
+      · simp [pairedIntegerLinearFormValue, L, hzero]
     · refine ⟨A n, C n, ?_, ?_⟩
       · simpa [pairedIntegerLinearFormValue, L] using hzero
-      · simpa [pairedIntegerLinearFormValue, L] using
-          (le_add_of_nonneg_right (abs_nonneg (L (n + 1))))
+      · simp [pairedIntegerLinearFormValue, L]
   obtain ⟨a, c, hselected_nz, hselected_abs_le⟩ := hchosen
   have hselected_lt :
       |pairedIntegerLinearFormValue x a c| < 1 / |(q : ℝ)| :=
