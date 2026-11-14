@@ -31,7 +31,8 @@
     "ProofAudit.algebraic_extension_of_finiteDimensional",
     "ProofAudit.finite_iff_essFiniteType_and_algebraic",
     "ProofAudit.simultaneous_polynomial_approximation_certificate",
-    "ProofAudit.irrational_of_common_denominator_approximations"
+    "ProofAudit.irrational_of_common_denominator_approximations",
+    "ProofAudit.factorial_taylor_fusion_forces_sublinear_pi_denominators"
   ],
   "permitted_axioms": [
     "propext",
