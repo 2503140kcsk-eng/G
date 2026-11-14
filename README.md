@@ -93,6 +93,19 @@ The PR #2 hand-written exposition also gives a product bound for the degree of a
 
 `ProofAuditChallenge.lean` and the root `comparator.json` provide a separate specification for those 27 theorem statements. The challenge file intentionally contains `sorry` placeholders, as required by Lake Comparator; it is not imported by the solution or by `ProofAudit`, and is excluded from default build targets. The solution side must match every challenge theorem type and satisfy the explicit allowlist `propext`, `Classical.choice`, and `Quot.sound`. The comparator is configured with `--paranoid` so the pinned toolchain's available independent checkers are invoked as well as Lean's kernel.
 
-The workflow also checks the exact Git blob hash of `lake-manifest.json` and the Lean toolchain string before building. It does not run `lake update`. The integration CI run must pass before these newly added declarations can be described as verified in this combined PR.
+The workflow also checks the exact Git blob hash of `lake-manifest.json` and the Lean toolchain string before building. It does not run `lake update`. The committed manifest blob is `5625e0bc21b731d5737a903c674bf4b6fb0e018c`; the PR #1 integration did not edit it.
 
-This audit establishes the formal claims stated above; it does **not** establish unconditional irrationality or transcendence of `e + π`. That target remains explicitly open and is not represented as a proved theorem.
+`ProofAuditDefs.lean` is the sole shared statement-definition module. It imports Mathlib only and contains one transparent proposition definition: Schanuel's conjecture in its standard transcendence-degree form. Both Challenge and Solution import this same reviewed definition, avoiding a mismatch caused by unfolding the implementation's local alias through hidden `Complex.exp` internals. It contains no theorem proof, axiom, or proof hole. The Challenge otherwise uses Mathlib vocabulary; its 27 `sorry` placeholders are specifications only and are not imported by `ProofAudit` or any solution module.
+
+### Latest verified CI — 2026-11-14
+
+PR Run #309 on commit `3f9aa564d97244c513c9f44faa757e24d488c347` succeeded: [GitHub Actions Run #309](https://github.com/2503140kcsk-eng/G/actions/runs/43534926824).
+
+- The frozen manifest and pinned Lean toolchain checks passed.
+- The implementation-source scan found no `sorry`, `admit`, custom `axiom`, `sorryAx`, `admitAx`, or native proof placeholder.
+- The default workspace passed `lake build --wfail`.
+- The project axiom audit examined 33 declarations under `ProofAudit`; every declaration stayed within `propext`, `Classical.choice`, and `Quot.sound`.
+- Comparator accepted all 27 public theorem statements. Its paranoid run was accepted by the Lean paranoid kernel, Lean's default kernel, lean4lean, nanoda, con-leche, and con-ron. con-leche and con-ron each accepted 57,722 declarations.
+- The 27 theorem names in `ProofAudit`, `ProofAuditChallenge`, and `comparator.json` match exactly.
+
+The audit still does not independently replay Mathlib's entire transitive import closure; Mathlib remains the pinned trusted mathematical library. This integration proves the stated field-theory and transcendence consequences, but does **not** establish unconditional irrationality or transcendence of `e + π`. That target remains explicitly open and is not represented as a proved theorem.
