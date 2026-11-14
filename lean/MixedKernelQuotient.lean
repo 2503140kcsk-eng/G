@@ -60,8 +60,11 @@ theorem derivative_signedSum_add (p : Polynomial R) :
 theorem reflect_map
     {S : Type*} [CommRing S] (f : R →+* S) (p : Polynomial R) :
     reflect (p.map f) = (reflect p).map f := by
-  simpa only [reflect_apply, map_neg, map_X] using
-    (Polynomial.map_comp f p (-X)).symm
+  change (p.map f).comp (-X) = (p.comp (-X)).map f
+  calc
+    (p.map f).comp (-X) =
+        (p.map f).comp ((-X).map f) := by simp
+    _ = (p.comp (-X)).map f := (Polynomial.map_comp f p (-X)).symm
 
 theorem signedSumIDeriv_map
     {S : Type*} [CommRing S] (f : R →+* S) (p : Polynomial R) :
@@ -138,7 +141,13 @@ end SplitKernel
 def endpointSignature : Polynomial ℤ →ₗ[ℤ] ℤ × ℤ where
   toFun p := (endpointA p, endpointC p)
   map_add' p q := by simp [endpointA, endpointC]
-  map_smul' a p := by simp [endpointA, endpointC]
+  map_smul' a p := by
+    change ((signedSumIDeriv (a • p)).eval 1,
+      (signedSumIDeriv (a • p)).eval 0) =
+      (a • (signedSumIDeriv p).eval 1,
+        a • (signedSumIDeriv p).eval 0)
+    rw [map_smul (signedSumIDeriv) a p]
+    simp
 
 /-- The affine section sending (a,c) to (a-c)X+a. -/
 def endpointSection : ℤ × ℤ →ₗ[ℤ] Polynomial ℤ where
@@ -180,7 +189,9 @@ theorem endpointSignature_section (z : ℤ × ℤ) :
       reflect (Polynomial.sumIDeriv q) =
           reflect (q + C (c - a)) := by rw [hsum]
       _ = reflect q + reflect (C (c - a)) := by simp
-      _ = p + C (c - a) := by simp [hdouble, reflect]
+      _ = p + C (c - a) := by
+        rw [hdouble]
+        simp [reflect_apply]
       _ = C (a - c) * X + C c := by dsimp [p]; ring
   change ((signedSumIDeriv p).eval 1, (signedSumIDeriv p).eval 0) = (a, c)
   rw [hS]
@@ -210,7 +221,8 @@ theorem endpointQuotientEquiv_mkQ (p : Polynomial ℤ) :
       endpointSignature p := by
   change endpointSignature.quotKerEquivOfSurjective endpointSignature_surjective
       ((LinearMap.ker endpointSignature).mkQ p) = endpointSignature p
-  exact LinearMap.quotKerEquivOfSurjective_apply_mk endpointSignature_surjective p
+  exact LinearMap.quotKerEquivOfSurjective_apply_mk
+    endpointSignature endpointSignature_surjective p
 
 /-! Analytic component of the mixed integral. -/
 
@@ -238,9 +250,7 @@ theorem intervalIntegral_four_a_over_one_add_sq (a : ℝ) :
   calc
     (∫ x in (0 : ℝ)..1, (4 * a) / (1 + x ^ 2))
         = ∫ x in (0 : ℝ)..1, (4 * a) * (1 + x ^ 2)⁻¹ := by
-          congr 1
-          funext x
-          rw [div_eq_mul_inv]
+          simp [div_eq_mul_inv]
     _ = (4 * a) * (∫ x in (0 : ℝ)..1, (1 + x ^ 2)⁻¹) := by
           rw [← intervalIntegral.integral_const_mul]
     _ = (4 * a) * (Real.arctan 1 - Real.arctan 0) := by
@@ -305,8 +315,7 @@ theorem mixedIntegral_identity (p : Polynomial ℤ) :
     hbase.inv₀ (by intro x; positivity)
   have hgCont : Continuous
       (fun x : ℝ => (4 * (endpointA (R := ℤ) p : ℝ)) / (1 + x ^ 2)) := by
-    simpa only [div_eq_mul_inv, Pi.mul_apply] using
-      (continuous_const.mul hinv)
+    convert continuous_const.mul hinv using 1 <;> ext x <;> ring
   have hfInt : IntervalIntegrable
       (fun x : ℝ => Real.exp x * pR.eval x) volume 0 1 :=
     hfCont.intervalIntegrable 0 1
