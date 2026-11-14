@@ -29,7 +29,8 @@
     "ProofAudit.algebraic_elements_uniqueness_up_to_algEquiv",
     "ProofAudit.finiteDimensional_adjoin_of_algebraic",
     "ProofAudit.algebraic_extension_of_finiteDimensional",
-    "ProofAudit.finite_iff_essFiniteType_and_algebraic"
+    "ProofAudit.finite_iff_essFiniteType_and_algebraic",
+    "ProofAudit.simultaneous_polynomial_approximation_certificate"
   ],
   "permitted_axioms": [
     "propext",
