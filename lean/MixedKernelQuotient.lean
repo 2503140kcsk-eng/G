@@ -192,7 +192,7 @@ theorem endpointSignature_section (z : ℤ × ℤ) :
       _ = p + C (c - a) := by
         rw [hdouble]
         simp [reflect_apply]
-      _ = C (a - c) * X + C c := by dsimp [p]; ring
+      _ = C (a - c) * X + C c := by dsimp [p]; ring_nf
   change ((signedSumIDeriv p).eval 1, (signedSumIDeriv p).eval 0) = (a, c)
   rw [hS]
   simp [p]
@@ -315,7 +315,11 @@ theorem mixedIntegral_identity (p : Polynomial ℤ) :
     hbase.inv₀ (by intro x; positivity)
   have hgCont : Continuous
       (fun x : ℝ => (4 * (endpointA (R := ℤ) p : ℝ)) / (1 + x ^ 2)) := by
-    convert continuous_const.mul hinv using 1 <;> ext x <;> ring
+    rw [div_eq_mul_inv]
+    change Continuous
+      ((fun _ : ℝ => 4 * (endpointA (R := ℤ) p : ℝ)) *
+        (fun x : ℝ => (1 + x ^ 2)⁻¹))
+    exact continuous_const.mul hinv
   have hfInt : IntervalIntegrable
       (fun x : ℝ => Real.exp x * pR.eval x) volume 0 1 :=
     hfCont.intervalIntegrable 0 1
@@ -333,7 +337,7 @@ theorem mixedIntegral_factorization_map :
       mixedPairValue.comp endpointSignature := by
   apply LinearMap.ext
   intro p
-  simp [mixedIntegralQuotientFactor_mkQ]
+  exact mixedIntegralQuotientFactor_mkQ p
 
 theorem mixedIntegral_factors_through_quotient (p : Polynomial ℤ) :
     mixedIntegralQuotientFactor ((LinearMap.ker endpointSignature).mkQ p) =
