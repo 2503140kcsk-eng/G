@@ -37,35 +37,55 @@ theorem factorialTaylorNumerator_eval_one (n : ℕ) :
         (n.factorial : ℝ) * expTaylor n 1 := by
     have h := taylorIntPoly_eval_real n (1 : ℝ)
     rw [evalReal_taylorIntPoly_one] at h
-    exact h.symm
-  rw [evalReal_numerator]
-  simp [factorialTaylorNumerator, hTaylor]
+    exact h
+  calc
+    (factorialTaylorNumerator n : ℝ) =
+        2 * (endpointTaylorValue n : ℝ) := by
+          simp [factorialTaylorNumerator]
+    _ = 2 * (n.factorial : ℝ) * expTaylor n 1 := by rw [hTaylor]
+    _ = evalReal (numerator n) 1 := by
+      rw [evalReal_numerator]
+      norm_num
+      ring
 
 /-- The endpoint denominator of the integer Taylor family is exactly 2*n!. -/
 theorem factorialTaylorDenominator_eval_one (n : ℕ) :
     (factorialTaylorDenominator n : ℝ) =
       evalReal (denominator n) 1 := by
-  simp [factorialTaylorDenominator, evalReal_denominator]
+  calc
+    (factorialTaylorDenominator n : ℝ) = 2 * (n.factorial : ℝ) := by
+      simp [factorialTaylorDenominator]
+    _ = evalReal (denominator n) 1 := by
+      rw [evalReal_denominator]
+      norm_num
+      ring
 
 /-- Exact evaluation of the factorial Taylor integer-linear form at e. -/
 theorem factorialTaylor_linearForm_identity (n : ℕ) :
     (factorialTaylorDenominator n : ℝ) * Real.exp 1 -
       (factorialTaylorNumerator n : ℝ) =
         2 * (n.factorial : ℝ) * (Real.exp 1 - expTaylor n 1) := by
-  rw [← factorialTaylorDenominator_eval_one,
-    ← factorialTaylorNumerator_eval_one,
-    evalReal_denominator, evalReal_numerator]
-  norm_num
-  ring
+  calc
+    (factorialTaylorDenominator n : ℝ) * Real.exp 1 -
+        (factorialTaylorNumerator n : ℝ) =
+      evalReal (denominator n) 1 * Real.exp 1 -
+        evalReal (numerator n) 1 := by
+          rw [factorialTaylorDenominator_eval_one,
+            factorialTaylorNumerator_eval_one]
+    _ = 2 * (n.factorial : ℝ) * (Real.exp 1 - expTaylor n 1) := by
+      rw [evalReal_denominator, evalReal_numerator]
+      norm_num
+      ring
 
 /-- The existing factorial Taylor integer-linear form is positive. -/
 theorem factorialTaylor_linearForm_pos (n : ℕ) :
     0 < (factorialTaylorDenominator n : ℝ) * Real.exp 1 -
       (factorialTaylorNumerator n : ℝ) := by
   rw [factorialTaylor_linearForm_identity]
-  have h := expTaylor_remainder_lower n
-  have hfac : 0 < (n.factorial : ℝ) := by positivity
-  have hpos : 0 < (n + 1).factorial := Nat.factorial_pos _
+  have htail := expTaylor_remainder_lower n
+  have hrem : 0 < Real.exp 1 - expTaylor n 1 :=
+    lt_of_lt_of_le (by positivity : (0 : ℝ) <
+      (1 : ℝ) / ((n + 1).factorial : ℝ)) htail
   positivity
 
 /--
@@ -84,7 +104,6 @@ theorem factorialTaylor_linearForm_lower (n : ℕ) :
     rw [Nat.factorial_succ]
     push_cast
     field_simp
-    ring
   rw [hfac]
   have hmul := mul_le_mul_of_nonneg_left htail (by positivity :
     (0 : ℝ) ≤ 2 * (n.factorial : ℝ))
@@ -95,8 +114,9 @@ theorem factorialTaylor_absError_eq (n : ℕ) :
     factorialTaylorApproximationError n =
       (factorialTaylorDenominator n : ℝ) * Real.exp 1 -
         (factorialTaylorNumerator n : ℝ) := by
-  rw [factorialTaylorApproximationError,
-    signedIntegerLinearFormValue]
+  unfold factorialTaylorApproximationError signedIntegerLinearFormValue
+  push_cast
+  rw [← sub_eq_add_neg]
   exact abs_of_pos (factorialTaylor_linearForm_pos n)
 
 /-- The first, e-side term is bounded by the fused cross-weighted error. -/
@@ -125,6 +145,7 @@ theorem factorialTaylor_denominator_sublinear_of_fusion_tendsto_zero
         atTop (𝓝 0) := by
     apply squeeze_zero
     · intro n
+      unfold factorialTaylorApproximationError
       positivity
     · intro n
       exact factorialTaylor_firstTerm_le_fusion r s n
@@ -147,7 +168,7 @@ theorem factorialTaylor_denominator_sublinear_of_fusion_tendsto_zero
             field_simp
       _ ≤ ((r n : ℝ) * factorialTaylorApproximationError n) / 2 := by
         rw [herror]
-        exact (div_le_div_iff₀ (by norm_num : (0 : ℝ) < 2)).2
+        exact (div_le_div_iff_of_pos_right (by norm_num : (0 : ℝ) < 2)).2
           (by simpa [mul_comm] using hmul)
   · simpa [div_eq_mul_inv] using hfirst.mul_const (1 / 2 : ℝ)
 
