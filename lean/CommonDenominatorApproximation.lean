@@ -41,7 +41,7 @@ theorem commonDenominator_form_abs_le
         (q : ℝ) * signedIntegerLinearFormValue y (r : ℤ) (-s)|
         ≤ |(r : ℝ) * signedIntegerLinearFormValue x (q : ℤ) (-p)| +
             |(q : ℝ) * signedIntegerLinearFormValue y (r : ℤ) (-s)| :=
-          abs_add _ _
+          abs_add_le _ _
     _ = commonDenominatorScaledError x y q r p s := by
       simp [commonDenominatorScaledError, abs_mul]
 
