@@ -88,9 +88,10 @@ theorem endpointTaylorValue_lower (n : ℕ) (hn : 1 ≤ n) :
     Finset.sum_erase_add s f h0
   calc
     2 * n.factorial = n.factorial + n.factorial := by omega
-    _ = f 1 + f 0 := by rw [h1val, h0val]
     _ ≤ (∑ k ∈ s.erase 0, f k) + f 0 := by
-      simpa [Nat.add_comm] using add_le_add_right hrest (f 0)
+      have h := add_le_add_right hrest (f 0)
+      rw [h0val] at h
+      omega
     _ = endpointTaylorValue n := by
       rw [hdecomp]
       simp [endpointTaylorValue, s, f]
@@ -136,7 +137,7 @@ theorem evalReal_numerator (n : ℕ) (x : ℝ) :
       (1 + x ^ 2) * ((n.factorial : ℝ) * expTaylor n x) := by
   rw [evalReal, numerator, Polynomial.eval₂_mul]
   simp only [Polynomial.eval₂_add, Polynomial.eval₂_pow,
-    Polynomial.eval₂_X, map_one]
+    Polynomial.eval₂_X, Polynomial.eval₂_one]
   change (1 + x ^ 2) * evalReal (taylorIntPoly n) x = _
   rw [taylorIntPoly_eval_real]
 
@@ -224,6 +225,7 @@ theorem uniform_error_vanishes :
   intro ε hε
   obtain ⟨N, hN⟩ := exists_nat_gt (4 / ε)
   refine ⟨N, fun n hn => ?_⟩
+  have hnR : (N : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
   have hden : 4 / ε < (n + 1 : ℝ) := by
     have hN' : 4 / ε < (N : ℝ) := hN
     linarith
