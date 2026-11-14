@@ -42,7 +42,7 @@ theorem factorialTaylorNumerator_eval_one (n : ℕ) :
     (factorialTaylorNumerator n : ℝ) =
         2 * (endpointTaylorValue n : ℝ) := by
           simp [factorialTaylorNumerator]
-    _ = 2 * (n.factorial : ℝ) * expTaylor n 1 := by rw [hTaylor]
+    _ = 2 * (n.factorial : ℝ) * expTaylor n 1 := by rw [hTaylor]; ring
     _ = evalReal (numerator n) 1 := by
       rw [evalReal_numerator]
       norm_num
