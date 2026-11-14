@@ -182,3 +182,29 @@ PR Run #309 on commit `3f9aa564d97244c513c9f44faa757e24d488c347` completed succe
 PR #2 had a successful targeted Comparator run on its then-current commit, but its workflow refreshed dependencies with `lake update`; that run is not evidence for the frozen PR #1 environment. PR #3's axiom audit and first two independent checker stages succeeded, but its earlier runner was shut down while nanoda was running; its full paranoid run did not complete. The successful integrated PR #1 Run #309 is the evidence for the combined tree.
 
 The named starred repositories keep the roles in section 3: Mathlib4 is the only direct mathematical package dependency; Macaulay2, GAP, SymPy, SageMath, cvc5, Naproche, and LeanDojo-v2 are auxiliary exploration or proof-search resources, not trusted proof dependencies. Their software was not executed by merely consulting their GitHub sources. The connected-tool roles and free-scope boundaries remain in section 9.
+
+
+## 11. Common-denominator fusion continuation (2026-11-14)
+
+The branch `research/common-denominator-fusion-2026-11-14` adds a formal, conditional bridge for combining two independent rational approximations into a single integer linear form in their sum.
+
+| Resource | Specific work in this continuation | Verification boundary |
+|---|---|---|
+| GitHub | Added the fusion definitions and Lean theorem, wired the theorem into `ProofAudit`, `ProofAuditChallenge`, `lakefile.lean`, and `comparator.json`; preserved the frozen manifest. | Push run #368 passed in full. No change was made to `main` and no claim of an unconditional (e+\pi) result is made. |
+| Sider Scholar | Retrieved the arXiv record for Yu's 2026 preprint on (e+\pi) irrationality obstructions and searched Hermite–Padé literature. | Literature discovery only. The broad OpenAlex query was noisy; it is not treated as mathematical evidence. |
+| Wolfram | Checked finite exact examples related to the growth of cross-multiplied denominators. | Finite symbolic checks only; the lacunary-series obstruction in the research note is a separate written estimate. |
+| Context7 | Resolved the Mathlib v4.36.0-rc2 library identifier. The documentation endpoint returned no matching entries for the targeted lemma queries. | The exact `squeeze_zero` and `abs_add_le` APIs were instead located in the pinned Mathlib source through GitHub search and verified by CI. |
+| Parallel | Retrieved the arXiv preprint and a 2006 Hermite–Padé lecture-note source for independent context. | Source extraction and synthesis only; not a proof dependency. |
+| User-starred algebra/computation repositories | M2, GAP, SymPy, Sage, Naproche, cvc5, LeanDojo-v2, and Mathlib retain the roles from section 3. | Their software is not imported as a trusted proof dependency. Mathlib remains the sole direct mathematical package dependency. |
+
+### Formal and CI result
+
+For integers (p,s) and natural denominators (q,r), the exact identity
+[
+(qr)(x+y)-(rp+qs)=r(qx-p)+q(ry-s)
+]
+is proved in `CommonDenominatorApproximation.lean`. The cross-weighted triangle bound and the conditional irrationality theorem are also proved. The new statement is the 30th theorem contract in `comparator.json`.
+
+On commit `6f49702caca4abded88e8e4463e2cc29261430ee`, GitHub Actions run #368 passed. The implementation's own `#print axioms` output for the new public wrapper contains only `propext`, `Classical.choice`, and `Quot.sound`. The automated `axiom-audit` reported 39 declarations under `ProofAudit`, all within the same allowlist. The Comparator paranoid phase was accepted by the Lean paranoid kernel, lean4lean (57,995 declarations), nanoda, con-leche (57,994 declarations), con-ron (57,994 declarations), and Lean's default kernel.
+
+The mathematical limitation is explicit: two separate limits (q_nx-p_n\to0) and (r_ny-s_n\to0) do not imply the cross-weighted limit. A lacunary-series counterexample and its proof are recorded in `COMMON_DENOMINATOR_FUSION_AUDIT_2026-11-14.md`. Thus this continuation supplies a precise conditional bridge, not the missing construction for (x=e,y=\pi).
