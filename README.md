@@ -111,16 +111,20 @@ PR Run #309 on commit `3f9aa564d97244c513c9f44faa757e24d488c347` succeeded: [Git
 The audit still does not independently replay Mathlib's entire transitive import closure; Mathlib remains the pinned trusted mathematical library. This integration proves the stated field-theory and transcendence consequences, but does **not** establish unconditional irrationality or transcendence of `e + π`. That target remains explicitly open and is not represented as a proved theorem.
 
 
+
 ## Latest research continuation — common-denominator fusion (2026-11-14)
 
-A new independent research branch, `research/common-denominator-fusion-2026-11-14`, formalizes an exact way to combine separate rational approximations (p_n/q_n\approx x) and (s_n/r_n\approx y) into an integer linear form:
-[
+A new independent research branch, **research/common-denominator-fusion-2026-11-14**, formalizes an exact way to combine separate rational approximations \(p_n/q_n\approx x\) and \(s_n/r_n\approx y\) into an integer linear form:
+\[
 (q_nr_n)(x+y)-(r_np_n+q_ns_n)
 =r_n(q_nx-p_n)+q_n(r_ny-s_n).
-]
-Consequently the fused form is small only when the *cross-weighted* errors
-(r_n|q_nx-p_n|+q_n|r_ny-s_n|) tend to zero, and it must also be eventually nonzero. The sufficient implication from these hypotheses to irrationality of (x+y) is formalized and added as the 30th Comparator contract.
+\]
+Consequently the fused form is small only when the **cross-weighted errors**
+\[
+r_n|q_nx-p_n|+q_n|r_ny-s_n|
+\]
+tend to zero, and it must also be eventually nonzero. The sufficient implication from these hypotheses to irrationality of \(x+y\) is formalized and added as the 30th Comparator contract.
 
-A lacunary-series example in [COMMON_DENOMINATOR_FUSION_AUDIT_2026-11-14.md](COMMON_DENOMINATOR_FUSION_AUDIT_2026-11-14.md) shows why separate errors tending to zero do not suffice: multiplying by the opposite denominators can make the fused error diverge. This is an obstruction to naive approximation fusion, not a result about the actual values of (e) and (pi).
+A lacunary-series example in [COMMON_DENOMINATOR_FUSION_AUDIT_2026-11-14.md](COMMON_DENOMINATOR_FUSION_AUDIT_2026-11-14.md) shows why separate errors tending to zero do not suffice: multiplying by the opposite denominators can make the fused error diverge. This is an obstruction to naive approximation fusion, not a result about the actual values of e and π.
 
-CI push run #368 succeeded on commit `6f49702caca4abded88e8e4463e2cc29261430ee`: [GitHub Actions run #368](https://github.com/2503140kcsk-eng/G/actions/runs/43586720392). The pinned build, warning-free build, axiom audit, 30-contract Comparator, Lean paranoid kernel, lean4lean, nanoda, con-leche, con-ron, and Lean default kernel all passed. The implementation still does **not** construct a cross-weighted error sequence for (e) and (pi); unconditional irrationality or transcendence of (e+\pi) remains unproved.
+CI push run #368 succeeded on commit 6f49702caca4abded88e8e4463e2cc29261430ee: [GitHub Actions run #368](https://github.com/2503140kcsk-eng/G/actions/runs/43586720392). The pinned build, warning-free build, axiom audit, 30-contract Comparator, Lean paranoid kernel, lean4lean, nanoda, con-leche, con-ron, and Lean default kernel all passed. The implementation still does **not** construct a cross-weighted error sequence for e and π; unconditional irrationality or transcendence of e + π remains unproved.
