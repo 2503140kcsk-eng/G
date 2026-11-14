@@ -7,6 +7,7 @@ public import HermiteLindemannBridge
 public import EPlusPi
 public import SchanuelConditional
 public import ApproximationCriteria
+public import MixedKernelQuotient
 
 @[expose] public section
 
@@ -218,5 +219,42 @@ theorem finite_iff_essFiniteType_and_algebraic
     Module.Finite F K ↔
       Algebra.EssFiniteType F K ∧ Algebra.IsAlgebraic F K :=
   AlgebraicFieldClosure.finite_iff_essFiniteType_and_algebraic
+
+/-! ## Mixed-kernel quotient and mixed-integral factorization -/
+
+noncomputable def mixed_endpoint_split_kernel :
+    Polynomial ℤ ≃ₗ[ℤ]
+      LinearMap.ker MixedKernelQuotient.endpointSignature × (ℤ × ℤ) :=
+  MixedKernelQuotient.endpointSplitEquiv
+
+noncomputable def mixed_endpoint_kernel_quotient :
+    (Polynomial ℤ ⧸ LinearMap.ker MixedKernelQuotient.endpointSignature) ≃ₗ[ℤ]
+      ℤ × ℤ :=
+  MixedKernelQuotient.endpointQuotientEquiv
+
+theorem mixed_integral_identity (p : Polynomial ℤ) :
+    MixedKernelQuotient.mixedIntegralValue p =
+      MixedKernelQuotient.mixedPairValue
+        (MixedKernelQuotient.endpointSignature p) :=
+  MixedKernelQuotient.mixedIntegral_identity p
+
+theorem mixed_integral_factorization :
+    MixedKernelQuotient.mixedIntegralQuotientFactor.comp
+        ((LinearMap.ker MixedKernelQuotient.endpointSignature).mkQ) =
+      MixedKernelQuotient.mixedPairValue.comp
+        MixedKernelQuotient.endpointSignature :=
+  MixedKernelQuotient.mixedIntegral_factorization_map
+
+theorem mixed_integral_factors_through_quotient (p : Polynomial ℤ) :
+    MixedKernelQuotient.mixedIntegralQuotientFactor
+        ((LinearMap.ker MixedKernelQuotient.endpointSignature).mkQ p) =
+      MixedKernelQuotient.mixedIntegralValue p :=
+  MixedKernelQuotient.mixedIntegral_factors_through_quotient p
+
+#print axioms mixed_endpoint_split_kernel
+#print axioms mixed_endpoint_kernel_quotient
+#print axioms mixed_integral_identity
+#print axioms mixed_integral_factorization
+#print axioms mixed_integral_factors_through_quotient
 
 end ProofAudit
