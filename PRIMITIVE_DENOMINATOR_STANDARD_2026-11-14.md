@@ -370,3 +370,57 @@ GitHub, Sider Scholar, Wolfram, Context7, and Parallel Search were used for repo
 The requested unconditional polynomial sequence would imply that \(e+\pi\) is irrational by Corollary 2.2. The literature checked through 2026-11-14 still reports that irrationality as open. This work establishes a sharper standard and exact structural results, but does **not** claim to have constructed the requested unconditional sequence.
 
 The completion condition remains unmet until a non-circular family \(P_n\) is found for which the primitive forms are proved nonzero and their absolute values are proved to converge to zero.
+
+
+## Appendix A. Conditional positive baseline from Dirichlet approximation
+
+This record is useful as a control experiment: it demonstrates the exact ledger for a family that does satisfy the requested limit **assuming** \(\alpha\) is irrational. It is not an unconditional construction for \(e+\pi\).
+
+Assume \(\alpha\notin\mathbb Q\). For each \(N\ge2\), choose the pigeonhole pair \(1\le q_N\le N\), \(p_N\in\mathbb Z\) from Corollary 2.2:
+\[
+0<|q_N\alpha-p_N|<1/N.
+\]
+Set
+\[
+a_N=q_N,\quad c_N=p_N,\quad D_N=1,\quad
+g_N=\gcd(q_N,|p_N|),
+\]
+and
+\[
+A_N=q_N/g_N,\quad C_N=p_N/g_N,\quad
+H_N=\max(2,A_N,|C_N|).
+\]
+Use the degree-lifting polynomial \(P_N=P_{N,A_N,C_N}\), which has exact degree \(N+1\).
+
+The complete normalization record is:
+\[
+\begin{aligned}
+\varepsilon_N^{\rm an}
+ &=|q_N\alpha-p_N|\in(0,1/N),\\
+\varepsilon_N^{\rm clear}
+ &=D_N\varepsilon_N^{\rm an}
+  =\varepsilon_N^{\rm an},\\
+\varepsilon_N^{\rm prim}
+ &=\frac{D_N}{g_N}\varepsilon_N^{\rm an}
+  =\frac{|q_N\alpha-p_N|}{g_N}
+  \in(0,1/(Ng_N)).
+\end{aligned}
+\]
+Consequently \(0<\varepsilon_N^{\rm prim}<1/N\), so the primitive errors converge to zero. The pair \((A_N,C_N)\) is primitive by construction. The nonzero claim uses the assumption \(\alpha\notin\mathbb Q\), not a numerical estimate.
+
+| Ledger field | Conditional Dirichlet record |
+|---|---|
+| Degree | \(N+1\) |
+| Raw integers | \(a_N=q_N,\ c_N=p_N\) |
+| Common denominator | \(D_N=1\) |
+| Content | \(g_N=\gcd(q_N,|p_N|)\) |
+| Primitive coefficients | \(A_N=q_N/g_N,\ C_N=p_N/g_N\) |
+| Height | \(H_N=\max(2,A_N,|C_N|)\) |
+| Pre-clearing error | \(0<|q_N\alpha-p_N|<1/N\) |
+| Post-clearing error | Same, since \(D_N=1\) |
+| Post-primitive error | \(0<|q_N\alpha-p_N|/g_N<1/N\) |
+| Non-vanishing proof | Irrationality of \(\alpha\) |
+| Limit proof | Uniform upper bound \(1/N\) |
+| Continued-fraction status | Not classified by the pigeonhole proof; audit separately |
+
+This baseline is logically equivalent to the target and therefore cannot be used to prove the irrationality assumption from scratch. Its value is methodological: any proposed new Apéry-type family must improve on the mere existence guaranteed by Dirichlet by supplying a non-circular non-vanishing proof and a structural analytic error estimate.
