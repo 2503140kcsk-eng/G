@@ -68,6 +68,18 @@ theorem integer_forms_tending_to_zero_imply_irrationality
     Irrational x := by
   sorry
 
+theorem paired_integer_forms_tending_to_zero_imply_irrationality
+    {x : ℝ} {A C : ℕ → ℤ}
+    (hdet : ∀ᶠ n : ℕ in atTop,
+      A n * C (n + 1) - A (n + 1) * C n ≠ 0)
+    (hsmall : Tendsto
+      (fun n : ℕ =>
+        |(A n : ℝ) * x - (C n : ℝ)| +
+          |(A (n + 1) : ℝ) * x - (C (n + 1) : ℝ)|)
+      atTop (𝓝 0)) :
+    Irrational x := by
+  sorry
+
 theorem algebraic_elements_mem_iff
     (K E : Type*) [Field K] [Field E] [Algebra K E] {x : E} :
     x ∈ algebraicClosure K E ↔ IsAlgebraic K x := by
