@@ -1,5 +1,6 @@
 module
 public import Mathlib
+public import ProofAuditDefs
 
 @[expose] public section
 
@@ -42,11 +43,7 @@ theorem e_add_pi_or_mul_transcendental :
   sorry
 
 theorem schanuel_implies_e_plus_pi_transcendental
-    (hSC : ∀ (n : ℕ) (z : Fin n → ℂ),
-      LinearIndependent ℚ z →
-      (n : Cardinal) ≤ Algebra.trdeg ℚ
-        (IntermediateField.adjoin ℚ
-          (Set.range z ∪ Set.range (fun i : Fin n => Complex.exp (z i))))) :
+    (hSC : ProofAuditDefs.SchanuelConjecture) :
     Transcendental ℚ (Real.exp 1 + Real.pi) := by
   sorry
 
