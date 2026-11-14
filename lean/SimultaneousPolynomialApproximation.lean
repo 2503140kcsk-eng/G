@@ -32,7 +32,7 @@ theorem taylorIntPoly_eval_real (n : ℕ) (x : ℝ) :
   classical
   simp only [evalReal, taylorIntPoly, expTaylor, Polynomial.eval₂_finsetSum,
     Polynomial.eval₂_mul, Polynomial.eval₂_C, Polynomial.eval₂_pow,
-    Polynomial.eval₂_X, Int.cast_ofNat]
+    Polynomial.eval₂_X]
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro k hk
@@ -60,7 +60,8 @@ theorem taylorIntPoly_eval_zero (n : ℕ) :
 theorem taylorIntPoly_eval_one (n : ℕ) :
     (taylorIntPoly n).eval 1 = (endpointTaylorValue n : ℤ) := by
   classical
-  simp [taylorIntPoly, endpointTaylorValue]
+  rw [taylorIntPoly, Polynomial.eval_finsetSum]
+  simp [endpointTaylorValue]
 
 /-- The endpoint sum contains its k=0 and k=1 terms, each equal to n!. -/
 theorem endpointTaylorValue_lower (n : ℕ) (hn : 1 ≤ n) :
@@ -88,8 +89,8 @@ theorem endpointTaylorValue_lower (n : ℕ) (hn : 1 ≤ n) :
   calc
     2 * n.factorial = n.factorial + n.factorial := by omega
     _ = f 1 + f 0 := by rw [h1val, h0val]
-    _ ≤ (∑ k ∈ s.erase 0, f k) + f 0 :=
-      add_le_add_right hrest _
+    _ ≤ (∑ k ∈ s.erase 0, f k) + f 0 := by
+      simpa [Nat.add_comm] using add_le_add_right hrest (f 0)
     _ = endpointTaylorValue n := by
       rw [hdecomp]
       simp [endpointTaylorValue, s, f]
@@ -116,7 +117,9 @@ theorem endpointMatrix_det_ne_zero (n : ℕ) (hn : 1 ≤ n) :
     exact_mod_cast (Nat.factorial_pos n).ne'
   have hdiff :
       (endpointTaylorValue n : ℤ) - (n.factorial : ℤ) ≠ 0 := by
-    exact_mod_cast (Nat.ne_of_gt hU)
+    have hlt : (n.factorial : ℤ) < (endpointTaylorValue n : ℤ) := by
+      exact_mod_cast hU
+    omega
   rw [endpointMatrix_det_formula]
   exact mul_ne_zero (mul_ne_zero (by norm_num) hfac) hdiff
 
@@ -125,16 +128,17 @@ theorem evalReal_denominator (n : ℕ) (x : ℝ) :
     evalReal (denominator n) x =
       (n.factorial : ℝ) * (1 + x ^ 2) := by
   simp [evalReal, denominator, Polynomial.eval₂_mul,
-    Polynomial.eval₂_C, Polynomial.eval₂_add,
-    Polynomial.eval₂_pow, Polynomial.eval₂_X]
+    Polynomial.eval₂_add, Polynomial.eval₂_pow, Polynomial.eval₂_X]
 
 /-- The numerator evaluates to (1+x^2) times the exponential Taylor numerator. -/
 theorem evalReal_numerator (n : ℕ) (x : ℝ) :
     evalReal (numerator n) x =
       (1 + x ^ 2) * ((n.factorial : ℝ) * expTaylor n x) := by
-  simp [evalReal, numerator, Polynomial.eval₂_mul,
-    Polynomial.eval₂_add, Polynomial.eval₂_pow,
-    Polynomial.eval₂_X, taylorIntPoly_eval_real]
+  rw [evalReal, numerator, Polynomial.eval₂_mul]
+  simp only [Polynomial.eval₂_add, Polynomial.eval₂_pow,
+    Polynomial.eval₂_X, map_one]
+  change (1 + x ^ 2) * evalReal (taylorIntPoly n) x = _
+  rw [taylorIntPoly_eval_real]
 
 /-- The reciprocal function is represented exactly, with zero error on all ℝ. -/
 theorem reciprocal_exact (n : ℕ) (x : ℝ) :
@@ -170,7 +174,8 @@ theorem expTaylor_error (n : ℕ) (x : ℝ)
     simp [Complex.ofReal_exp, hsum]
   calc
     |Real.exp x - expTaylor n x|
-        = ‖((Real.exp x - expTaylor n x : ℝ) : ℂ)‖ := by simp
+        = ‖((Real.exp x - expTaylor n x : ℝ) : ℂ)‖ := by
+          exact (Complex.norm_real _).symm
     _ = ‖Complex.exp (x : ℂ) -
           ∑ k ∈ Finset.range (n + 1), (x : ℂ) ^ k / (k.factorial : ℂ)‖ := by
         rw [hcoerce]
@@ -219,7 +224,6 @@ theorem uniform_error_vanishes :
   intro ε hε
   obtain ⟨N, hN⟩ := exists_nat_gt (4 / ε)
   refine ⟨N, fun n hn => ?_⟩
-  have hnR : (N : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
   have hden : 4 / ε < (n + 1 : ℝ) := by
     have hN' : 4 / ε < (N : ℝ) := hN
     linarith
