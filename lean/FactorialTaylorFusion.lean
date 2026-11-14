@@ -288,6 +288,12 @@ theorem factorialTaylor_fusion_not_tendsto_zero_of_pi_lower_bound
             _ ≤ (2 * (n.factorial : ℝ)) *
                   |(r n : ℝ) * Real.pi - (s n : ℝ)| :=
               mul_le_mul_of_nonneg_left hpi' (by positivity)
+        have hpiInner :
+            (r n : ℝ) * Real.pi - (s n : ℝ) =
+              signedIntegerLinearFormValue Real.pi (r n) (-s n) := by
+          simp [signedIntegerLinearFormValue]
+        have hpiForm := congrArg abs hpiInner
+        rw [hpiForm] at hsecond
         unfold factorialTaylorFusionError EPlusPiApproximation.commonDenominatorScaledError
         have hfirstNonneg :
             0 ≤ (r n : ℝ) *
