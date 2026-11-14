@@ -67,7 +67,7 @@ theorem irrational_of_tendsto_zero_paired_integer_linear_forms
         exact_mod_cast hdetR
       refine ⟨A (n + 1), C (n + 1), ?_, ?_⟩
       · simpa [pairedIntegerLinearFormValue, L] using hnext
-      · simp [pairedIntegerLinearFormValue, L, hzero]
+      · simp [pairedIntegerLinearFormValue, L]
     · refine ⟨A n, C n, ?_, ?_⟩
       · simpa [pairedIntegerLinearFormValue, L] using hzero
       · simp [pairedIntegerLinearFormValue, L]
