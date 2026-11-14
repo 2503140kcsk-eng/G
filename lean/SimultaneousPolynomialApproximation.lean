@@ -49,7 +49,12 @@ theorem taylorIntPoly_eval_real (n : ℕ) (x : ℝ) :
 theorem taylorIntPoly_eval_zero (n : ℕ) :
     (taylorIntPoly n).eval 0 = (n.factorial : ℤ) := by
   classical
-  simp [taylorIntPoly]
+  rw [taylorIntPoly, Polynomial.eval_finsetSum]
+  rw [Finset.sum_eq_single 0]
+  · simp
+  · intro k hk hk0
+    simp [hk0]
+  · simp
 
 /-- At one, the integer Taylor polynomial has the explicitly defined endpoint sum. -/
 theorem taylorIntPoly_eval_one (n : ℕ) :
