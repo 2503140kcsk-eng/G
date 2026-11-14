@@ -53,6 +53,18 @@ lean_lib MixedKernelQuotient where
 lean_lib PairedApproximationCriteria where
   srcDir := "lean"
 
+@[default_target]
+lean_lib PolynomialApproximationDefs where
+  srcDir := "lean"
+
+@[default_target]
+lean_lib SimultaneousPolynomialApproximation where
+  srcDir := "lean"
+
+@[default_target]
+lean_lib ProofAuditApprox where
+  srcDir := "lean"
+
 lean_lib ProofAudit where
   srcDir := "lean"
 
