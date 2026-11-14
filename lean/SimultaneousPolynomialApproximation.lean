@@ -30,7 +30,7 @@ lemma cast_taylor_coefficient (n k : ℕ) (hk : k ≤ n) :
 theorem taylorIntPoly_eval_real (n : ℕ) (x : ℝ) :
     evalReal (taylorIntPoly n) x = (n.factorial : ℝ) * expTaylor n x := by
   classical
-  simp only [evalReal, taylorIntPoly, Polynomial.eval₂_finsetSum,
+  simp only [evalReal, taylorIntPoly, expTaylor, Polynomial.eval₂_finsetSum,
     Polynomial.eval₂_mul, Polynomial.eval₂_C, Polynomial.eval₂_pow,
     Polynomial.eval₂_X, Int.cast_ofNat]
   rw [Finset.mul_sum]
@@ -136,9 +136,8 @@ theorem reciprocal_exact (n : ℕ) (x : ℝ) :
     evalReal (denominator n) x * (1 + x ^ 2)⁻¹ =
       evalReal (reciprocalNumerator n) x := by
   rw [evalReal_denominator]
-  simp [evalReal, reciprocalNumerator]
-  have hpos : 0 < 1 + x ^ 2 := by positivity
-  field_simp
+  have hpos : (1 + x ^ 2) ≠ 0 := ne_of_gt (by positivity)
+  simp [evalReal, reciprocalNumerator, hpos]
 
 /-- The degree-n Taylor error for exp is bounded uniformly on [-1,1]. -/
 theorem expTaylor_error (n : ℕ) (x : ℝ)
@@ -203,7 +202,8 @@ theorem exp_approx_uniform (n : ℕ) (x : ℝ)
       rw [Nat.factorial_succ]
       push_cast
       have hnpos : (0 : ℝ) < (n + 1 : ℝ) := by positivity
-      field_simp [hnpos.ne']
+      have hnfac : (n.factorial : ℝ) ≠ 0 := by positivity
+      field_simp [hnpos.ne', hnfac]
       ring
 
 /-- The explicit rate 4/(n+1) tends to zero in the epsilon-N sense. -/
