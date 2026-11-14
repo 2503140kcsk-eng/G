@@ -10,6 +10,7 @@
     "ProofAudit.schanuel_implies_e_plus_pi_transcendental",
     "ProofAudit.superpolynomial_forms_imply_transcendence",
     "ProofAudit.integer_forms_tending_to_zero_imply_irrationality",
+    "ProofAudit.paired_integer_forms_tending_to_zero_imply_irrationality",
     "ProofAudit.algebraic_elements_mem_iff",
     "ProofAudit.algebraic_elements_carrier_eq",
     "ProofAudit.algebraic_elements_add_closed",
