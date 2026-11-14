@@ -11,6 +11,7 @@ public import PairedApproximationCriteria
 public import MixedKernelQuotient
 public import ProofAuditApprox
 public import CommonDenominatorApproximation
+public import FactorialTaylorFusion
 
 @[expose] public section
 
@@ -295,6 +296,24 @@ theorem irrational_of_common_denominator_approximations
     hnz hsmall
 
 #print axioms irrational_of_common_denominator_approximations
+
+
+
+/-! ## Factorial Taylor approximation and fusion obstruction -/
+
+/-- The current factorial Taylor approximants to e force every fused pi denominator
+    to be sublinear in the Taylor index. -/
+theorem factorial_taylor_fusion_forces_sublinear_pi_denominators
+    {r : ℕ → ℕ} {s : ℕ → ℤ}
+    (hsmall : Filter.Tendsto
+      (FactorialTaylorFusion.factorialTaylorFusionError r s)
+      Filter.atTop (𝓝 0)) :
+    Filter.Tendsto (fun n : ℕ => (r n : ℝ) / (n + 1 : ℝ))
+      Filter.atTop (𝓝 0) :=
+  FactorialTaylorFusion.factorialTaylor_denominator_sublinear_of_fusion_tendsto_zero
+    hsmall
+
+#print axioms factorial_taylor_fusion_forces_sublinear_pi_denominators
 
 
 end ProofAudit
