@@ -30,7 +30,8 @@
     "ProofAudit.finiteDimensional_adjoin_of_algebraic",
     "ProofAudit.algebraic_extension_of_finiteDimensional",
     "ProofAudit.finite_iff_essFiniteType_and_algebraic",
-    "ProofAudit.simultaneous_polynomial_approximation_certificate"
+    "ProofAudit.simultaneous_polynomial_approximation_certificate",
+    "ProofAudit.irrational_of_common_denominator_approximations"
   ],
   "permitted_axioms": [
     "propext",
