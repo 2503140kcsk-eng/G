@@ -66,6 +66,14 @@ lean_lib ProofAuditApprox where
   srcDir := "lean"
 
 @[default_target]
+lean_lib CommonDenominatorApproximationDefs where
+  srcDir := "lean"
+
+@[default_target]
+lean_lib CommonDenominatorApproximation where
+  srcDir := "lean"
+
+@[default_target]
 lean_lib ProofAudit where
   srcDir := "lean"
 
