@@ -1,85 +1,126 @@
-# Research status and formalization plan
+# Research status and formalization record
 
-**Snapshot date:** 2026-11-07  
-**Question:** Is e + π transcendental?
+**Snapshot date:** 2026-11-12 (JST)  
+**Question:** Is $e+\pi$ transcendental?
 
-## 1. Status
+## 1. Mathematical status
 
-**Open / unknown in the literature checked.** Available sources explicitly state that the transcendence of e + π has not been proved. Even the weaker statement that e + π is irrational remains open in the June 2026 preprint cited below. Thus a complete proof of transcendence would also resolve the irrationality question, but no such proof was found.
+**Unconditional status: open in the literature checked.** The sources checked through 2026-11-12 do not establish even that $e+\pi$ is irrational. Therefore they do not establish its transcendence. This is a statement about the literature checked, not a proof that no proof can exist anywhere.
 
-This is a literature-status conclusion, not a mathematical proof that no proof exists anywhere. A newly published result after the checked sources could change the status.
+The directly relevant 2026 preprint is Runlong Yu, [*Tail Criteria, No-Go Audits, and Apéry-Type Certificate Obstructions for the Irrationality of $e+\pi$*](https://arxiv.org/abs/2606.17303), arXiv:2606.17303v1, submitted 15 June 2026. Its abstract explicitly says irrationality remains open. It derives necessary arithmetic/tail conditions under a rationality assumption and audits several bounded families of candidate certificates. It does not produce an irrationality certificate or prove a universal impossibility theorem. It is a preprint, not evidence of a completed proof.
 
-## 2. Established facts and the exact gap
+Consequently, the repository does **not** claim an unconditional theorem Transcendental ℚ ePlusPi.
 
-- e is transcendental (Hermite, 1873).
-- π is transcendental (Lindemann, 1882).
-- e^π is transcendental (Gelfond–Schneider theorem).
-- It is not known whether e + π is irrational, let alone transcendental.
-- At least one of e + π and eπ is transcendental.
+## 2. Established mathematics and exact implication boundary
 
-For the last statement, suppose both s=e+π and p=eπ were algebraic. Then e and π are roots of X²-sX+p. Since the algebraic numbers form a field and every root of a polynomial over an algebraic extension of Q is algebraic over Q, both e and π would be algebraic, contradiction.
+Known classical results:
 
-**Important:** this proves a disjunction, not that the sum is transcendental. It is invalid to infer that a sum of two transcendental numbers must be transcendental.
+- $e$ is transcendental (Hermite).
+- $\pi$ is transcendental (Lindemann).
+- $e^\pi$ is transcendental (Gelfond–Schneider).
 
-## 3. Why familiar theorems do not close the gap
+These statements do not imply that $e+\pi$ is transcendental.
 
-- Lindemann–Weierstrass controls linear independence of exponentials of algebraic numbers. The summand π is not an exponential of an algebraic number in a way that lets the theorem directly classify e + π.
-- Gelfond–Schneider proves transcendence of values a^b for algebraic a≠0,1 and irrational algebraic b. Its standard application gives e^π, not e + π.
-- Baker's theorem on linear forms in logarithms of algebraic numbers does not immediately apply to the additive combination e + π.
-- Schanuel's conjecture would imply algebraic independence of e and π, and hence transcendence of e + π. But Schanuel's conjecture is unproved; using it gives only a conditional theorem.
+An unconditional consequence is:
 
-A conditional implication must be labelled conditional and must not be reported as an unconditional proof.
+$$\boxed{(e+\pi)\text{ is transcendental}\quad\lor\quad(e\pi)\text{ is transcendental}.}$$
 
-## 4. Formalization plan
+To prove it, suppose $s=e+\pi$ and $p=e\pi$ are both algebraic. Then $e$ and $\pi$ are roots of $X^2-sX+p$. Algebraicity is transitive through algebraic coefficient extensions, so both roots would be algebraic over $\mathbb Q$, contradicting the classical theorems. The disjunction does not say which of the two is transcendental.
 
-### Layer A — exact definitions
+### Schanuel's conjecture: a conditional route
 
-Define the target as exp(1)+π in R. Define algebraicity/transcendence by polynomial roots over Q, or reuse the exact Mathlib predicate after checking its current source/API.
+Schanuel's conjecture states that for any finite $\mathbb Q$-linearly independent family $z_1,\ldots,z_n$ of complex numbers,
 
-### Layer B — basic algebraic lemmas
+$$\operatorname{trdeg}_{\mathbb Q}\mathbb Q(z_1,\ldots,z_n,e^{z_1},\ldots,e^{z_n})\ge n.$$
 
-Formalize:
-1. If x,y are algebraic over Q, then x+y and xy are algebraic.
-2. If s,p are algebraic, then every root of X²-sX+p is algebraic.
-3. Consequently, if e and π are both transcendental, then at least one of e+π, eπ is transcendental.
+Set $z_1=1$ and $z_2=i\pi$. They are linearly independent over $\mathbb Q$: real and imaginary parts force both rational coefficients to vanish. Euler's identity gives $e^{i\pi}=-1$, while $e^1=e$. Thus Schanuel gives transcendence degree at least two for $\mathbb Q(e,i\pi)$. Since it is generated by two elements, its transcendence degree is exactly two, so $e$ and $i\pi$ are algebraically independent. Because $\mathbb Q(i)/\mathbb Q$ is algebraic, $e$ and $\pi$ are algebraically independent as well.
 
-The third lemma is a valuable unconditional theorem that can be proved without solving the open problem.
+If $e+\pi$ were algebraic, its minimal polynomial would give a nonzero polynomial relation between $e$ and $\pi$, a contradiction. Thus:
 
-### Layer C — classical transcendence inputs
+$$\boxed{\text{Schanuel's conjecture}\Longrightarrow e+\pi\text{ is transcendental}.}$$
 
-Import or formalize the Hermite and Lindemann results only if they are available in the selected Lean library or independently verified in the project. Do not assert that Mathlib contains these theorems until the exact declaration and import path have been checked.
+This implication is conditional. Schanuel's conjecture is not proved and is not introduced as an axiom in this project.
 
-### Layer D — unresolved target
+## 3. Lean formalization status
 
-State the target as a proposition/conjecture, not as an axiom and not as a theorem with sorry. It must remain unproved until a genuine argument is found.
+The feature branch formalize-algebraic-number-closure contains these developments.
 
-### Layer E — audit
+### 3.1 Individual transcendence
 
-Run the pinned Lean/mathlib build, #print axioms for every claimed theorem, and search for sorry, admit, custom axioms, and theorem declarations that merely restate the target.
+- lean/LindemannAlgebraicPart.lean: algebraic part of the Lindemann–Weierstrass argument, combined with Mathlib's analytic estimates from Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart.
+- lean/LindemannBasic.lean: proves Complex.linearIndependent_exp, Complex.algebraicIndependent_exp, Complex.transcendental_exp, Complex.transcendental_e, and Real.transcendental_pi.
+- lean/HermiteLindemannBridge.lean: derives the rational-base statements HermiteLindemannBridge.transcendental_e and HermiteLindemannBridge.transcendental_pi, together with the general algebraic-exponent bridge.
 
-## 5. Research directions (not claimed proofs)
+Mathlib's analytic estimate alone is not the completed Lindemann–Weierstrass theorem; the algebraic argument is also part of the project development. These sources are kernel-checked under the pinned Mathlib environment.
 
-1. Investigate whether a new irrationality measure or a sequence of nonzero integer linear forms A_n(e+π)+B_n tending to zero can be constructed with denominators and errors satisfying a genuine contradiction criterion.
-2. Test whether a mixed Hermite–Padé construction can produce integer forms A_n(e+π)+B_n→0 while keeping coefficient growth below analytic decay. The 2026 preprint reports obstructions for several bounded low-complexity families; this does not rule out all constructions.
-3. Study conditional consequences of Schanuel's conjecture separately from unconditional work.
-4. Compare the Lean development with existing formalizations of Hermite–Lindemann and Gelfond–Schneider in other proof assistants. Porting a theorem is substantial work and does not itself solve the sum problem.
+### 3.2 Algebraic closure and unconditional disjunction
 
-## 6. Literature
+- lean/AlgebraicClosure.lean: closure of algebraic elements under addition and multiplication; algebraicity of roots of nonzero polynomials with algebraic coefficients; algebraicity descent through algebraic extensions.
+- lean/EPlusPi.lean: defines ePlusPi, eTimesPi, states the open target as EPlusPiTranscendental, and proves e_and_pi_transcendental and e_add_pi_or_mul_transcendental.
 
-- MathWorld, [Transcendental Number](https://mathworld.wolfram.com/TranscendentalNumber.html).
-- Plus Maths, [Mathematical mysteries: Transcendental meditation](https://plus.maths.org/os/issue21/xfile/index).
-- Quanta Magazine, [How Math Achieved Transcendence](https://www.quantamagazine.org/recounting-the-history-of-maths-transcendental-numbers-20230627/).
-- Runlong Yu, [Tail Criteria, No-Go Audits, and Apéry-Type Certificate Obstructions for the Irrationality of e+π](https://arxiv.org/abs/2606.17303), arXiv:2606.17303 (2026, preprint).
-- [A formalization of the Gelfond–Schneider theorem](https://arxiv.org/html/2603.24823) (2026, preprint).
-- Archive of Formal Proofs, [The Hermite–Lindemann–Weierstraß Transcendence Theorem](https://devel.isa-afp.org/entries/Hermite_Lindemann.html) (Isabelle/HOL, not Lean/mathlib).
+### 3.3 Conditional Schanuel module
 
-## 7. Tool roles and limits
+- lean/SchanuelConditional.lean: formalizes SchanuelConjecture as a proposition, proves the linear independence of $1,i\pi$, specializes the conjecture to show algebraic independence of $e,i\pi$, extends scalars across the algebraic extension $\mathbb Q(i)/\mathbb Q$, and proves SchanuelConditional.transcendental_ePlusPi_of_schanuel.
+- The final theorem takes a proof of SchanuelConjecture as an explicit argument. There is no project axiom asserting Schanuel's conjecture.
+- The finite transcendence-basis step and the relationship between the generated subalgebra and its field of fractions are proved through the pinned Mathlib APIs; the resulting algebraic independence is not postulated.
 
-- Sider Scholar: academic discovery; results must be individually inspected for relevance and publication status.
-- Parallel Search/Research: current literature cross-check.
-- Wolfram: symbolic/numeric corroboration only; numerical computation cannot prove transcendence.
-- Context7: current Lean/mathlib API documentation.
-- Lean/mathlib: kernel-checked formal proofs of the lemmas actually established.
-- Macaulay2, GAP, SymPy, SageMath, cvc5, LeanDojo: exploratory algebra, symbolic experiments, search, and proof-assistance. None can turn an unproved number-theoretic conjecture into a theorem by computation alone.
+### 3.4 Central audit module
 
-The GitHub repository access confirms write permission. This status document deliberately does not claim that the open target has been solved.
+lean/ProofAudit.lean exposes six explicitly typed entry-point theorems under ProofAudit:
+
+1. complex_e_transcendental
+2. real_pi_transcendental
+3. rational_e_transcendental
+4. rational_pi_transcendental
+5. e_add_pi_or_mul_transcendental
+6. schanuel_implies_e_plus_pi_transcendental
+
+The CI workflow sets axiom-audit-root: ProofAudit. The audit follows the transitive proof dependencies of these six declarations, including the algebraic-closure development, the vendored Lindemann–Weierstrass argument, the analytic estimate, and the conditional field-theory proof.
+
+### 3.5 What remains unproved
+
+The unconditional proposition EPlusPiTranscendental remains open. There is no theorem declaration that proves it, no custom axiom, and no sorry/admit used to fill the gap. A proof of it would in particular prove the irrationality of $e+\pi$, which the literature checked still regards as open.
+
+## 4. Reproducible environment and final CI
+
+- Lean: leanprover/lean4:v4.36.0-rc2 (release commit b35cb10cf2ced51a2fd1880cfdbf75c71ab7a35a).
+- Mathlib: tag v4.36.0-rc2, commit 9d581dfff2e41de989072ea63abf3daf69311520.
+- lake-manifest.json pins Mathlib and eight transitive Lake packages to exact git commits.
+- Mathlib is the only direct mathematical library dependency. The other starred repositories and connected tools are auxiliary.
+- CI installs the pinned Lean toolchain and consumes the committed manifest; it does not run lake update.
+
+On 2026-11-12, push run #210 and PR run #211 both succeeded on commit bd3336f71729581a0a4484e04703878f2acaa1a7. Each built 6,126 jobs. ProofAudit compiled, and axiom-audit reported:
+
+> audited 6 declaration(s) under ProofAudit; all within the allowlist [propext, Classical.choice, Quot.sound].
+
+The relevant axiom output for the individual transcendence theorems, the unconditional disjunction, and the conditional Schanuel theorem also showed only those three standard axioms. No sorryAx, admitAx, project-specific axiom, or Lean linter warning appeared in the final run. This audit covers the six project entry points and their transitive proof dependencies; it does **not** independently replay every declaration in Mathlib's entire transitive import closure.
+
+The final workflow and source files also passed after removal of the umbrella public import Mathlib from HermiteLindemannBridge.lean, EPlusPi.lean, and SchanuelConditional.lean. Those modules now use explicit project imports and focused Mathlib imports. The Schanuel module explicitly imports the finite transcendence-basis and multivariate-polynomial APIs it uses.
+
+- [Push CI #210](https://github.com/2503140kcsk-eng/G/actions/runs/43198316263)
+- [PR CI #211](https://github.com/2503140kcsk-eng/G/actions/runs/43198324014)
+
+The LICENSE file is the exact Apache License 2.0 text from the pinned Mathlib release. Vendored proof source files retain their original copyright and author headers.
+
+## 5. Open research directions (not claimed proofs)
+
+1. Derive a new effective irrationality measure for $e+\pi$, or construct nonzero integer linear forms $A_n(e+\pi)+B_n$ whose denominator bounds and analytic decay jointly force a contradiction.
+2. Investigate mixed Hermite–Padé approximations involving both $e$ and $\pi$. The 2026 preprint audits specified bounded families; it does not exclude every possible construction.
+3. Search for an unconditional relation between $e$ and $\pi$ stronger than their individual transcendence results but independent of Schanuel.
+4. Keep conditional implications separate from unconditional theorem declarations in Lean.
+
+The missing object is an unconditional argument proving $e+\pi\notin\overline{\mathbb Q}$, or even $e+\pi\notin\mathbb Q$. Numerical experiments and finite searches cannot supply that universal proof by themselves.
+
+## 6. Literature and formal proof references
+
+- Eric W. Weisstein, [Transcendental Number, Wolfram MathWorld](https://mathworld.wolfram.com/TranscendentalNumber.html).
+- Eric W. Weisstein, [Schanuel's Conjecture, Wolfram MathWorld](https://mathworld.wolfram.com/SchanuelsConjecture.html).
+- Runlong Yu, [arXiv:2606.17303](https://arxiv.org/abs/2606.17303), 2026 preprint.
+- Helen Joyce, [Mathematical mysteries: Transcendental meditation](https://plus.maths.org/os/issue21/xfile/index) (2002).
+- Manuel Eberl, Archive of Formal Proofs, [The Transcendence of e](https://devel.isa-afp.org/entries/E_Transcendental.html).
+- Manuel Eberl, Archive of Formal Proofs, [The Hermite–Lindemann–Weierstraß Transcendence Theorem](https://isa-afp.org/entries/Hermite_Lindemann.html). These are Isabelle/HOL formalizations, not Lean/mathlib declarations.
+- Michail Karatarakis and Freek Wiedijk, [A formalization of the Gelfond–Schneider theorem](https://arxiv.org/abs/2603.24823) (2026 preprint).
+
+## 7. Tool allocation
+
+See [TOOLS_AND_PROOF_PROTOCOL.md](TOOLS_AND_PROOF_PROTOCOL.md) for the 30 public starred repositories recorded in the 2026-11-10 Stars snapshot and the connected integration role matrix.

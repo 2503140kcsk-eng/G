@@ -1,0 +1,38 @@
+{
+  "challenge_module": "ProofAuditChallenge",
+  "solution_module": "ProofAudit",
+  "theorem_names": [
+    "ProofAudit.complex_e_transcendental",
+    "ProofAudit.real_pi_transcendental",
+    "ProofAudit.rational_e_transcendental",
+    "ProofAudit.rational_pi_transcendental",
+    "ProofAudit.e_add_pi_or_mul_transcendental",
+    "ProofAudit.schanuel_implies_e_plus_pi_transcendental",
+    "ProofAudit.superpolynomial_forms_imply_transcendence",
+    "ProofAudit.integer_forms_tending_to_zero_imply_irrationality",
+    "ProofAudit.algebraic_elements_mem_iff",
+    "ProofAudit.algebraic_elements_carrier_eq",
+    "ProofAudit.algebraic_elements_add_closed",
+    "ProofAudit.algebraic_elements_neg_closed",
+    "ProofAudit.algebraic_elements_sub_closed",
+    "ProofAudit.algebraic_elements_mul_closed",
+    "ProofAudit.algebraic_elements_inv_closed",
+    "ProofAudit.algebraic_elements_div_closed",
+    "ProofAudit.algebraic_elements_zpow_closed",
+    "ProofAudit.algebraic_elements_field_is_algebraic",
+    "ProofAudit.algebraic_elements_maximality",
+    "ProofAudit.algebraic_elements_isAlgClosure_of_algClosed_ambient",
+    "ProofAudit.algebraic_elements_field_isAlgClosed",
+    "ProofAudit.algebraic_elements_every_polynomial_splits",
+    "ProofAudit.algebraic_elements_exists_root",
+    "ProofAudit.algebraic_elements_uniqueness_up_to_algEquiv",
+    "ProofAudit.finiteDimensional_adjoin_of_algebraic",
+    "ProofAudit.algebraic_extension_of_finiteDimensional",
+    "ProofAudit.finite_iff_essFiniteType_and_algebraic"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ]
+}
