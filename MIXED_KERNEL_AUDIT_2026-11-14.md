@@ -270,44 +270,44 @@ Until such a family is established, the correct project status remains: the gene
 The continuation has now been formalized in `lean/MixedKernelQuotient.lean` and connected to `lean/ProofAudit.lean`.
 
 Write
-[
+$$
 S_P(X)=sum_{j=0}^{\deg P}(-1)^jP^{(j)}(X),qquad
 E(P)=(S_P(1),S_P(0))=(A(P),C(P)).
-]
+$$
 The implementation defines the alternating sum through Mathlib's `Polynomial.sumIDeriv` and proves
-[
+$$
 S_P'(X)+S_P(X)=P(X).
-]
+$$
 
 The explicit linear section is
-[
+$$
 \sigma(a,c)=(a-c)X+a.
-]
+$$
 Its section theorem proves (E\circ\sigma=\mathrm{id}_{\mathbb Z\times\mathbb Z}). The general split-kernel equivalence then gives
-[
+$$
 \mathbb Z[X]\simeq_{\mathbb Z}\ker(E)\times(\mathbb Z\times\mathbb Z),
-]
+$$
 with inverse ((K,(a,c))\mapsto K+\sigma(a,c)), and the first-isomorphism quotient equivalence gives
-[
+$$
 \mathbb Z[X]/\ker(E)\simeq_{\mathbb Z}\mathbb Z\times\mathbb Z.
-]
+$$
 
 The integral is defined as
-[
+$$
 M(P)=\int_0^1\left(e^xP(x)+\frac{4A(P)}{1+x^2}\right)dx.
-]
+$$
 The formal proof uses the derivative of (e^xS_P(x)) and Mathlib's arctangent interval-integral theorem to establish
-[
+$$
 M(P)=A(P)(e+\pi)-C(P).
-]
+$$
 Let (L(a,c)=a(e+\pi)-c). The induced map from the quotient is
-[
+$$
 \overline M=L\circ E_{\mathrm{quot}},
-]
+$$
 and the map-level factorization theorem in Lean states
-[
+$$
 \overline M\circ q_E=L\circ E,
-]
+$$
 where (q_E:\mathbb Z[X]\to\mathbb Z[X]/\ker(E)) is the quotient projection. Thus the factorization is not merely pointwise: the linear maps themselves are proved equal.
 
 ### 7.1 ProofAudit and kernel-checker certificate
@@ -320,9 +320,9 @@ The five audited declarations are:
 - `ProofAudit.mixed_integral_factors_through_quotient`
 
 For each of these, and for the five core declarations printed by `#print axioms` in `MixedKernelQuotient.lean`, the dependency set is exactly
-[
+$$
 \{\texttt{propext},\ \texttt{Classical.choice},\ \texttt{Quot.sound}\}.
-]
+$$
 No `sorryAx`, custom `axiom`, `admitAx`, `native_decide`, or `Lean.ofReduceBool` occurs in the implementation. The CI allowlist is exactly the three axioms above.
 
 Successful verification at commit `c80d9eb50e6b6d8a14801e6a9db46df9f89a0e42`:
@@ -342,8 +342,8 @@ GitHub Actions run: https://github.com/2503140kcsk-eng/G/actions/runs/4354198790
 ### 7.2 What this theorem does not prove
 
 The quotient is isomorphic to `ℤ × ℤ`, and the section shows every integer pair occurs already for an affine polynomial. Hence the quotient factorization is exact but has no built-in Diophantine sparsity. It does not construct a sequence ((A_n,C_n)) for which
-[
+$$
 0<|A_n(e+\pi)-C_n|\longrightarrow0.
-]
+$$
 This limitation is structural, not a Lean gap: the next research task must impose an additional degree-growing constraint on the polynomial family and prove smallness after primitive reduction, without assuming the irrationality of (e+\pi).
 
