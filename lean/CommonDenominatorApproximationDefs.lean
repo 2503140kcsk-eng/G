@@ -1,5 +1,6 @@
 module
 public import ApproximationCriteria
+public import Mathlib.Algebra.Order.Ring.Abs
 
 @[expose] public section
 
