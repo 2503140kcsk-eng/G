@@ -50,6 +50,9 @@ lean_lib MixedKernelQuotient where
   srcDir := "lean"
 
 @[default_target]
+lean_lib PairedApproximationCriteria where
+  srcDir := "lean"
+
 lean_lib ProofAudit where
   srcDir := "lean"
 
