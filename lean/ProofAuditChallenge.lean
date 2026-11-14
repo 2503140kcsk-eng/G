@@ -252,4 +252,18 @@ theorem factorial_taylor_fusion_forces_sublinear_pi_denominators
       Filter.atTop (𝓝 0) := by
   sorry
 
+
+/-- A uniform lower bound for pi-side integer linear forms rules out vanishing
+    cross-weighted error for the current factorial Taylor approximants to e. -/
+theorem factorial_taylor_fusion_no_go_from_pi_measure_lower_bound
+    {r : ℕ → ℕ} {s : ℕ → ℤ} {c : ℝ}
+    (hc : 0 < c)
+    (hrpos : ∀ n, 0 < r n)
+    (hpi : ∀ n,
+      c / (r n : ℝ) ^ 7 ≤
+        |(r n : ℝ) * Real.pi - (s n : ℝ)|) :
+    ¬ Filter.Tendsto (FactorialTaylorFusion.factorialTaylorFusionError r s)
+      Filter.atTop (𝓝 0) := by
+  sorry
+
 end ProofAudit
