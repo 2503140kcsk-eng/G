@@ -20,13 +20,13 @@ def factorialTaylorNumerator (n : ℕ) : ℤ :=
   2 * (endpointTaylorValue n : ℤ)
 
 /-- The absolute integer-linear-form error in the existing Taylor approximation to e. -/
-def factorialTaylorApproximationError (n : ℕ) : ℝ :=
+noncomputable def factorialTaylorApproximationError (n : ℕ) : ℝ :=
   |signedIntegerLinearFormValue (Real.exp 1)
       (factorialTaylorDenominator n) (-factorialTaylorNumerator n)|
 
 /-- The cross-weighted error obtained by fusing the existing Taylor approximation
     to e with any rational approximation s(n)/r(n) to pi. -/
-def factorialTaylorFusionError
+noncomputable def factorialTaylorFusionError
     (r : ℕ → ℕ) (s : ℕ → ℤ) (n : ℕ) : ℝ :=
   commonDenominatorScaledError (Real.exp 1) Real.pi
     (factorialTaylorDenominator n) (r n)
