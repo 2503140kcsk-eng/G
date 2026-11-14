@@ -45,13 +45,13 @@ theorem irrational_of_tendsto_zero_paired_integer_linear_forms
   obtain ⟨n, hd, hevent⟩ := (hdet.and hevent).exists
   let L : ℕ → ℝ := fun k =>
     pairedIntegerLinearFormValue x (A k) (C k)
-  let a : ℤ := if L n ≠ 0 then A n else A (n + 1)
-  let c : ℤ := if L n ≠ 0 then C n else C (n + 1)
+  let a : ℤ := if L n = 0 then A (n + 1) else A n
+  let c : ℤ := if L n = 0 then C (n + 1) else C n
   have hselected :
       pairedIntegerLinearFormValue x a c =
-        if L n ≠ 0 then L n else L (n + 1) := by
-    by_cases h : L n ≠ 0 <;>
-      simp [pairedIntegerLinearFormValue, a, c, L, h]
+        if L n = 0 then L (n + 1) else L n := by
+    by_cases hzero : L n = 0 <;>
+      simp [pairedIntegerLinearFormValue, a, c, L, hzero]
   have hselected_nz :
       pairedIntegerLinearFormValue x a c ≠ 0 := by
     rw [hselected]
@@ -78,7 +78,7 @@ theorem irrational_of_tendsto_zero_paired_integer_linear_forms
     rw [hselected]
     by_cases hzero : L n = 0
     · simp [hzero]
-    · simp only [if_pos hzero]
+    · simp [hzero]
       exact le_add_of_nonneg_right (abs_nonneg _)
   have hselected_lt :
       |pairedIntegerLinearFormValue x a c| < 1 / |(q : ℝ)| :=
