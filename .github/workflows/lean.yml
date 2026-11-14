@@ -1,0 +1,22 @@
+name: Lean CI and ProofAudit
+
+on:
+  push:
+    branches: ["main", "feat/**"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  lean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          build: true
+          axiom-audit: true
+          axiom-audit-allow: propext,Classical.choice,Quot.sound
+          axiom-audit-root: ProofAudit
+          nanoda: true
+          nanoda-allow-sorry: false
