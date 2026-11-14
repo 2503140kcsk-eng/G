@@ -27,8 +27,8 @@ theorem irrational_of_tendsto_zero_paired_integer_linear_forms
       A n * C (n + 1) - A (n + 1) * C n ≠ 0)
     (hsmall : Tendsto
       (fun n : ℕ =>
-        |pairedIntegerLinearFormValue x (A n) (C n)| +
-          |pairedIntegerLinearFormValue x (A (n + 1)) (C (n + 1))|)
+        |(A n : ℝ) * x - (C n : ℝ)| +
+          |(A (n + 1) : ℝ) * x - (C (n + 1) : ℝ)|)
       atTop (𝓝 0)) :
     Irrational x := by
   apply (irrational_iff_ne_rational x).2
@@ -40,7 +40,8 @@ theorem irrational_of_tendsto_zero_paired_integer_linear_forms
       |pairedIntegerLinearFormValue x (A n) (C n)| +
         |pairedIntegerLinearFormValue x (A (n + 1)) (C (n + 1))| <
           1 / |(q : ℝ)| :=
-    hsmall.eventually (Iio_mem_nhds hbound)
+    (by simpa [pairedIntegerLinearFormValue] using
+      hsmall.eventually (Iio_mem_nhds hbound))
   obtain ⟨n, hd, hevent⟩ := (hdet.and hevent).exists
   let L : ℕ → ℝ := fun k =>
     pairedIntegerLinearFormValue x (A k) (C k)
