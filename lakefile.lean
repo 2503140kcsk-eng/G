@@ -74,6 +74,14 @@ lean_lib CommonDenominatorApproximation where
   srcDir := "lean"
 
 @[default_target]
+lean_lib FactorialTaylorFusionDefs where
+  srcDir := "lean"
+
+@[default_target]
+lean_lib FactorialTaylorFusion where
+  srcDir := "lean"
+
+@[default_target]
 lean_lib ProofAudit where
   srcDir := "lean"
 
