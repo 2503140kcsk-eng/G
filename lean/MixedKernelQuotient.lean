@@ -4,10 +4,12 @@ public import Mathlib.Analysis.Calculus.Deriv.Polynomial
 public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+public import Mathlib.Topology.Algebra.Polynomial
 
 @[expose] public section
 
 open Polynomial
+open MeasureTheory
 open scoped Topology
 
 noncomputable section
@@ -16,10 +18,16 @@ namespace MixedKernelQuotient
 variable {R : Type*} [CommRing R]
 
 /-- Reflection of a polynomial: p(X) is sent to p(-X). -/
-def reflect : Polynomial R →ₗ[R] Polynomial R where
-  toFun p := p.comp (-X)
-  map_add' p q := by simp
-  map_smul' a p := by simp
+def reflect : Polynomial R →ₗ[R] Polynomial R :=
+  (Polynomial.aeval (-Polynomial.X)).toLinearMap
+
+@[simp] theorem reflect_apply (p : Polynomial R) :
+    reflect p = p.comp (-X) := by
+  simp [reflect, Polynomial.aeval_def]
+
+theorem reflect_reflect (p : Polynomial R) :
+    reflect (reflect p) = p := by
+  simp [reflect, Polynomial.aeval_def]
 
 /-- Alternating sum of iterated derivatives, implemented by reflection
 of Mathlib's sum of iterated derivatives. -/
@@ -30,24 +38,32 @@ theorem derivative_signedSum_add (p : Polynomial R) :
     (signedSumIDeriv p).derivative + signedSumIDeriv p = p := by
   let q := reflect p
   let t := Polynomial.sumIDeriv q
-  have hsum := Polynomial.sumIDeriv_eq_self_add q
-  have hdouble : q.comp (-X) = p := by simp [q, reflect]
-  have hcomp : t.comp (-X) = p + t.derivative.comp (-X) := by
+  have hsum : t = q + t.derivative := by
+    simpa [t] using (Polynomial.sumIDeriv_eq_self_add q)
+  have hdouble : reflect q = p := by
+    simpa [q] using reflect_reflect p
+  have hcomp : reflect t = p + reflect t.derivative := by
     calc
-      t.comp (-X) = (q + t.derivative).comp (-X) := by rw [hsum]
-      _ = q.comp (-X) + t.derivative.comp (-X) := by simp
-      _ = p + t.derivative.comp (-X) := by rw [hdouble]
-  have hderiv : (t.comp (-X)).derivative = -t.derivative.comp (-X) := by
-    rw [Polynomial.derivative_comp]
-    simp
-  change (t.comp (-X)).derivative + t.comp (-X) = p
+      reflect t = reflect (q + t.derivative) := by rw [hsum]
+      _ = reflect q + reflect t.derivative := by simp
+      _ = p + reflect t.derivative := by rw [hdouble]
+  have hderiv : (reflect t).derivative = -reflect t.derivative := by
+    rw [reflect_apply, Polynomial.derivative_comp]
+    simp [reflect_apply]
+  change (reflect t).derivative + reflect t = p
   rw [hderiv, hcomp]
   abel
+
+theorem reflect_map
+    {S : Type*} [CommRing S] (f : R →+* S) (p : Polynomial R) :
+    reflect (p.map f) = (reflect p).map f := by
+  simp [reflect, Polynomial.aeval_def, Polynomial.map_comp]
 
 theorem signedSumIDeriv_map
     {S : Type*} [CommRing S] (f : R →+* S) (p : Polynomial R) :
     signedSumIDeriv (p.map f) = (signedSumIDeriv p).map f := by
-  simp [signedSumIDeriv, reflect, Polynomial.sumIDeriv_map]
+  simp only [signedSumIDeriv, LinearMap.comp_apply]
+  rw [reflect_map, Polynomial.sumIDeriv_map, reflect_map]
 
 def endpointA (p : Polynomial R) : R := (signedSumIDeriv p).eval 1
 def endpointC (p : Polynomial R) : R := (signedSumIDeriv p).eval 0
@@ -102,8 +118,7 @@ def splitKerEquiv
     apply Prod.ext
     · apply Subtype.ext
       change a • x - s (f (a • x)) = a • (x - s (f x))
-      simp only [map_smul]
-      module
+      simp only [map_smul, smul_sub]
     · simp
 
 noncomputable def splitKerQuotientEquiv
@@ -150,38 +165,46 @@ theorem endpointSignature_section (z : ℤ × ℤ) :
       (Polynomial.sumIDeriv q).derivative =
           Polynomial.sumIDeriv q.derivative :=
         (Polynomial.sumIDeriv_derivative q).symm
-      _ = C (c - a) := by rw [hqderiv]; simp
+      _ = C (c - a) := by rw [hqderiv, Polynomial.sumIDeriv_C]
   have hsum : Polynomial.sumIDeriv q = q + C (c - a) := by
     rw [Polynomial.sumIDeriv_eq_self_add, hsumderiv]
-  have hS :
-      signedSumIDeriv p = p + C (c - a) := by
+  have hdouble : reflect q = p := by
+    simpa [q] using reflect_reflect p
+  have hS : signedSumIDeriv p = C (a - c) * X + C c := by
     change reflect (Polynomial.sumIDeriv q) = _
-    rw [hsum]
-    simp [reflect, hq, p]
-  simp [endpointSignature, endpointA, endpointC, endpointSection, p, hS]
-  <;> ring
+    calc
+      reflect (Polynomial.sumIDeriv q) =
+          reflect (q + C (c - a)) := by rw [hsum]
+      _ = reflect q + reflect (C (c - a)) := by simp
+      _ = p + C (c - a) := by simp [hdouble, reflect]
+      _ = C (a - c) * X + C c := by rw [p]; ring
+  change ((signedSumIDeriv p).eval 1, (signedSumIDeriv p).eval 0) = (a, c)
+  rw [hS]
+  simp [p]
 
 theorem endpointSignature_surjective :
     Function.Surjective endpointSignature := by
   intro z
   exact ⟨endpointSection z, endpointSignature_section z⟩
 
+theorem endpointSignature_rightInverse :
+    endpointSignature.comp endpointSection = LinearMap.id := by
+  apply LinearMap.ext
+  intro z
+  exact endpointSignature_section z
+
 noncomputable def endpointSplitEquiv :
     Polynomial ℤ ≃ₗ[ℤ] LinearMap.ker endpointSignature × (ℤ × ℤ) :=
-  splitKerEquiv endpointSignature endpointSection (by
-    ext z
-    exact endpointSignature_section z)
+  splitKerEquiv endpointSignature endpointSection endpointSignature_rightInverse
 
 noncomputable def endpointQuotientEquiv :
     (Polynomial ℤ ⧸ LinearMap.ker endpointSignature) ≃ₗ[ℤ] ℤ × ℤ :=
-  splitKerQuotientEquiv endpointSignature endpointSection (by
-    ext z
-    exact endpointSignature_section z)
+  endpointSignature.quotKerEquivOfSurjective endpointSignature_surjective
 
 theorem endpointQuotientEquiv_mkQ (p : Polynomial ℤ) :
     endpointQuotientEquiv ((LinearMap.ker endpointSignature).mkQ p) =
       endpointSignature p := by
-  simp [endpointQuotientEquiv, splitKerQuotientEquiv]
+  simp [endpointQuotientEquiv]
 
 /-! Analytic component of the mixed integral. -/
 
@@ -198,7 +221,6 @@ theorem intervalIntegral_exp_mul_eval (p : Polynomial ℝ) :
         (derivative_signedSum_add p)
       simpa [add_comm] using hh
     convert h using 1
-    · rfl
     · rw [← mul_add, heval]
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt
     (fun x hx => hderiv x)
@@ -215,24 +237,26 @@ theorem intervalIntegral_four_a_over_one_add_sq (a : ℝ) :
           funext x
           ring
     _ = (4 * a) * (Real.arctan 1 - Real.arctan 0) := by
-          rw [intervalIntegral.integral_inv_one_add_sq]
+          rw [Real.integral_inv_one_add_sq]
     _ = a * Real.pi := by
           simp [Real.arctan_one]
           ring
 
 theorem endpointA_map_real (p : Polynomial ℤ) :
-    endpointA (p.map (Int.castRingHom ℝ)) = (endpointA p : ℝ) := by
+    endpointA (R := ℝ) (p.map (Int.castRingHom ℝ)) =
+      (endpointA (R := ℤ) p : ℝ) := by
   simp [endpointA, signedSumIDeriv_map]
 
 theorem endpointC_map_real (p : Polynomial ℤ) :
-    endpointC (p.map (Int.castRingHom ℝ)) = (endpointC p : ℝ) := by
+    endpointC (R := ℝ) (p.map (Int.castRingHom ℝ)) =
+      (endpointC (R := ℤ) p : ℝ) := by
   simp [endpointC, signedSumIDeriv_map]
 
 /-- The mixed integral appearing in the project research note. -/
 noncomputable def mixedIntegralValue (p : Polynomial ℤ) : ℝ :=
   ∫ x in (0 : ℝ)..1,
     Real.exp x * (p.map (Int.castRingHom ℝ)).eval x +
-      (4 * (endpointA p : ℝ)) / (1 + x ^ 2)
+      (4 * (endpointA (R := ℤ) p : ℝ)) / (1 + x ^ 2)
 
 /-- The linear form on endpoint coefficients. -/
 noncomputable def mixedPairValue : ℤ × ℤ →ₗ[ℤ] ℝ where
@@ -242,11 +266,8 @@ noncomputable def mixedPairValue : ℤ × ℤ →ₗ[ℤ] ℝ where
     simp
     ring
   map_smul' := by
-    intro n z
-    rcases z with ⟨a, c⟩
-    change ((n * a : ℤ) : ℝ) * (Real.exp 1 + Real.pi) -
-        ((n * c : ℤ) : ℝ) =
-      (n : ℝ) * ((a : ℝ) * (Real.exp 1 + Real.pi) - (c : ℝ))
+    rintro n ⟨a, c⟩
+    simp only [Prod.smul_mk, zsmul_eq_mul, Int.cast_mul]
     push_cast
     ring
 
@@ -266,10 +287,16 @@ theorem mixedIntegral_identity (p : Polynomial ℤ) :
   have hA := endpointA_map_real p
   have hC := endpointC_map_real p
   have hExp := intervalIntegral_exp_mul_eval pR
-  have hArctan := intervalIntegral_four_a_over_one_add_sq (endpointA p : ℝ)
+  have hArctan := intervalIntegral_four_a_over_one_add_sq
+    (endpointA (R := ℤ) p : ℝ)
   have hfCont : Continuous (fun x : ℝ => Real.exp x * pR.eval x) := by fun_prop
-  have hgCont : Continuous (fun x : ℝ => (4 * (endpointA p : ℝ)) / (1 + x ^ 2)) := by
-    fun_prop
+  have hbase : Continuous (fun x : ℝ => 1 + x ^ 2) := by fun_prop
+  have hinv : Continuous (fun x : ℝ => (1 + x ^ 2)⁻¹) :=
+    hbase.inv₀ (by intro x; positivity)
+  have hgCont : Continuous
+      (fun x : ℝ => (4 * (endpointA (R := ℤ) p : ℝ)) / (1 + x ^ 2)) := by
+    simpa [div_eq_mul_inv] using
+      (continuous_const.mul hinv)
   have hfInt : IntervalIntegrable
       (fun x : ℝ => Real.exp x * pR.eval x) volume 0 1 :=
     hfCont.intervalIntegrable 0 1
@@ -285,7 +312,8 @@ theorem mixedIntegral_identity (p : Polynomial ℤ) :
 theorem mixedIntegral_factorization_map :
     mixedIntegralQuotientFactor.comp ((LinearMap.ker endpointSignature).mkQ) =
       mixedPairValue.comp endpointSignature := by
-  ext p
+  apply LinearMap.ext
+  intro p
   simp [mixedIntegralQuotientFactor_mkQ]
 
 theorem mixedIntegral_factors_through_quotient (p : Polynomial ℤ) :
