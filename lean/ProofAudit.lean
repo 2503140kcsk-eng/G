@@ -7,6 +7,7 @@ public import HermiteLindemannBridge
 public import EPlusPi
 public import SchanuelConditional
 public import ApproximationCriteria
+public import PairedApproximationCriteria
 public import MixedKernelQuotient
 
 @[expose] public section
@@ -90,6 +91,19 @@ theorem integer_forms_tending_to_zero_imply_irrationality
   simpa [EPlusPiApproximation.signedIntegerLinearFormValue] using
     EPlusPiApproximation.irrational_of_tendsto_zero_signed_integer_linear_forms
       hnz hsmall
+
+theorem paired_integer_forms_tending_to_zero_imply_irrationality
+    {x : ℝ} {A C : ℕ → ℤ}
+    (hdet : ∀ᶠ n : ℕ in atTop,
+      A n * C (n + 1) - A (n + 1) * C n ≠ 0)
+    (hsmall : Tendsto
+      (fun n : ℕ =>
+        |(A n : ℝ) * x - (C n : ℝ)| +
+          |(A (n + 1) : ℝ) * x - (C (n + 1) : ℝ)|)
+      atTop (𝓝 0)) :
+    Irrational x :=
+  EPlusPiApproximation.irrational_of_tendsto_zero_paired_integer_linear_forms
+    hdet (by simpa [EPlusPiApproximation.pairedIntegerLinearFormValue] using hsmall)
 
 /-! ## Relative algebraic closure as an intermediate field -/
 
