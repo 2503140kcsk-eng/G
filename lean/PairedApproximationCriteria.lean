@@ -45,16 +45,10 @@ theorem irrational_of_tendsto_zero_paired_integer_linear_forms
   obtain ⟨n, hd, hevent⟩ := (hdet.and hevent).exists
   let L : ℕ → ℝ := fun k =>
     pairedIntegerLinearFormValue x (A k) (C k)
-  let a : ℤ := if L n = 0 then A (n + 1) else A n
-  let c : ℤ := if L n = 0 then C (n + 1) else C n
-  have hselected :
-      pairedIntegerLinearFormValue x a c =
-        if L n = 0 then L (n + 1) else L n := by
-    by_cases hzero : L n = 0 <;>
-      simp [pairedIntegerLinearFormValue, a, c, L, hzero]
-  have hselected_nz :
-      pairedIntegerLinearFormValue x a c ≠ 0 := by
-    rw [hselected]
+  have hchosen :
+      ∃ a c : ℤ,
+        pairedIntegerLinearFormValue x a c ≠ 0 ∧
+        |pairedIntegerLinearFormValue x a c| ≤ |L n| + |L (n + 1)| := by
     by_cases hzero : L n = 0
     · have hnext : L (n + 1) ≠ 0 := by
         intro hnext
@@ -71,15 +65,15 @@ theorem irrational_of_tendsto_zero_paired_integer_linear_forms
           linear_combination
             (A (n + 1) : ℝ) * hfirst - (A n : ℝ) * hsecond
         exact_mod_cast hdetR
-      simp [hzero, hnext]
-    · simp [hzero]
-  have hselected_abs_le :
-      |pairedIntegerLinearFormValue x a c| ≤ |L n| + |L (n + 1)| := by
-    rw [hselected]
-    by_cases hzero : L n = 0
-    · simp [hzero]
-    · simp [hzero]
-      exact le_add_of_nonneg_right (abs_nonneg _)
+      refine ⟨A (n + 1), C (n + 1), ?_, ?_⟩
+      · simpa [pairedIntegerLinearFormValue, L] using hnext
+      · simpa [pairedIntegerLinearFormValue, L, hzero] using
+          (le_add_of_nonneg_left (abs_nonneg (L (n + 1))))
+    · refine ⟨A n, C n, ?_, ?_⟩
+      · simpa [pairedIntegerLinearFormValue, L] using hzero
+      · simpa [pairedIntegerLinearFormValue, L] using
+          (le_add_of_nonneg_right (abs_nonneg (L (n + 1))))
+  obtain ⟨a, c, hselected_nz, hselected_abs_le⟩ := hchosen
   have hselected_lt :
       |pairedIntegerLinearFormValue x a c| < 1 / |(q : ℝ)| :=
     lt_of_le_of_lt hselected_abs_le hevent
