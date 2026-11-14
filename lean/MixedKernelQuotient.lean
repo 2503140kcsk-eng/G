@@ -231,11 +231,12 @@ theorem intervalIntegral_four_a_over_one_add_sq (a : ℝ) :
     (∫ x in (0 : ℝ)..1, (4 * a) / (1 + x ^ 2)) = a * Real.pi := by
   calc
     (∫ x in (0 : ℝ)..1, (4 * a) / (1 + x ^ 2))
-        = (4 * a) * (∫ x in (0 : ℝ)..1, (1 + x ^ 2)⁻¹) := by
-          rw [intervalIntegral.integral_const_mul]
+        = ∫ x in (0 : ℝ)..1, (4 * a) * (1 + x ^ 2)⁻¹ := by
           congr 1
           funext x
-          ring
+          rw [div_eq_mul_inv]
+    _ = (4 * a) * (∫ x in (0 : ℝ)..1, (1 + x ^ 2)⁻¹) := by
+          rw [← intervalIntegral.integral_const_mul]
     _ = (4 * a) * (Real.arctan 1 - Real.arctan 0) := by
           rw [Real.integral_inv_one_add_sq]
     _ = a * Real.pi := by
@@ -301,7 +302,7 @@ theorem mixedIntegral_identity (p : Polynomial ℤ) :
       (fun x : ℝ => Real.exp x * pR.eval x) volume 0 1 :=
     hfCont.intervalIntegrable 0 1
   have hgInt : IntervalIntegrable
-      (fun x : ℝ => (4 * (endpointA p : ℝ)) / (1 + x ^ 2)) volume 0 1 :=
+      (fun x : ℝ => (4 * (endpointA (R := ℤ) p : ℝ)) / (1 + x ^ 2)) volume 0 1 :=
     hgCont.intervalIntegrable 0 1
   unfold mixedIntegralValue
   rw [intervalIntegral.integral_add hfInt hgInt, hExp, hArctan,
