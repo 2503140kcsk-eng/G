@@ -65,6 +65,7 @@ lean_lib SimultaneousPolynomialApproximation where
 lean_lib ProofAuditApprox where
   srcDir := "lean"
 
+@[default_target]
 lean_lib ProofAudit where
   srcDir := "lean"
 
