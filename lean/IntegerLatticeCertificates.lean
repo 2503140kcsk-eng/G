@@ -281,6 +281,34 @@ theorem PrimitiveIntegerization.primitive_pairing_eq_scaled_rational
           rationalVectorPairing a x := by ring
 
 /--
+For two full-rank integer lattices with explicit bases in the same ambient
+additive group, their relative index is the absolute determinant of the
+basis-change matrix. This is the determinant form of the residual-index
+calculation used before taking local valuations.
+-/
+theorem relative_index_eq_natAbs_basis_change_det
+    {E : Type*} [AddCommGroup E]
+    (L₁ L₂ : AddSubgroup E) (hL : L₁ ≤ L₂)
+    {ι : Type*} [DecidableEq ι] [Fintype ι]
+    (b₁ : Basis ι ℤ L₁.toIntSubmodule)
+    (b₂ : Basis ι ℤ L₂.toIntSubmodule) :
+    L₁.relIndex L₂ =
+      (b₂.det (fun i => ⟨b₁ i, hL (SetLike.coe_mem _)⟩)).natAbs :=
+  AddSubgroup.relIndex_eq_natAbs_det L₁ L₂ hL b₁ b₂
+
+/--
+The determinant index formula for one full-rank integer lattice, relative to
+any explicit basis of the ambient free abelian group.
+-/
+theorem lattice_index_eq_natAbs_basis_det
+    {E : Type*} [AddCommGroup E]
+    (bE : Basis (Fin m) ℤ E)
+    (L : AddSubgroup E)
+    (bL : Basis (Fin m) ℤ L.toIntSubmodule) :
+    L.index = (bE.det (bL ·)).natAbs :=
+  AddSubgroup.index_eq_natAbs_det bE L bL
+
+/--
 Adjoining one target vector to an integer lattice gives a finite-index
 extension whose relative index multiplies the new lattice index back to
 the old lattice index. This is the exact group-index identity underlying
