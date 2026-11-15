@@ -302,19 +302,6 @@ theorem nonprimitive_row_kernel_counterexample :
 
 
 /--
-Endpoint-lattice specialization matching the Split–Machin notation.
-
-The vector (b₀, δ) is assumed to be an old success relation, so every
-source row annihilates it. The gcd-one condition makes the perpendicular
-row direction (δ, -b₀) primitive. A nonzero source row rules out the
-rank-zero case. Consequently the full integer kernel is exactly the
-Z-span of the old success vector (b₀, δ).
-
-This theorem isolates the precise source-specific inputs needed from the
-Split–Machin endpoint map; it does not assume that a primitive row itself
-occurs in the matrix.
--/
-/--
 The old success-coordinate equation for a row forces that row to be
 collinear with the primitive perpendicular direction (δ,-b₀).
 -/
@@ -332,6 +319,19 @@ theorem endpoint_success_rows_imply_anchor_minors
   intro i
   exact endpoint_success_row_implies_anchor_minor (hsuccess i)
 
+/--
+Endpoint-lattice specialization matching the Split–Machin notation.
+
+The vector (b₀, δ) is assumed to be an old success relation, so every
+source row annihilates it. The gcd-one condition makes the perpendicular
+row direction (δ, -b₀) primitive. A nonzero source row rules out the
+rank-zero case. Consequently the full integer kernel is exactly the
+Z-span of the old success vector (b₀, δ).
+
+This theorem isolates the precise source-specific inputs needed from the
+Split–Machin endpoint map; it does not assume that a primitive row itself
+occurs in the matrix.
+-/
 theorem integer_endpoint_kernel_from_primitive_success
     {ι : Type*} (M : Matrix ι (Fin 2) ℤ)
     {b₀ δ : ℤ}
