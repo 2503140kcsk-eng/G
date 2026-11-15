@@ -537,4 +537,24 @@ theorem integer_two_column_matrix_kernel_eq_zsmul_anchor_of_nonzero_gcd_one
 #print axioms integer_two_column_matrix_kernel_eq_zsmul_anchor_of_nonzero
 #print axioms integer_two_column_matrix_kernel_eq_zsmul_anchor_of_nonzero_gcd_one
 
+
+/-! ## Split–Machin endpoint kernel from the old success coordinates -/
+
+/-- If the old success vector (b₀,δ) is primitive and lies in the endpoint
+    kernel, and the endpoint matrix is nonzero, it generates the full
+    integer kernel. -/
+theorem integer_endpoint_kernel_from_primitive_success
+    {ι : Type*} (M : Matrix ι (Fin 2) ℤ)
+    {b₀ δ : ℤ}
+    (hcoprime : Int.gcd b₀ δ = 1)
+    (hsuccess : ∀ i, M i 0 * b₀ + M i 1 * δ = 0)
+    (hnonzero : ∃ i, M i 0 ≠ 0 ∨ M i 1 ≠ 0)
+    (x y : ℤ) :
+    (∀ i, M i 0 * x + M i 1 * y = 0) ↔
+      ∃ k : ℤ, x = b₀ * k ∧ y = δ * k :=
+  EPlusPiApproximation.integer_endpoint_kernel_from_primitive_success
+    M hcoprime hsuccess hnonzero x y
+
+#print axioms integer_endpoint_kernel_from_primitive_success
+
 end ProofAudit
