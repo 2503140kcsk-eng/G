@@ -53,7 +53,9 @@
     "ProofAudit.endpoint_success_row_implies_anchor_minor",
     "ProofAudit.endpoint_success_rows_imply_anchor_minors",
     "ProofAudit.not_mem_integer_column_span_of_modular_dual",
-    "ProofAudit.finite_ratio_weighted_error_tendsto_zero"
+    "ProofAudit.finite_ratio_weighted_error_tendsto_zero",
+    "ProofAudit.cyclic_extension_relative_index_identity",
+    "ProofAudit.cyclic_extension_index_dvd"
   ],
   "permitted_axioms": [
     "propext",
