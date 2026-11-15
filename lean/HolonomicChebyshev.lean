@@ -33,9 +33,10 @@ def uCoeff (n k : ℕ) : ℚ :=
 theorem tCoeff_succ_succ (n k : ℕ) :
     tCoeff (n + 2) (k + 1) =
       2 * tCoeff (n + 1) k - tCoeff n (k + 1) := by
-  rw [Polynomial.Chebyshev.T_add_two]
+  unfold tCoeff
+  rw [Polynomial.Chebyshev.T_add_two ℚ (n : ℤ)]
   rw [mul_assoc]
-  simp [tCoeff]
+  simp
 
 /-- Boundary case of the first-kind coefficient recurrence. -/
 theorem tCoeff_succ_succ_zero (n : ℕ) :
@@ -48,9 +49,10 @@ theorem tCoeff_succ_succ_zero (n : ℕ) :
 theorem uCoeff_succ_succ (n k : ℕ) :
     uCoeff (n + 2) (k + 1) =
       2 * uCoeff (n + 1) k - uCoeff n (k + 1) := by
-  rw [Polynomial.Chebyshev.U_add_two]
+  unfold uCoeff
+  rw [Polynomial.Chebyshev.U_add_two ℚ (n : ℤ)]
   rw [mul_assoc]
-  simp [uCoeff]
+  simp
 
 /-- Boundary case of the second-kind coefficient recurrence. -/
 theorem uCoeff_succ_succ_zero (n : ℕ) :
@@ -112,12 +114,12 @@ def fundamentalDet (n : ℕ) : Polynomial ℚ :=
 theorem fundamentalDet_eq_neg_casoratian (n : ℕ) :
     fundamentalDet n = -casoratian n := by
   simp [fundamentalDet, det2, casoratian]
-  ring
 
 /-- The 2x2 fundamental determinant is exactly X, independently of n. -/
 theorem fundamentalDet_eq_X (n : ℕ) :
     fundamentalDet n = Polynomial.X := by
   rw [fundamentalDet_eq_neg_casoratian, casoratian_eq_neg_X]
+  simp
 
 /-- Real scaled second-kind Chebyshev values at the Mehler-Heine scale. -/
 def scaledU (t : ℝ) (n : ℕ) : ℝ :=
