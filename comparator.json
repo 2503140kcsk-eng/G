@@ -55,7 +55,9 @@
     "ProofAudit.not_mem_integer_column_span_of_modular_dual",
     "ProofAudit.finite_ratio_weighted_error_tendsto_zero",
     "ProofAudit.cyclic_extension_relative_index_identity",
-    "ProofAudit.cyclic_extension_index_dvd"
+    "ProofAudit.cyclic_extension_index_dvd",
+    "ProofAudit.relative_index_eq_natAbs_basis_change_det",
+    "ProofAudit.lattice_index_eq_natAbs_basis_det"
   ],
   "permitted_axioms": [
     "propext",
