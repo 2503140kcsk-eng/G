@@ -58,6 +58,10 @@ lean_lib IntegerEndpointLattice where
   srcDir := "lean"
 
 @[default_target]
+lean_lib IntegerLatticeCertificates where
+  srcDir := "lean"
+
+@[default_target]
 lean_lib PolynomialApproximationDefs where
   srcDir := "lean"
 
