@@ -128,3 +128,16 @@ tend to zero, and it must also be eventually nonzero. The sufficient implication
 A lacunary-series example in [COMMON_DENOMINATOR_FUSION_AUDIT_2026-11-14.md](COMMON_DENOMINATOR_FUSION_AUDIT_2026-11-14.md) shows why separate errors tending to zero do not suffice: multiplying by the opposite denominators can make the fused error diverge. This is an obstruction to naive approximation fusion, not a result about the actual values of e and π.
 
 CI push run #368 succeeded on commit 6f49702caca4abded88e8e4463e2cc29261430ee: [GitHub Actions run #368](https://github.com/2503140kcsk-eng/G/actions/runs/43586720392). The pinned build, warning-free build, axiom audit, 30-contract Comparator, Lean paranoid kernel, lean4lean, nanoda, con-leche, con-ron, and Lean default kernel all passed. The implementation still does **not** construct a cross-weighted error sequence for e and π; unconditional irrationality or transcendence of e + π remains unproved.
+
+## Latest research continuation — factorial-Taylor fusion no-go (2026-11-15)
+
+A new independent research note, [FACTORIAL_TAYLOR_FUSION_NO_GO_2026-11-15.md](FACTORIAL_TAYLOR_FUSION_NO_GO_2026-11-15.md), records a conditional obstruction to the current factorial-Taylor/common-denominator strategy.
+
+- The endpoint Taylor approximants to `e` have `q_n = 2*n!`, integer numerator `p_n`, and exact error `q_n*e-p_n` between `2/(n+1)` and `4/(n+1)`.
+- The cross-weighted fusion budget tending to zero would force the denominator `r_n` of the `pi` approximation to satisfy `r_n/(n+1) -> 0`.
+- Zeilberger–Zudilin's published irrationality-measure bound for `pi` implies a uniform lower bound `|r*pi-s| >= c/r^7` for some `c > 0`. This number-theoretic input is stated explicitly as a Lean theorem hypothesis; the finite-exception bridge is explained in the note but is not yet a separate Lean theorem.
+- Under that explicit lower-bound hypothesis, the fused absolute-error budget is at least `2*c*n!/(n+1)^7` eventually, and therefore cannot tend to zero. The proof is Lean-checked as Comparator contract 32.
+
+CI push run #391 succeeded on commit `bac0fb0b0151c99b6434c0b7a6951b81a748ac83`: [GitHub Actions run #391](https://github.com/2503140kcsk-eng/G/actions/runs/43662369506). The run passed the frozen-manifest check, implementation proof-hole scan, default build, warning-free build, 41-declaration axiom audit, 32-contract Comparator, Lean paranoid kernel, lean4lean, nanoda, con-leche, con-ron, and Lean default kernel.
+
+The result rules out this particular factorial-Taylor plus absolute cross-weighted error certificate. It does not rule out all other simultaneous-approximation families or signed-cancellation constructions, and it does **not** prove irrationality or transcendence of `e + π`. The open-problem status is unchanged.
