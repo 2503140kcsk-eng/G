@@ -260,7 +260,7 @@ theorem PrimitiveIntegerization.primitive_pairing_eq_scaled_rational
     integerVectorPairing a C.primitiveVector =
         (C.content : ℝ) * integerVectorPairing a C.primitiveVector /
           (C.content : ℝ) := by
-            field_simp
+            field_simp [hc]
     _ = (C.denominator : ℝ) * rationalVectorPairing a x /
           (C.content : ℝ) := by rw [hrel]
     _ = ((C.denominator : ℝ) / (C.content : ℝ)) *
@@ -284,7 +284,8 @@ theorem PrimitiveIntegerization.tendsto_primitive_errors_of_weighted
           |rationalVectorPairing a (x n)|) atTop (𝓝 0)) :
     Tendsto
       (fun n => |integerVectorPairing a (C n).primitiveVector|)
-      atTop (𝓝 0) := by
+      atTop (𝓝 0) ∧
+      ∀ n, (C n).primitiveVector ∈ L := by
   have hsame : ∀ n, (C n).primitiveVector ∈ L := by
     intro n
     exact (C n).primitive_mem hL
@@ -295,12 +296,13 @@ theorem PrimitiveIntegerization.tendsto_primitive_errors_of_weighted
             |rationalVectorPairing a (x n)|) := by
     funext n
     rw [(C n).primitive_pairing_eq_scaled_rational]
-    rw [abs_mul, abs_of_pos]
-    exact div_pos
+    rw [abs_mul, abs_of_pos (div_pos
       (Nat.cast_pos.mpr ((C n).denominator_pos))
-      (Nat.cast_pos.mpr ((C n).content_pos))
-  rw [hfun]
-  exact hweighted
+      (Nat.cast_pos.mpr ((C n).content_pos)))]
+  constructor
+  · rw [hfun]
+    exact hweighted
+  · exact hsame
 
 #print axioms IntegerLatticeMembershipCertificate.sound
 #print axioms IntegerLatticeNonmembershipCertificate.sound
