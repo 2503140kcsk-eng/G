@@ -261,7 +261,7 @@ theorem factorialTaylor_fusion_not_tendsto_zero_of_pi_lower_bound
       atTop atTop := by
     have hfac := factorial_div_seventh_power_tendsto_atTop
     have hmul := hfac.atTop_mul_const (mul_pos (by norm_num : (0 : ℝ) < 2) hc)
-    convert hmul using 1 <;> ext n <;> ring
+    convert hmul using 1; ext n; ring
   have hF : Tendsto (factorialTaylorFusionError r s) atTop atTop :=
     Filter.tendsto_atTop_mono' atTop
       (by
