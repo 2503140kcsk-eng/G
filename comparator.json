@@ -51,7 +51,8 @@
     "ProofAudit.integer_two_column_matrix_kernel_eq_zsmul_anchor_of_nonzero_gcd_one",
     "ProofAudit.integer_endpoint_kernel_from_primitive_success",
     "ProofAudit.endpoint_success_row_implies_anchor_minor",
-    "ProofAudit.endpoint_success_rows_imply_anchor_minors"
+    "ProofAudit.endpoint_success_rows_imply_anchor_minors",
+    "ProofAudit.not_mem_integer_column_span_of_modular_dual"
   ],
   "permitted_axioms": [
     "propext",
