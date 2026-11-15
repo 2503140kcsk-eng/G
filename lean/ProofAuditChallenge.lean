@@ -309,4 +309,29 @@ theorem integer_row_kernel_iff_anchor_of_gcd_one
   sorry
 
 
+
+/-- Gcd one yields an explicit integer Bezout witness. -/
+theorem exists_bezout_of_int_gcd_eq_one
+    {a b : ℤ} (hcoprime : Int.gcd a b = 1) :
+    ∃ u v : ℤ, u * a + v * b = 1 := by
+  sorry
+
+/-- A two-column integer matrix whose rows are all collinear with a primitive
+    anchor row has exactly the anchor row's integer kernel. -/
+theorem integer_two_column_matrix_kernel_iff_anchor
+    {ι : Type*} (i₀ : ι) (M : Matrix ι (Fin 2) ℤ)
+    {a b : ℤ}
+    (hA₀ : M i₀ 0 = a) (hB₀ : M i₀ 1 = b)
+    (hbez : ∃ u v : ℤ, u * a + v * b = 1)
+    (hminor : ∀ i, a * M i 1 = b * M i 0)
+    (x y : ℤ) :
+    (∀ i, M i 0 * x + M i 1 * y = 0) ↔ a * x + b * y = 0 := by
+  sorry
+
+/-- Without anchor primitivity, the integer-multiple conclusion is false. -/
+theorem nonprimitive_pair_counterexample :
+    (2 : ℤ) * 1 = 2 * 1 ∧
+      ¬ ∃ k : ℤ, (1 : ℤ) = k * 2 ∧ 1 = k * 2 := by
+  sorry
+
 end ProofAudit
