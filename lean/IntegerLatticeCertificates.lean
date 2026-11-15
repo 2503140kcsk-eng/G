@@ -20,6 +20,9 @@ It deliberately does not infer decay from rational approximation error alone.
 
 namespace EPlusPiApproximation
 
+open Filter Module
+open scoped Topology
+
 /-- An exact certificate that y belongs to the integer column lattice of A. -/
 structure IntegerLatticeMembershipCertificate
     {m n : ℕ} (A : Matrix (Fin m) (Fin n) ℤ) (y : Fin m → ℤ) where
@@ -106,7 +109,7 @@ noncomputable def smithDiagonalCoefficients
     {m : ℕ} (L : Submodule ℤ (Fin m → ℤ))
     (hRank : Module.finrank ℤ L = m) : Fin m → ℤ :=
   Submodule.smithNormalFormCoeffs
-    (Module.Free.chooseBasis ℤ (Fin m → ℤ)) hRank
+    (Pi.basisFun ℤ (Fin m)) hRank
 
 /--
 For a full-rank sublattice of ℤ^m, its additive index is the product of the
@@ -122,7 +125,7 @@ theorem index_eq_product_smith_diagonal_coefficients
       ∏ i : Fin m, Int.natAbs (smithDiagonalCoefficients L hRank i) := by
   classical
   let b : Basis (Fin m) ℤ (Fin m → ℤ) :=
-    Module.Free.chooseBasis ℤ (Fin m → ℤ)
+    Pi.basisFun ℤ (Fin m)
   let snf := L.smithNormalFormOfRankEq b hRank
   rw [snf.toAddSubgroup_index_eq_ite]
   simp [smithDiagonalCoefficients, b, snf,
