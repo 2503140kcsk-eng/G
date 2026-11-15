@@ -301,10 +301,10 @@ The determinant index formula for one full-rank integer lattice, relative to
 any explicit basis of the ambient free abelian group.
 -/
 theorem lattice_index_eq_natAbs_basis_det
-    {E : Type*} [AddCommGroup E]
+    {E : Type*} [AddCommGroup E] {m : ℕ}
     (bE : Basis (Fin m) ℤ E)
     (L : AddSubgroup E)
-    (bL : Basis (Fin m) ℤ L.toIntSubmodule) :
+    (bL : Basis (Fin m) ℤ L) :
     L.index = (bE.det (bL ·)).natAbs :=
   AddSubgroup.index_eq_natAbs_det bE L bL
 
