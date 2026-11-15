@@ -666,4 +666,30 @@ theorem primitive_integerization_tendsto_zero
 #print axioms smith_diagonal_index_product
 #print axioms primitive_integerization_tendsto_zero
 
+/-- Finite convergence of the denominator/content ratio is a simple
+sufficient condition for primitive integer errors to vanish. -/
+theorem primitive_integerization_tendsto_zero_of_ratio
+    {m : ℕ} {L : Submodule ℤ (Fin m → ℤ)}
+    {x : ℕ → (Fin m → ℚ)}
+    (C : ∀ n, EPlusPiApproximation.PrimitiveIntegerization L (x n))
+    (hL : EPlusPiApproximation.IsPrimitiveIntegerLattice L)
+    (a : Fin m → ℝ) {b : ℝ}
+    (hratio : Tendsto
+      (fun n =>
+        ((C n).denominator : ℝ) / ((C n).content : ℝ))
+      atTop (𝓝 b))
+    (herr : Tendsto
+      (fun n =>
+        |EPlusPiApproximation.rationalVectorPairing a (x n)|)
+      atTop (𝓝 0)) :
+    Tendsto
+      (fun n =>
+        |EPlusPiApproximation.integerVectorPairing a (C n).primitiveVector|)
+      atTop (𝓝 0) ∧
+      ∀ n, (C n).primitiveVector ∈ L :=
+  EPlusPiApproximation.PrimitiveIntegerization.tendsto_primitive_errors_of_ratio
+    C hL a hratio herr
+
+#print axioms primitive_integerization_tendsto_zero_of_ratio
+
 end ProofAudit
