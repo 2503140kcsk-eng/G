@@ -114,10 +114,9 @@ theorem integerCoordinateSpace_finrank (m : ℕ) :
 noncomputable def smithDiagonalCoefficients
     {m : ℕ} (L : Submodule ℤ (Fin m → ℤ))
     (hRank : Module.finrank ℤ L = m) : Fin m → ℤ :=
-  Submodule.smithNormalFormCoeffs
-    (Pi.basisFun ℤ (Fin m))
+  (L.smithNormalFormOfRankEq (Pi.basisFun ℤ (Fin m))
     (by
-      rw [hRank, integerCoordinateSpace_finrank])
+      rw [hRank, integerCoordinateSpace_finrank])).a
 
 /--
 For a full-rank sublattice of ℤ^m, its additive index is the product of the
