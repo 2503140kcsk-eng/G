@@ -579,4 +579,22 @@ theorem endpoint_success_rows_imply_anchor_minors
 #print axioms endpoint_success_row_implies_anchor_minor
 #print axioms endpoint_success_rows_imply_anchor_minors
 
+
+/-! ## Modular-dual certificates for integer column lattices -/
+
+/-- A modular row functional that annihilates every matrix column but not
+    the target proves that the target is outside the integer column span. -/
+theorem not_mem_integer_column_span_of_modular_dual
+    {m n : ℕ}
+    (A : Matrix (Fin m) (Fin n) ℤ)
+    (y : Fin m → ℤ) (q : ℤ) (s : Fin m → ℤ)
+    (hcolumns : ∀ j : Fin n, q ∣ ∑ i : Fin m, s i * A i j)
+    (htarget : ¬ q ∣ ∑ i : Fin m, s i * y i) :
+    ¬ ∃ c : Fin n → ℤ,
+        ∀ i : Fin m, y i = ∑ j : Fin n, A i j * c j :=
+  EPlusPiApproximation.not_mem_integer_column_span_of_modular_dual
+    A y q s hcolumns htarget
+
+#print axioms not_mem_integer_column_span_of_modular_dual
+
 end ProofAudit
