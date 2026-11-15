@@ -406,4 +406,7 @@ theorem PrimitiveIntegerization.tendsto_primitive_errors_of_ratio
 #print axioms PrimitiveIntegerization.primitive_pairing_eq_scaled_rational
 #print axioms PrimitiveIntegerization.tendsto_primitive_errors_of_weighted
 
+#print axioms relative_index_eq_natAbs_basis_change_det
+#print axioms lattice_index_eq_natAbs_basis_det
+
 end EPlusPiApproximation
