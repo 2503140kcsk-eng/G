@@ -102,6 +102,77 @@ theorem PrimeLocalizedMembershipCertificate.sound
       ∃ c : Fin n → ℤ, ∀ i, u * y i = ∑ j, A i j * c j :=
   ⟨C.denominator, C.denominator_is_p_unit, C.coefficients, C.verifies⟩
 
+/-! ## The nine fixed Appendix-D prime channels -/
+
+/-- Multiply an integer target vector by a denominator-cleared scalar. -/
+def appendixDScaleTarget
+    {m : ℕ} (M q : ℤ) (w : Fin m → ℤ) : Fin m → ℤ :=
+  (M / q) • w
+
+/-- The vector (p^K e_i), used to certify a local exponent ceiling coordinatewise. -/
+def appendixDPrimePowerBasisTarget
+    {m : ℕ} (p K : ℕ) (i : Fin m) : Fin m → ℤ :=
+  fun j => if j = i then (p : ℤ) ^ K else 0
+
+/--
+A single data record for all nine Appendix-D prime channels.
+
+The 2, 3, 7, 11, 19, 23, and 31 channels each use a prime-power dual separator.
+The 17 channel deliberately contains both an integral membership witness at
+(M/17) and a nonmembership separator at (M/17^2).
+The 239 channel contains localized membership at (M/239^{44}), together
+with the (K=259) local exponent ceiling represented by one denominator-unit
+certificate for each standard basis vector.
+
+This is a certificate schema only. An inhabitant still requires every exact
+integer vector and every verification proof; the type does not manufacture
+the missing Appendix-D data.
+-/
+structure AppendixDPrimeLocalCertificateBundle
+    {m n : ℕ} (A : Matrix (Fin m) (Fin n) ℤ)
+    (w : Fin m → ℤ) (M : ℤ) where
+  p2 : PrimePowerNonmembershipCertificate A (appendixDScaleTarget M 2 w) 2
+  p3 : PrimePowerNonmembershipCertificate A (appendixDScaleTarget M 3 w) 3
+  p7 : PrimePowerNonmembershipCertificate A (appendixDScaleTarget M 7 w) 7
+  p11 : PrimePowerNonmembershipCertificate A (appendixDScaleTarget M 11 w) 11
+  p17Membership : IntegerLatticeMembershipCertificate A (appendixDScaleTarget M 17 w)
+  p17Nonmembership :
+    PrimePowerNonmembershipCertificate A
+      (appendixDScaleTarget M ((17 : ℤ) ^ 2) w) 17
+  p19 : PrimePowerNonmembershipCertificate A (appendixDScaleTarget M 19 w) 19
+  p23 : PrimePowerNonmembershipCertificate A (appendixDScaleTarget M 23 w) 23
+  p31 : PrimePowerNonmembershipCertificate A (appendixDScaleTarget M 31 w) 31
+  p239LocalizedMembership :
+    PrimeLocalizedMembershipCertificate A
+      (appendixDScaleTarget M ((239 : ℤ) ^ 44) w) 239
+  p239ExponentCeiling :
+    ∀ i : Fin m,
+      PrimeLocalizedMembershipCertificate A
+        (appendixDPrimePowerBasisTarget 239 259 i) 239
+
+/-- The residual-order factor reported in Section 14 of the source paper. -/
+def appendixDDelta1 : ℤ :=
+  (2 : ℤ) ^ 100 * 3 ^ 20 * 7 ^ 6 * 11 ^ 3 * 17 * 19 * 23 * 31
+
+/-- The endpoint defect factor reported in Section 14 of the source paper. -/
+def appendixDTheta1 : ℤ :=
+  17 * (239 : ℤ) ^ 44
+
+/-- The complete prime-supported integer (M_1=\delta_1\theta_1). -/
+def appendixDModulus1 : ℤ := appendixDDelta1 * appendixDTheta1
+
+/-- The paper's fixed (r=1) modulus factorization is built into its definition. -/
+theorem appendixDModulus1_factorization :
+    appendixDModulus1 = appendixDDelta1 * appendixDTheta1 := rfl
+
+/--
+The exact r=1 certificate bundle shape: the residual matrix has 261 rows and
+499 columns, and the target has 261 coordinates.
+-/
+abbrev AppendixDR1CertificateBundle
+    (A : Matrix (Fin 261) (Fin 499) ℤ) (w : Fin 261 → ℤ) :=
+  AppendixDPrimeLocalCertificateBundle A w appendixDModulus1
+
 /-! ## Smith diagonal factors and full-rank lattice index -/
 
 /-- The standard free module of integer coordinate vectors has rank m. -/
