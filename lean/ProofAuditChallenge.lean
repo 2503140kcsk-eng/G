@@ -477,4 +477,17 @@ theorem finite_ratio_weighted_error_tendsto_zero
     Filter.Tendsto (fun n => ratio n * error n) Filter.atTop (𝓝 0) := by
   sorry
 
+/-- The index tower for adjoining a single vector to an integer lattice. -/
+theorem cyclic_extension_relative_index_identity
+    {m : ℕ} (L : AddSubgroup (Fin m → ℤ)) (w : Fin m → ℤ) :
+    L.relIndex (L ⊔ AddSubgroup.zmultiples w) *
+      (L ⊔ AddSubgroup.zmultiples w).index = L.index := by
+  sorry
+
+/-- The index after adjoining a vector divides the original finite index. -/
+theorem cyclic_extension_index_dvd
+    {m : ℕ} (L : AddSubgroup (Fin m → ℤ)) (w : Fin m → ℤ) :
+    (L ⊔ AddSubgroup.zmultiples w).index ∣ L.index := by
+  sorry
+
 end ProofAudit
