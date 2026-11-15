@@ -694,4 +694,28 @@ theorem cyclic_extension_index_dvd
 #print axioms cyclic_extension_relative_index_identity
 #print axioms cyclic_extension_index_dvd
 
+/-- Relative lattice index is an absolute determinant in explicit bases. -/
+theorem relative_index_eq_natAbs_basis_change_det
+    {E : Type*} [AddCommGroup E]
+    (L₁ L₂ : AddSubgroup E) (hL : L₁ ≤ L₂)
+    {ι : Type*} [DecidableEq ι] [Fintype ι]
+    (b₁ : Basis ι ℤ L₁.toIntSubmodule)
+    (b₂ : Basis ι ℤ L₂.toIntSubmodule) :
+    L₁.relIndex L₂ =
+      (b₂.det (fun i => ⟨b₁ i, hL (SetLike.coe_mem _)⟩)).natAbs :=
+  EPlusPiApproximation.relative_index_eq_natAbs_basis_change_det
+    L₁ L₂ hL b₁ b₂
+
+/-- The index of a full-rank integer lattice is its basis determinant in absolute value. -/
+theorem lattice_index_eq_natAbs_basis_det
+    {E : Type*} [AddCommGroup E] {m : ℕ}
+    (bE : Basis (Fin m) ℤ E)
+    (L : AddSubgroup E)
+    (bL : Basis (Fin m) ℤ L) :
+    L.index = (bE.det (bL ·)).natAbs :=
+  EPlusPiApproximation.lattice_index_eq_natAbs_basis_det bE L bL
+
+#print axioms relative_index_eq_natAbs_basis_change_det
+#print axioms lattice_index_eq_natAbs_basis_det
+
 end ProofAudit
