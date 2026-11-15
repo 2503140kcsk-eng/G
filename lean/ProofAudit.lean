@@ -636,7 +636,7 @@ theorem smith_diagonal_index_product
     {m : ℕ} (L : Submodule ℤ (Fin m → ℤ))
     (hRank : Module.finrank ℤ L = m) :
     L.toAddSubgroup.index =
-      ∏ i : Fin m,
+      ∏ i : Fin (Fintype.card (Fin m)),
         Int.natAbs (EPlusPiApproximation.smithDiagonalCoefficients L hRank i) :=
   EPlusPiApproximation.index_eq_product_smith_diagonal_coefficients L hRank
 
