@@ -631,6 +631,16 @@ theorem prime_localized_membership_certificate_sound
       ∃ c : Fin n → ℤ, ∀ i, u * y i = ∑ j, A i j * c j :=
   C.sound
 
+/-- A populated Appendix-D bundle certifies all nine local prime decisions. -/
+theorem appendixD_prime_local_certificate_bundle_sound
+    {m n : ℕ} {A : Matrix (Fin m) (Fin n) ℤ}
+    {w : Fin m → ℤ} {M : ℤ}
+    (C : EPlusPiApproximation.AppendixDPrimeLocalCertificateBundle A w M) :
+    EPlusPiApproximation.AppendixDPrimeLocalCertificateSoundness A w M :=
+  C.sound
+
+#print axioms appendixD_prime_local_certificate_bundle_sound
+
 /-- The full-rank lattice index is the product of its Smith diagonal coefficients. -/
 theorem smith_diagonal_index_product
     {m : ℕ} (L : Submodule ℤ (Fin m → ℤ))
