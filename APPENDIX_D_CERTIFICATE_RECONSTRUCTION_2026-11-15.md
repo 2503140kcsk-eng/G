@@ -80,7 +80,7 @@ w_r\equiv q_{{\rm proj},r}\sigma_r-Y'_rz_{0,r}
 At \(r=1\), \(a_1=262\), so the source-reported shape is
 \(A_{{\rm res},1}\in\mathbb Z^{261\times499}\) and \(w_1\in\mathbb Z^{261}\).
 
-This is an exact regeneration route, not a claim that the current branch has executed it. In particular, the paper does not pin down the machine-readable Smith transformations, Hermite-basis tie-breaking, the chosen \(z_{0,1}\), or the chosen representative \(w_1\) in the published item; those choices matter for reproducing the *same byte-for-byte* matrix and witness vectors, even though the residual group and its order are invariant under the allowed changes. That, together with the absent attachments, is why we have not fabricated an “actual” array.
+This is an exact regeneration route, not a claim that the current branch has executed it. The institutional item does not attach the resulting Smith/Hermite transformation arrays or the selected representatives \(z_{0,1}\) and \(w_1\); moreover the paper allows a choice of \(z_{0,1}\) and a representative of the resulting residue class. Those choices can change the byte-for-byte matrix/target and the corresponding witnesses even though the residual group and its order are invariant under the allowed changes. That, together with the absent attachments, is why we have not fabricated an “actual” array.
 
 ## Source-reported fixed instance at r = 1
 
