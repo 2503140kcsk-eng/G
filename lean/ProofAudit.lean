@@ -677,4 +677,21 @@ theorem finite_ratio_weighted_error_tendsto_zero
 
 #print axioms finite_ratio_weighted_error_tendsto_zero
 
+/-- The relative index for adjoining one lattice vector is the exact cyclic
+    extension factor in the index tower. -/
+theorem cyclic_extension_relative_index_identity
+    {m : ℕ} (L : AddSubgroup (Fin m → ℤ)) (w : Fin m → ℤ) :
+    L.relIndex (L ⊔ AddSubgroup.zmultiples w) *
+      (L ⊔ AddSubgroup.zmultiples w).index = L.index :=
+  EPlusPiApproximation.cyclic_extension_relative_index_identity L w
+
+/-- Adjoining a vector can only decrease the index of a finite-index lattice. -/
+theorem cyclic_extension_index_dvd
+    {m : ℕ} (L : AddSubgroup (Fin m → ℤ)) (w : Fin m → ℤ) :
+    (L ⊔ AddSubgroup.zmultiples w).index ∣ L.index :=
+  EPlusPiApproximation.cyclic_extension_index_dvd L w
+
+#print axioms cyclic_extension_relative_index_identity
+#print axioms cyclic_extension_index_dvd
+
 end ProofAudit
