@@ -98,7 +98,39 @@
     "exactInteger": "7585017080433407590878271022167940357899238784003404874750825000878408791786146064790946637606736779711697",
     "prime239": true,
     "verifiedInWolfram": true,
-    "scope": "reported fixed-instance residual index from the Split-Machin endpoint-arithmetic preprint; not derived here from the paper's full source matrices and not an irrationality result"
+    "scope": "reported fixed-instance residual index from the Split-Machin endpoint-arithmetic preprint; not derived here from the paper's full source matrices and not an irrationality result",
+    "delta1": {
+      "exactInteger": "159398051612822846779584203616462141285376240077766656",
+      "factorization": {
+        "2": 100,
+        "3": 20,
+        "7": 6,
+        "11": 3,
+        "17": 1,
+        "19": 1,
+        "23": 1,
+        "31": 1
+      },
+      "verifiedInWolfram": true,
+      "reportedBySource": "Corollary 14.1 / Theorem 14.1"
+    },
+    "M1": {
+      "relation": "M1 = delta1 * theta1",
+      "exactInteger": "1209036944071067165377573032570313997496785708212807790734534682176883017241389374626133926218544316839846710894657778906837530834213495308229136309667319775232",
+      "factorization": {
+        "2": 100,
+        "3": 20,
+        "7": 6,
+        "11": 3,
+        "17": 2,
+        "19": 1,
+        "23": 1,
+        "31": 1,
+        "239": 44
+      },
+      "verifiedInWolfram": true,
+      "scope": "derived by multiplying the paper's exact delta1 and theta1; factorization checked exactly in Wolfram, not a reconstruction of the 499-column Smith or membership certificates"
+    }
   },
   "caveats": [
     "A nullity-one Taylor matrix does not by itself give an integer linear form tending to zero.",
