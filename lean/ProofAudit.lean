@@ -8,6 +8,7 @@ public import EPlusPi
 public import SchanuelConditional
 public import ApproximationCriteria
 public import PairedApproximationCriteria
+public import IntegerEndpointLattice
 public import MixedKernelQuotient
 public import ProofAuditApprox
 public import CommonDenominatorApproximation
@@ -334,6 +335,23 @@ theorem factorial_taylor_fusion_no_go_from_pi_measure_lower_bound
     hc hrpos hpi
 
 #print axioms factorial_taylor_fusion_no_go_from_pi_measure_lower_bound
+
+
+
+/-! ## Primitive rank-one endpoint lattice arithmetic -/
+
+/-- A Bezout-primitive endpoint pair spans every integral pair on its rational
+    line. This is the saturation lemma used by the Split–Machin endpoint
+    intersection problem. -/
+theorem integer_pair_multiple_of_bezout_and_determinant
+    {a b c d : ℤ}
+    (hbez : ∃ u v : ℤ, u * a + v * b = 1)
+    (hdet : a * d = b * c) :
+    ∃ k : ℤ, c = k * a ∧ d = k * b :=
+  EPlusPiApproximation.integer_pair_multiple_of_bezout_and_determinant
+    hbez hdet
+
+#print axioms integer_pair_multiple_of_bezout_and_determinant
 
 
 end ProofAudit
