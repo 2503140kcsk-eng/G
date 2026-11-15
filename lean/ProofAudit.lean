@@ -354,4 +354,44 @@ theorem integer_pair_multiple_of_bezout_and_determinant
 #print axioms integer_pair_multiple_of_bezout_and_determinant
 
 
+
+/-- Replacing a Bezout witness by the equivalent gcd-one condition gives the
+    same primitive rank-one endpoint conclusion. -/
+theorem integer_pair_multiple_of_gcd_one_and_determinant
+    {a b c d : ℤ}
+    (hcoprime : Int.gcd a b = 1)
+    (hdet : a * d = b * c) :
+    ∃ k : ℤ, c = k * a ∧ d = k * b :=
+  EPlusPiApproximation.integer_pair_multiple_of_gcd_one_and_determinant
+    hcoprime hdet
+
+/-- If every row of an integer two-column matrix is collinear with a
+    Bezout-primitive anchor row that occurs in the matrix, then the common
+    kernel equals the kernel of that anchor row. -/
+theorem integer_row_kernel_iff_anchor
+    {ι : Type*} (i₀ : ι) {a b : ℤ} (A B : ι → ℤ)
+    (hA₀ : A i₀ = a) (hB₀ : B i₀ = b)
+    (hbez : ∃ u v : ℤ, u * a + v * b = 1)
+    (hcollinear : ∀ i, a * B i = b * A i)
+    (x y : ℤ) :
+    (∀ i, A i * x + B i * y = 0) ↔ a * x + b * y = 0 :=
+  EPlusPiApproximation.integer_row_kernel_iff_anchor
+    i₀ A B hA₀ hB₀ hbez hcollinear x y
+
+/-- The row-kernel reduction with the anchor row's primitivity expressed as
+    Int.gcd a b = 1. -/
+theorem integer_row_kernel_iff_anchor_of_gcd_one
+    {ι : Type*} (i₀ : ι) {a b : ℤ} (A B : ι → ℤ)
+    (hA₀ : A i₀ = a) (hB₀ : B i₀ = b)
+    (hcoprime : Int.gcd a b = 1)
+    (hcollinear : ∀ i, a * B i = b * A i)
+    (x y : ℤ) :
+    (∀ i, A i * x + B i * y = 0) ↔ a * x + b * y = 0 :=
+  EPlusPiApproximation.integer_row_kernel_iff_anchor_of_gcd_one
+    i₀ A B hA₀ hB₀ hcoprime hcollinear x y
+
+#print axioms integer_pair_multiple_of_gcd_one_and_determinant
+#print axioms integer_row_kernel_iff_anchor
+#print axioms integer_row_kernel_iff_anchor_of_gcd_one
+
 end ProofAudit
