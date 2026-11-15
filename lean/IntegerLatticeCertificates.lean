@@ -173,7 +173,71 @@ abbrev AppendixDR1CertificateBundle
     (A : Matrix (Fin 261) (Fin 499) ℤ) (w : Fin 261 → ℤ) :=
   AppendixDPrimeLocalCertificateBundle A w appendixDModulus1
 
+/-- The proposition that an integer target is an exact combination of the columns of A. -/
+def HasIntegerColumnRepresentation
+    {m n : ℕ} (A : Matrix (Fin m) (Fin n) ℤ) (y : Fin m → ℤ) : Prop :=
+  ∃ c : Fin n → ℤ, ∀ i, y i = ∑ j, A i j * c j
+
+/--
+The propositions certified by a complete Appendix-D local bundle.
+The nine prime channels are represented separately; the 17 channel has two
+opposite decisions and the 239 channel includes its finite exponent ceiling.
+-/
+structure AppendixDPrimeLocalCertificateSoundness
+    {m n : ℕ} (A : Matrix (Fin m) (Fin n) ℤ)
+    (w : Fin m → ℤ) (M : ℤ) : Prop where
+  p2_nonmembership :
+    ¬ HasIntegerColumnRepresentation A (appendixDScaleTarget M 2 w)
+  p3_nonmembership :
+    ¬ HasIntegerColumnRepresentation A (appendixDScaleTarget M 3 w)
+  p7_nonmembership :
+    ¬ HasIntegerColumnRepresentation A (appendixDScaleTarget M 7 w)
+  p11_nonmembership :
+    ¬ HasIntegerColumnRepresentation A (appendixDScaleTarget M 11 w)
+  p17_membership :
+    HasIntegerColumnRepresentation A (appendixDScaleTarget M 17 w)
+  p17_squared_nonmembership :
+    ¬ HasIntegerColumnRepresentation A
+      (appendixDScaleTarget M ((17 : ℤ) ^ 2) w)
+  p19_nonmembership :
+    ¬ HasIntegerColumnRepresentation A (appendixDScaleTarget M 19 w)
+  p23_nonmembership :
+    ¬ HasIntegerColumnRepresentation A (appendixDScaleTarget M 23 w)
+  p31_nonmembership :
+    ¬ HasIntegerColumnRepresentation A (appendixDScaleTarget M 31 w)
+  p239_localized_membership :
+    ∃ u : ℤ, (¬ (239 : ℤ) ∣ u) ∧
+      ∃ c : Fin n → ℤ, ∀ i,
+        u * appendixDScaleTarget M ((239 : ℤ) ^ 44) w i =
+          ∑ j, A i j * c j
+  p239_exponent_ceiling :
+    ∀ i : Fin m,
+      ∃ u : ℤ, (¬ (239 : ℤ) ∣ u) ∧
+        ∃ c : Fin n → ℤ, ∀ j,
+          u * appendixDPrimePowerBasisTarget 239 259 i j =
+            ∑ k, A j k * c k
+
+/-- Every inhabited nine-channel Appendix-D bundle proves all its local decisions. -/
+theorem AppendixDPrimeLocalCertificateBundle.sound
+    {m n : ℕ} {A : Matrix (Fin m) (Fin n) ℤ}
+    {w : Fin m → ℤ} {M : ℤ}
+    (C : AppendixDPrimeLocalCertificateBundle A w M) :
+    AppendixDPrimeLocalCertificateSoundness A w M := by
+  exact
+    { p2_nonmembership := C.p2.sound
+      p3_nonmembership := C.p3.sound
+      p7_nonmembership := C.p7.sound
+      p11_nonmembership := C.p11.sound
+      p17_membership := C.p17Membership.sound
+      p17_squared_nonmembership := C.p17Nonmembership.sound
+      p19_nonmembership := C.p19.sound
+      p23_nonmembership := C.p23.sound
+      p31_nonmembership := C.p31.sound
+      p239_localized_membership := C.p239LocalizedMembership.sound
+      p239_exponent_ceiling := fun i => (C.p239ExponentCeiling i).sound }
+
 /-! ## Smith diagonal factors and full-rank lattice index -/
+
 
 /-- The standard free module of integer coordinate vectors has rank m. -/
 theorem integerCoordinateSpace_finrank (m : ℕ) :
