@@ -439,4 +439,19 @@ theorem integer_endpoint_kernel_from_primitive_success
       ∃ k : ℤ, x = b₀ * k ∧ y = δ * k := by
   sorry
 
+
+/-- A row annihilating the old success vector satisfies the anchor minor. -/
+theorem endpoint_success_row_implies_anchor_minor
+    {b₀ δ A B : ℤ}
+    (hsuccess : A * b₀ + B * δ = 0) :
+    δ * B = (-b₀) * A := by
+  sorry
+
+/-- The anchor-minor identity holds uniformly over all endpoint rows. -/
+theorem endpoint_success_rows_imply_anchor_minors
+    {ι : Type*} {b₀ δ : ℤ} (A B : ι → ℤ)
+    (hsuccess : ∀ i, A i * b₀ + B i * δ = 0) :
+    ∀ i, δ * B i = (-b₀) * A i := by
+  sorry
+
 end ProofAudit
