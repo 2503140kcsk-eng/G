@@ -672,8 +672,8 @@ theorem finite_ratio_weighted_error_tendsto_zero
     {ratio error : ℕ → ℝ} {b : ℝ}
     (hratio : Tendsto ratio atTop (𝓝 b))
     (herr : Tendsto error atTop (𝓝 0)) :
-    Tendsto (fun n => ratio n * error n) atTop (𝓝 0) :=
-  hratio.mul herr
+    Tendsto (fun n => ratio n * error n) atTop (𝓝 0) := by
+  simpa using hratio.mul herr
 
 #print axioms finite_ratio_weighted_error_tendsto_zero
 
