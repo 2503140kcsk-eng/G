@@ -137,8 +137,8 @@ structure AppendixDPrimeLocalCertificateBundle
   p11 : PrimePowerNonmembershipCertificate A (appendixDScaleTarget M 11 w) 11
   p17Membership : IntegerLatticeMembershipCertificate A (appendixDScaleTarget M 17 w)
   p17Nonmembership :
-    PrimePowerNonmembershipCertificate A
-      (appendixDScaleTarget M ((17 : ℤ) ^ 2) w) 17
+    IntegerLatticeNonmembershipCertificate A
+      (appendixDScaleTarget M ((17 : ℤ) ^ 2) w)
   p19 : PrimePowerNonmembershipCertificate A (appendixDScaleTarget M 19 w) 19
   p23 : PrimePowerNonmembershipCertificate A (appendixDScaleTarget M 23 w) 23
   p31 : PrimePowerNonmembershipCertificate A (appendixDScaleTarget M 31 w) 31
