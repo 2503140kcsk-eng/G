@@ -266,4 +266,16 @@ theorem factorial_taylor_fusion_no_go_from_pi_measure_lower_bound
       Filter.atTop (𝓝 0) := by
   sorry
 
+
+/-- A Bezout-primitive integer pair spans every integer pair on its rational line.
+    This is the rank-one arithmetic kernel lemma needed for endpoint-lattice
+    intersections: the determinant condition expresses collinearity, while
+    the Bezout identity supplies saturation. -/
+theorem integer_pair_multiple_of_bezout_and_determinant
+    {a b c d : ℤ}
+    (hbez : ∃ u v : ℤ, u * a + v * b = 1)
+    (hdet : a * d = b * c) :
+    ∃ k : ℤ, c = k * a ∧ d = k * b := by
+  sorry
+
 end ProofAudit
