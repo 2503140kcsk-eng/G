@@ -103,21 +103,18 @@ theorem integer_row_kernel_iff_anchor_of_gcd_one
     (hcoprime : Int.gcd a b = 1)
     (hcollinear : ∀ i, a * B i = b * A i)
     (x y : ℤ) :
-    (∀ i, A i * x + B i * y = 0) ↔ a * x + b * y = 0 :=
-  integer_row_kernel_iff_anchor i₀ A B hA₀ hB₀
-    (by
-      obtain ⟨u, v, hbez⟩ :=
-        (show ∃ u v : ℤ, u * a + v * b = 1 from by
-          have hgcd : (Int.gcd a b : ℤ) = 1 := by exact_mod_cast hcoprime
-          have hbezsum : (1 : ℤ) =
-              a * Int.gcdA a b + b * Int.gcdB a b := by
-            calc
-              (1 : ℤ) = (Int.gcd a b : ℤ) := hgcd.symm
-              _ = a * Int.gcdA a b + b * Int.gcdB a b :=
-                Int.gcd_eq_gcd_ab a b
-          exact ⟨Int.gcdA a b, Int.gcdB a b, by nlinarith [hbezsum]⟩)
-      exact ⟨u, v, hbez⟩)
-    hcollinear x y
+    (∀ i, A i * x + B i * y = 0) ↔ a * x + b * y = 0 := by
+  have hgcd : (Int.gcd a b : ℤ) = 1 := by
+    exact_mod_cast hcoprime
+  have hbezsum : (1 : ℤ) = a * Int.gcdA a b + b * Int.gcdB a b := by
+    calc
+      (1 : ℤ) = (Int.gcd a b : ℤ) := hgcd.symm
+      _ = a * Int.gcdA a b + b * Int.gcdB a b :=
+        Int.gcd_eq_gcd_ab a b
+  have hbez : ∃ u v : ℤ, u * a + v * b = 1 := by
+    refine ⟨Int.gcdA a b, Int.gcdB a b, ?_⟩
+    nlinarith [hbezsum]
+  exact integer_row_kernel_iff_anchor i₀ A B hA₀ hB₀ hbez hcollinear x y
 
 #print axioms integer_pair_multiple_of_gcd_one_and_determinant
 #print axioms integer_row_kernel_iff_anchor
