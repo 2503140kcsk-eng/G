@@ -10,10 +10,10 @@
 The correct next target is not another unconstrained Padé search. It is the arithmetic compatibility problem for the Split–Machin source:
 
 \[
-G(z)=16\arctan(z/5)-4\arctan(z/239),\\qquad G(1)=\pi,
+G(z)=16\arctan(z/5)-4\arctan(z/239),\\\qquad G(1)=\pi,
 \]
 \[
-(1,e^z,G(z)),\\qquad S(1)=e+\pi,\\quad S(z)=e^z+G(z).
+(1,e^z,G(z)),\\\qquad S(1)=e+\pi,\\quad S(z)=e^z+G(z).
 \]
 
 The 2026 literature has already established substantial parts of the analytic and lattice architecture. In particular, diagonal type-I normality and a primitive Laurent completion theorem are available as research results, but neither supplies the final height/denominator estimate needed for an irrationality certificate. The remaining task is to couple, on one and the same primitive source, (i) nonzero endpoint arithmetic, (ii) the endpoint-lattice index, and (iii) an archimedean error that tends to zero **after** all common-denominator and primitive-content operations.
@@ -51,7 +51,7 @@ These are conditional bridge theorems. The missing input is a construction in th
 Suppose a rational coefficient vector $v_n\$ is cleared by a positive common denominator $D_n\$, giving an integer vector $w_n=D_nv_n\$. Let
 \[
 c_n=\gcd\{ |$w_n$_j|:j\},
-\qquad w_n^{\mathrm{prim}}=w_n/c_n.
+\\qquad w_n^{\mathrm{prim}}=w_n/c_n.
 \]
 For any linear functional $\Lambda\$,
 \[
@@ -61,7 +61,7 @@ Thus gcd reduction itself cannot increase the error relative to the denominator-
 \[
 \boxed{\frac{D_n}{c_n}|\Lambda(v_n)|\longrightarrow0,}
 \]
-not merely ( |\Lambda(v_n)|\to0\). The same normalization must be used for the endpoint coefficient, the remainder, and the determinant/nonvanishing certificate.
+not merely ( |\Lambda(v_n)|\to0). The same normalization must be used for the endpoint coefficient, the remainder, and the determinant/nonvanishing certificate.
 
 ## 3. Literature boundary found on 2026-11-15
 
@@ -130,8 +130,8 @@ https://ir-api.ua.edu/api/core/bitstreams/1b23ff50-123e-4180-aab8-7f3f1a155e69/c
 
 Runlong Yu, *Tail Criteria, No-Go Audits, and Apéry-Type Certificate Obstructions for the Irrationality of $e+\pi$*, arXiv:2606.17303v1 (2026-06-15), formulates the needed certificate as
 \[
-L_n=A_n(e+\pi)+B_n,\\qquad
-A_n,B_n\in\mathbb Z,\\qquad0<|L_n|\to0.
+L_n=A_n(e+\pi)+B_n,\\\qquad
+A_n,B_n\in\mathbb Z,\\\qquad0<|L_n|\to0.
 \]
 It also studies (S(z)=e^z+G(z)), (S(1)=e+\pi), and reports denominator-clearing obstructions for the diagonal Padé cases tested. The paper explicitly leaves irrationality open.
 
@@ -150,8 +150,8 @@ with $\deg Q\le N=m+\ell$, $\deg P\le\ell$, and $\deg R\le m$.
 
 The Taylor coefficients used were
 \[
-a_k=\frac1{k!},\\qquad
-g_k=0\ $k\text{ even}$,\\qquad
+a_k=\frac1{k!},\\\qquad
+g_k=0\ $k\text{ even}$,\\\qquad
 g_k=(-1)^{(k-1)/2}\frac{16/5^k-4/239^k}{k}\ $k\text{ odd}$.
 \]
 The $N$ homogeneous equations for the $N+1$ coefficients of $Q$ were
@@ -222,7 +222,7 @@ The new workstream is **formal endpoint-lattice arithmetic plus a quantitative p
 Define an integer matrix $R_D:\mathbb Z^2\to\mathbb Z^{p_D}$. Prove a general theorem of the form:
 
 - the rational rank of $R_D$ is one;
-- (v_D=$b_D,\delta_D$) is a primitive integer vector;
+- $v_D=$b_D,\delta_D$$ is a primitive integer vector;
 - (R_D(v_D)=0);
 
 therefore
@@ -238,7 +238,7 @@ Represent the forcing and endpoint lattices by exact integer matrices. Formalize
 - the least positive endpoint mark;
 - the index $\kappa_D$;
 - the factorization $\kappa_D=\theta_Da_D^{\mathrm{sel}}$;
-- the exceptional prime-primary residual factors (including the $17$-defect at $r=1$).
+- the exceptional prime-primary residual factors $including the $17$-defect at $r=1$$.
 
 The $r=1$ certificate is a regression test, not a replacement for the all-$r$ theorem.
 
@@ -251,7 +251,7 @@ The decisive open arithmetic subproblem is to classify $\chi_r$, $\delta_r$, and
 On the same chosen primitive source, establish an explicit inequality
 \[
 \frac{D_r}{c_r}\,|\mathcal R_r(1)|\le B_r,
-\\qquad B_r\to0,
+\\\qquad B_r\to0,
 \]
 where $D_r$ is the common denominator and $c_r$ is the joint coefficient content. Separately prove nonvanishing, preferably by an exact determinant or endpoint-lattice invariant. Do not mix a small unscaled residual from one family with a nonvanishing determinant from a different family.
 
