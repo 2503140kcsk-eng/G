@@ -467,4 +467,47 @@ theorem not_mem_integer_column_span_of_modular_dual
         ∀ i : Fin m, y i = ∑ j : Fin n, A i j * c j := by
   sorry
 
+/-- A real sequence with a finite limit times a sequence tending to zero
+    again tends to zero. This is the scalar convergence step used by the
+    primitive integerization criterion. -/
+theorem finite_ratio_weighted_error_tendsto_zero
+    {ratio error : ℕ → ℝ} {b : ℝ}
+    (hratio : Filter.Tendsto ratio Filter.atTop (𝓝 b))
+    (herr : Filter.Tendsto error Filter.atTop (𝓝 0)) :
+    Filter.Tendsto (fun n => ratio n * error n) Filter.atTop (𝓝 0) := by
+  sorry
+
+/-- The index tower for adjoining a single vector to an integer lattice. -/
+theorem cyclic_extension_relative_index_identity
+    {m : ℕ} (L : AddSubgroup (Fin m → ℤ)) (w : Fin m → ℤ) :
+    L.relIndex (L ⊔ AddSubgroup.zmultiples w) *
+      (L ⊔ AddSubgroup.zmultiples w).index = L.index := by
+  sorry
+
+/-- The index after adjoining a vector divides the original finite index. -/
+theorem cyclic_extension_index_dvd
+    {m : ℕ} (L : AddSubgroup (Fin m → ℤ)) (w : Fin m → ℤ) :
+    (L ⊔ AddSubgroup.zmultiples w).index ∣ L.index := by
+  sorry
+
+/-- A relative index is the absolute determinant of the basis-change matrix. -/
+theorem relative_index_eq_natAbs_basis_change_det
+    {E : Type*} [AddCommGroup E]
+    (L₁ L₂ : AddSubgroup E) (hL : L₁ ≤ L₂)
+    {ι : Type*} [DecidableEq ι] [Fintype ι]
+    (b₁ : Basis ι ℤ L₁.toIntSubmodule)
+    (b₂ : Basis ι ℤ L₂.toIntSubmodule) :
+    L₁.relIndex L₂ =
+      (b₂.det (fun i => ⟨b₁ i, hL (SetLike.coe_mem _)⟩)).natAbs := by
+  sorry
+
+/-- A full-rank lattice index equals the absolute determinant of its basis. -/
+theorem lattice_index_eq_natAbs_basis_det
+    {E : Type*} [AddCommGroup E] {m : ℕ}
+    (bE : Basis (Fin m) ℤ E)
+    (L : AddSubgroup E)
+    (bL : Basis (Fin m) ℤ L) :
+    L.index = (bE.det (bL ·)).natAbs := by
+  sorry
+
 end ProofAudit

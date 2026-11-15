@@ -9,6 +9,7 @@ public import SchanuelConditional
 public import ApproximationCriteria
 public import PairedApproximationCriteria
 public import IntegerEndpointLattice
+public import IntegerLatticeCertificates
 public import MixedKernelQuotient
 public import ProofAuditApprox
 public import CommonDenominatorApproximation
@@ -596,5 +597,135 @@ theorem not_mem_integer_column_span_of_modular_dual
     A y q s hcolumns htarget
 
 #print axioms not_mem_integer_column_span_of_modular_dual
+
+
+
+/-! ## Typed integer-lattice certificate interfaces -/
+
+/-- Exact integer-column membership certificates are sound. -/
+theorem integer_lattice_membership_certificate_sound
+    {m n : ℕ} {A : Matrix (Fin m) (Fin n) ℤ} {y : Fin m → ℤ}
+    (C : EPlusPiApproximation.IntegerLatticeMembershipCertificate A y) :
+    ∃ c : Fin n → ℤ, ∀ i, y i = ∑ j, A i j * c j :=
+  C.sound
+
+/-- General modular-dual certificates prove integer-column nonmembership. -/
+theorem integer_lattice_nonmembership_certificate_sound
+    {m n : ℕ} {A : Matrix (Fin m) (Fin n) ℤ} {y : Fin m → ℤ}
+    (C : EPlusPiApproximation.IntegerLatticeNonmembershipCertificate A y) :
+    ¬ ∃ c : Fin n → ℤ, ∀ i, y i = ∑ j, A i j * c j :=
+  C.sound
+
+/-- Prime-power dual certificates prove integer-column nonmembership. -/
+theorem prime_power_nonmembership_certificate_sound
+    {m n p : ℕ} {A : Matrix (Fin m) (Fin n) ℤ} {y : Fin m → ℤ}
+    (C : EPlusPiApproximation.PrimePowerNonmembershipCertificate A y p) :
+    ¬ ∃ c : Fin n → ℤ, ∀ i, y i = ∑ j, A i j * c j :=
+  C.sound
+
+/-- Localized membership certificates carry an exact denominator-cleared witness. -/
+theorem prime_localized_membership_certificate_sound
+    {m n p : ℕ} {A : Matrix (Fin m) (Fin n) ℤ} {y : Fin m → ℤ}
+    (C : EPlusPiApproximation.PrimeLocalizedMembershipCertificate A y p) :
+    ∃ u : ℤ, (¬ (p : ℤ) ∣ u) ∧
+      ∃ c : Fin n → ℤ, ∀ i, u * y i = ∑ j, A i j * c j :=
+  C.sound
+
+/-- A populated Appendix-D bundle certifies all nine local prime decisions. -/
+theorem appendixD_prime_local_certificate_bundle_sound
+    {m n : ℕ} {A : Matrix (Fin m) (Fin n) ℤ}
+    {w : Fin m → ℤ} {M : ℤ}
+    (C : EPlusPiApproximation.AppendixDPrimeLocalCertificateBundle A w M) :
+    EPlusPiApproximation.AppendixDPrimeLocalCertificateSoundness A w M :=
+  C.sound
+
+#print axioms appendixD_prime_local_certificate_bundle_sound
+
+/-- The full-rank lattice index is the product of its Smith diagonal coefficients. -/
+theorem smith_diagonal_index_product
+    {m : ℕ} (L : Submodule ℤ (Fin m → ℤ))
+    (hRank : Module.finrank ℤ L = m) :
+    L.toAddSubgroup.index =
+      ∏ i : Fin (Fintype.card (Fin m)),
+        Int.natAbs (EPlusPiApproximation.smithDiagonalCoefficients L hRank i) :=
+  EPlusPiApproximation.index_eq_product_smith_diagonal_coefficients L hRank
+
+/-- Primitive reduction stays in the same saturated lattice and preserves weighted decay. -/
+theorem primitive_integerization_tendsto_zero
+    {m : ℕ} {L : Submodule ℤ (Fin m → ℤ)}
+    {x : ℕ → (Fin m → ℚ)}
+    (C : ∀ n, EPlusPiApproximation.PrimitiveIntegerization L (x n))
+    (hL : EPlusPiApproximation.IsPrimitiveIntegerLattice L)
+    (a : Fin m → ℝ)
+    (hweighted : Tendsto
+      (fun n =>
+        ((C n).denominator : ℝ) / ((C n).content : ℝ) *
+          |EPlusPiApproximation.rationalVectorPairing a (x n)|) atTop (𝓝 0)) :
+    Tendsto
+      (fun n =>
+        |EPlusPiApproximation.integerVectorPairing a (C n).primitiveVector|)
+      atTop (𝓝 0) ∧
+      ∀ n, (C n).primitiveVector ∈ L :=
+  EPlusPiApproximation.PrimitiveIntegerization.tendsto_primitive_errors_of_weighted
+    C hL a hweighted
+
+#print axioms integer_lattice_membership_certificate_sound
+#print axioms integer_lattice_nonmembership_certificate_sound
+#print axioms prime_power_nonmembership_certificate_sound
+#print axioms prime_localized_membership_certificate_sound
+#print axioms smith_diagonal_index_product
+#print axioms primitive_integerization_tendsto_zero
+
+/-- A finite-limit scale times a null error remains a null weighted error.
+    This is the scalar convergence step used by primitive integerization. -/
+theorem finite_ratio_weighted_error_tendsto_zero
+    {ratio error : ℕ → ℝ} {b : ℝ}
+    (hratio : Tendsto ratio atTop (𝓝 b))
+    (herr : Tendsto error atTop (𝓝 0)) :
+    Tendsto (fun n => ratio n * error n) atTop (𝓝 0) := by
+  simpa using hratio.mul herr
+
+#print axioms finite_ratio_weighted_error_tendsto_zero
+
+/-- The relative index for adjoining one lattice vector is the exact cyclic
+    extension factor in the index tower. -/
+theorem cyclic_extension_relative_index_identity
+    {m : ℕ} (L : AddSubgroup (Fin m → ℤ)) (w : Fin m → ℤ) :
+    L.relIndex (L ⊔ AddSubgroup.zmultiples w) *
+      (L ⊔ AddSubgroup.zmultiples w).index = L.index :=
+  EPlusPiApproximation.cyclic_extension_relative_index_identity L w
+
+/-- Adjoining a vector can only decrease the index of a finite-index lattice. -/
+theorem cyclic_extension_index_dvd
+    {m : ℕ} (L : AddSubgroup (Fin m → ℤ)) (w : Fin m → ℤ) :
+    (L ⊔ AddSubgroup.zmultiples w).index ∣ L.index :=
+  EPlusPiApproximation.cyclic_extension_index_dvd L w
+
+#print axioms cyclic_extension_relative_index_identity
+#print axioms cyclic_extension_index_dvd
+
+/-- Relative lattice index is an absolute determinant in explicit bases. -/
+theorem relative_index_eq_natAbs_basis_change_det
+    {E : Type*} [AddCommGroup E]
+    (L₁ L₂ : AddSubgroup E) (hL : L₁ ≤ L₂)
+    {ι : Type*} [DecidableEq ι] [Fintype ι]
+    (b₁ : Basis ι ℤ L₁.toIntSubmodule)
+    (b₂ : Basis ι ℤ L₂.toIntSubmodule) :
+    L₁.relIndex L₂ =
+      (b₂.det (fun i => ⟨b₁ i, hL (SetLike.coe_mem _)⟩)).natAbs :=
+  EPlusPiApproximation.relative_index_eq_natAbs_basis_change_det
+    L₁ L₂ hL b₁ b₂
+
+/-- The index of a full-rank integer lattice is its basis determinant in absolute value. -/
+theorem lattice_index_eq_natAbs_basis_det
+    {E : Type*} [AddCommGroup E] {m : ℕ}
+    (bE : Basis (Fin m) ℤ E)
+    (L : AddSubgroup E)
+    (bL : Basis (Fin m) ℤ L) :
+    L.index = (bE.det (bL ·)).natAbs :=
+  EPlusPiApproximation.lattice_index_eq_natAbs_basis_det bE L bL
+
+#print axioms relative_index_eq_natAbs_basis_change_det
+#print axioms lattice_index_eq_natAbs_basis_det
 
 end ProofAudit
