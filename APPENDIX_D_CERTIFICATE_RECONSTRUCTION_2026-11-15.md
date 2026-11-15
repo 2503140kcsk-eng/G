@@ -77,7 +77,7 @@ The exact product factorization is independently recomputed in Wolfram Language;
 | 19 | 1 | 1 | dual separator modulo 19, detecting \((M_1/19)w_1\) |
 | 23 | 1 | 1 | dual separator modulo 23, detecting \((M_1/23)w_1\) |
 | 31 | 1 | 1 | dual separator modulo 31, detecting \((M_1/31)w_1\) |
-| 239 | 44 | 0 | finite 239-primary exponent ceiling, plus localized membership for \((M_1/239^{44})w_1\) |
+| 239 | 44 | 0 | explicit K = 259: 239^259 Z^261_239 is contained in the localized residual lattice; localized membership for \\((M_1/239^{44})w_1\\) is reduced to a finite congruence modulo 239^259 |
 
 The generic modular dual condition is:
 
