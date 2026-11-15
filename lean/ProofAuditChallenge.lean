@@ -490,4 +490,24 @@ theorem cyclic_extension_index_dvd
     (L ⊔ AddSubgroup.zmultiples w).index ∣ L.index := by
   sorry
 
+/-- A relative index is the absolute determinant of the basis-change matrix. -/
+theorem relative_index_eq_natAbs_basis_change_det
+    {E : Type*} [AddCommGroup E]
+    (L₁ L₂ : AddSubgroup E) (hL : L₁ ≤ L₂)
+    {ι : Type*} [DecidableEq ι] [Fintype ι]
+    (b₁ : Basis ι ℤ L₁.toIntSubmodule)
+    (b₂ : Basis ι ℤ L₂.toIntSubmodule) :
+    L₁.relIndex L₂ =
+      (b₂.det (fun i => ⟨b₁ i, hL (SetLike.coe_mem _)⟩)).natAbs := by
+  sorry
+
+/-- A full-rank lattice index equals the absolute determinant of its basis. -/
+theorem lattice_index_eq_natAbs_basis_det
+    {E : Type*} [AddCommGroup E] {m : ℕ}
+    (bE : Basis (Fin m) ℤ E)
+    (L : AddSubgroup E)
+    (bL : Basis (Fin m) ℤ L) :
+    L.index = (bE.det (bL ·)).natAbs := by
+  sorry
+
 end ProofAudit
