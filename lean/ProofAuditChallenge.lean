@@ -278,4 +278,35 @@ theorem integer_pair_multiple_of_bezout_and_determinant
     ∃ k : ℤ, c = k * a ∧ d = k * b := by
   sorry
 
+
+/-- Gcd one is an intrinsic arithmetic form of Bezout primitivity. -/
+theorem integer_pair_multiple_of_gcd_one_and_determinant
+    {a b c d : ℤ}
+    (hcoprime : Int.gcd a b = 1)
+    (hdet : a * d = b * c) :
+    ∃ k : ℤ, c = k * a ∧ d = k * b := by
+  sorry
+
+/-- The common kernel of rows collinear with a primitive anchor row is
+    exactly the kernel of that anchor row. -/
+theorem integer_row_kernel_iff_anchor
+    {ι : Type*} (i₀ : ι) {a b : ℤ} (A B : ι → ℤ)
+    (hA₀ : A i₀ = a) (hB₀ : B i₀ = b)
+    (hbez : ∃ u v : ℤ, u * a + v * b = 1)
+    (hcollinear : ∀ i, a * B i = b * A i)
+    (x y : ℤ) :
+    (∀ i, A i * x + B i * y = 0) ↔ a * x + b * y = 0 := by
+  sorry
+
+/-- The row-kernel theorem with primitivity expressed by gcd one. -/
+theorem integer_row_kernel_iff_anchor_of_gcd_one
+    {ι : Type*} (i₀ : ι) {a b : ℤ} (A B : ι → ℤ)
+    (hA₀ : A i₀ = a) (hB₀ : B i₀ = b)
+    (hcoprime : Int.gcd a b = 1)
+    (hcollinear : ∀ i, a * B i = b * A i)
+    (x y : ℤ) :
+    (∀ i, A i * x + B i * y = 0) ↔ a * x + b * y = 0 := by
+  sorry
+
+
 end ProofAudit
