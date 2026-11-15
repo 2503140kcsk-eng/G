@@ -292,6 +292,7 @@ theorem factorialTaylor_fusion_not_tendsto_zero_of_pi_lower_bound
             (r n : ℝ) * Real.pi - (s n : ℝ) =
               signedIntegerLinearFormValue Real.pi (r n) (-s n) := by
           simp [signedIntegerLinearFormValue]
+          ring
         have hpiForm := congrArg abs hpiInner
         rw [hpiForm] at hsecond
         unfold factorialTaylorFusionError EPlusPiApproximation.commonDenominatorScaledError
