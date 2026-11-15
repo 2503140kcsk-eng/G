@@ -54,6 +54,10 @@ lean_lib PairedApproximationCriteria where
   srcDir := "lean"
 
 @[default_target]
+lean_lib IntegerEndpointLattice where
+  srcDir := "lean"
+
+@[default_target]
 lean_lib PolynomialApproximationDefs where
   srcDir := "lean"
 
