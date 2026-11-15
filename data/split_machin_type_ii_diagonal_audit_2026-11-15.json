@@ -1,0 +1,108 @@
+{
+  "schema": "split-machin-type-ii-diagonal-audit/v1",
+  "snapshot": "2026-11-15",
+  "system": {
+    "exponential": "exp(z)",
+    "machin": "16*atan(z/5)-4*atan(z/239)",
+    "endpoint": "e+pi"
+  },
+  "construction": {
+    "diagonalIndex": "m=l=n",
+    "denominatorDegreeQ": "2*n",
+    "unknowns": "Q coefficients q_0,...,q_(2n)",
+    "vanishingOrders": "coefficients k=n+1,...,2n of Q*exp and Q*G",
+    "field": "exact rationals",
+    "primitiveNormalization": "clear one common denominator across Q,P,R, then divide joint integer coefficient content"
+  },
+  "results": [
+    {
+      "n": 1,
+      "rank": 2,
+      "nullity": 1,
+      "commonDenominator": 1195,
+      "jointContent": 1,
+      "log10AbsEndpointForm": "3.73122199764793846944841892779441542924"
+    },
+    {
+      "n": 2,
+      "rank": 4,
+      "nullity": 1,
+      "commonDenominator": 1,
+      "jointContent": 1,
+      "log10AbsEndpointForm": "17.98353238189004058569100797828250976266",
+      "endpointCoefficientA": "10192184477845863987",
+      "endpointConstantB": "58762129940028973924"
+    },
+    {
+      "n": 3,
+      "rank": 6,
+      "nullity": 1,
+      "commonDenominator": 1195,
+      "jointContent": 1,
+      "log10AbsEndpointForm": "36.42647947512752330028040779278641988659"
+    },
+    {
+      "n": 4,
+      "rank": 8,
+      "nullity": 1,
+      "commonDenominator": 1,
+      "jointContent": 1,
+      "log10AbsEndpointForm": "60.75521580607324458572269269247678845571"
+    },
+    {
+      "n": 5,
+      "rank": 10,
+      "nullity": 1,
+      "commonDenominator": 5975,
+      "jointContent": 1,
+      "log10AbsEndpointForm": "91.31531772929543013586932936245776917634"
+    },
+    {
+      "n": 6,
+      "rank": 12,
+      "nullity": 1,
+      "commonDenominator": 1,
+      "jointContent": 1,
+      "log10AbsEndpointForm": "127.63338614021942697699483436012833367967"
+    },
+    {
+      "n": 7,
+      "rank": 14,
+      "nullity": 1,
+      "commonDenominator": 5975,
+      "jointContent": 1,
+      "log10AbsEndpointForm": "172.68317341080039426338683941492929240702"
+    },
+    {
+      "n": 8,
+      "rank": 16,
+      "nullity": 1,
+      "commonDenominator": 1,
+      "jointContent": 1,
+      "log10AbsEndpointForm": "222.08882652361183189061339342702857331481"
+    }
+  ],
+  "independentVerification": {
+    "software": "Wolfram Language",
+    "matrixConstruction": "exact rational Taylor coefficients and exact NullSpace/MatrixRank",
+    "endpointEvaluation": "20-digit arbitrary precision for e+pi only after all integer normalization",
+    "interpretation": "finite diagnostic only; no asymptotic theorem or universal no-go claim"
+  },
+  "fixedInstanceLiteratureCheck": {
+    "r": 1,
+    "endpointIndexFactorization": "17*239^44",
+    "factorization": {
+      "17": 1,
+      "239": 44
+    },
+    "exactInteger": "7585017080433407590878271022167940357899238784003404874750825000878408791786146064790946637606736779711697",
+    "prime239": true,
+    "verifiedInWolfram": true,
+    "scope": "reported fixed-instance residual index from the Split-Machin endpoint-arithmetic preprint; not derived here from the paper's full source matrices and not an irrationality result"
+  },
+  "caveats": [
+    "A nullity-one Taylor matrix does not by itself give an integer linear form tending to zero.",
+    "A small rational residual before clearing denominators does not imply a small primitive integer residual.",
+    "The finite n=1,...,8 data do not establish a limit or rule out other multi-indices or constructions."
+  ]
+}
