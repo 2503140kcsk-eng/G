@@ -424,4 +424,19 @@ theorem integer_two_column_matrix_kernel_eq_zsmul_anchor_of_nonzero_gcd_one
       ∃ k : ℤ, x = -b * k ∧ y = a * k := by
   sorry
 
+
+/-- Split–Machin endpoint form: the primitive old success vector (b₀,δ)
+    generates the full integer kernel once all rows annihilate it and the
+    endpoint matrix is nonzero. -/
+theorem integer_endpoint_kernel_from_primitive_success
+    {ι : Type*} (M : Matrix ι (Fin 2) ℤ)
+    {b₀ δ : ℤ}
+    (hcoprime : Int.gcd b₀ δ = 1)
+    (hsuccess : ∀ i, M i 0 * b₀ + M i 1 * δ = 0)
+    (hnonzero : ∃ i, M i 0 ≠ 0 ∨ M i 1 ≠ 0)
+    (x y : ℤ) :
+    (∀ i, M i 0 * x + M i 1 * y = 0) ↔
+      ∃ k : ℤ, x = b₀ * k ∧ y = δ * k := by
+  sorry
+
 end ProofAudit
