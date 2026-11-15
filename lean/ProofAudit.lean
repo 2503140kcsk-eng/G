@@ -394,4 +394,37 @@ theorem integer_row_kernel_iff_anchor_of_gcd_one
 #print axioms integer_row_kernel_iff_anchor
 #print axioms integer_row_kernel_iff_anchor_of_gcd_one
 
+
+/-! ## Exact matrix interface for primitive endpoint kernels -/
+
+/-- Derive a Bezout witness directly from the integer gcd-one hypothesis. -/
+theorem exists_bezout_of_int_gcd_eq_one
+    {a b : ℤ} (hcoprime : Int.gcd a b = 1) :
+    ∃ u v : ℤ, u * a + v * b = 1 :=
+  EPlusPiApproximation.exists_bezout_of_int_gcd_eq_one hcoprime
+
+/-- A two-column integer matrix whose rows are all collinear with a primitive
+    anchor row has exactly the anchor row's integer kernel. -/
+theorem integer_two_column_matrix_kernel_iff_anchor
+    {ι : Type*} (i₀ : ι) (M : Matrix ι (Fin 2) ℤ)
+    {a b : ℤ}
+    (hA₀ : M i₀ 0 = a) (hB₀ : M i₀ 1 = b)
+    (hbez : ∃ u v : ℤ, u * a + v * b = 1)
+    (hminor : ∀ i, a * M i 1 = b * M i 0)
+    (x y : ℤ) :
+    (∀ i, M i 0 * x + M i 1 * y = 0) ↔ a * x + b * y = 0 :=
+  EPlusPiApproximation.integer_two_column_matrix_kernel_iff_anchor
+    i₀ M hA₀ hB₀ hbez hminor x y
+
+/-- The collinearity conclusion fails without a primitive anchor: (2,2) and
+    (1,1) have zero determinant, but (1,1) is not an integer multiple of (2,2). -/
+theorem nonprimitive_pair_counterexample :
+    (2 : ℤ) * 1 = 2 * 1 ∧
+      ¬ ∃ k : ℤ, (1 : ℤ) = k * 2 ∧ 1 = k * 2 :=
+  EPlusPiApproximation.nonprimitive_pair_counterexample
+
+#print axioms exists_bezout_of_int_gcd_eq_one
+#print axioms integer_two_column_matrix_kernel_iff_anchor
+#print axioms nonprimitive_pair_counterexample
+
 end ProofAudit
