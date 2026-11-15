@@ -281,6 +281,24 @@ theorem PrimitiveIntegerization.primitive_pairing_eq_scaled_rational
           rationalVectorPairing a x := by ring
 
 /--
+Adjoining one target vector to an integer lattice gives a finite-index
+extension whose relative index multiplies the new lattice index back to
+the old lattice index. This is the exact group-index identity underlying
+the residual cyclic-order quotient in Appendix D.
+-/
+theorem cyclic_extension_relative_index_identity
+    {m : ℕ} (L : AddSubgroup (Fin m → ℤ)) (w : Fin m → ℤ) :
+    L.relIndex (L ⊔ AddSubgroup.zmultiples w) *
+      (L ⊔ AddSubgroup.zmultiples w).index = L.index :=
+  AddSubgroup.relIndex_mul_index le_sup_left
+
+/-- The index of the lattice after adjoining a vector divides the old index. -/
+theorem cyclic_extension_index_dvd
+    {m : ℕ} (L : AddSubgroup (Fin m → ℤ)) (w : Fin m → ℤ) :
+    (L ⊔ AddSubgroup.zmultiples w).index ∣ L.index :=
+  AddSubgroup.index_dvd_of_le le_sup_left
+
+/--
 A convergence transfer theorem for one fixed primitive lattice.
 
 The hypothesis is the cross-weighted error after clearing denominators and
