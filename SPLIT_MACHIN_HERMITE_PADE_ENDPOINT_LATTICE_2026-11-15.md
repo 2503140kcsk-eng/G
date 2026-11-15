@@ -282,16 +282,72 @@ They do not yet prove that condition for the Split–Machin endpoint matrix.
 That source-specific determinant/minor identity is now the next exact
 obligation, not something hidden inside the general lemma.
 
+
+
+### Split–Machin success-coordinate specialization
+
+A further Lean theorem now matches the notation of the endpoint-intersection
+paper directly:
+\`integer_endpoint_kernel_from_primitive_success\`.
+
+For a two-column integer endpoint matrix $M$, its hypotheses are precisely:
+
+- $\gcd(b_0,\delta)=1$;
+- every row annihilates the old success vector,
+  $M_{i,0}b_0+M_{i,1}\delta=0$;
+- at least one row is nonzero.
+
+Its conclusion is
+$
+\ker_{\mathbb Z}M
+=\mathbb Z(b_0,\delta).
+$
+The proof converts the Bezout identity for $(b_0,\delta)$ into one for the
+perpendicular row direction $(\delta,-b_0)$ and applies the nonzero-row
+matrix theorem. In particular, it does not require the primitive direction
+itself to occur as a matrix row.
+
+This is the correct abstract specialization of Theorem 8.1: the paper's
+$R_D$ has a nonzero row because its rational rank is one; the old success
+relation supplies the row-annihilation equations; and the paper's
+$\gcd(b_0(x_D),\delta_D)=1$ supplies primitivity. The remaining bridge is to
+encode the paper's actual coefficient formulas for $R_D$ and certify these
+three hypotheses from its source definitions, rather than merely instantiate
+them as assumptions.
+
+### Expanded exact $r=1$ arithmetic regression data
+
+The JSON ledger now also records the paper's exact residual integer
+$
+\delta_1=159398051612822846779584203616462141285376240077766656
+$
+with prime factorization
+$
+\delta_1=2^{100}3^{20}7^6 11^3\\cdot17\\cdot19\\cdot23\\cdot31.
+$
+Using the paper's $\theta_1=17\\cdot239^{44}$, the maximal-minor content
+$M_1=\\delta_1\\theta_1$ is
+$
+M_1=1209036944071067165377573032570313997496785708212807790734534682176883017241389374626133926218544316839846710894657778906837530834213495308229136309667319775232,
+$
+with factorization
+$
+M_1=2^{100}3^{20}7^6 11^3\\cdot17^2\\cdot19\\cdot23\\cdot31\\cdot239^{44}.
+$
+Wolfram verifies the multiplication and both factorizations exactly. The
+paper's 499-column/261-coordinate membership and modular-dual certificates
+are still distinct proof objects; this arithmetic check does not replace
+them.
+
 ### Task A — derive the Split–Machin anchor-minor identities
 
-Extract the concrete two-column endpoint map $R_D$ from the Split–Machin source and prove:
+Extract the concrete two-column endpoint map $R_D$ and instantiate the new theorem using the paper's coordinates $x_D=(b_0(x_D),\delta_D)$. Prove directly from the source definitions that:
 
-- an anchor row $v_D=(b_D,\delta_D)$ occurs in the source;
-- $\gcd(b_D,\delta_D)=1$;
-- every row satisfies the source-specific minor identity $b_D B_i=\delta_D A_i$;
-- the integral kernel is therefore $\mathbb Z v_D$ by the completed Lean lemma.
+- $\gcd(b_0(x_D),\delta_D)=1$;
+- every endpoint row annihilates $x_D$;
+- $R_D$ has a nonzero row (the paper already proves $\operatorname{rank}_{\mathbb Q}R_D=1$).
 
-The remaining work is to derive those three source-specific facts from the coefficient and endpoint definitions in the paper, rather than assume them. A rank-zero branch or a nonprimitive anchor must be excluded explicitly.
+The Lean specialization then yields $\ker_{\mathbb Z}R_D=\mathbb Zx_D$. The remaining bridge is to encode the actual source coefficients and verify these hypotheses, not to re-prove the abstract rank-one kernel lemma.
 
 ### Task B — formalize determinantal divisors and index factorization
 
