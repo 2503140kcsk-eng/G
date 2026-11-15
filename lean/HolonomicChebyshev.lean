@@ -41,9 +41,10 @@ theorem tCoeff_succ_succ (n k : ℕ) :
 /-- Boundary case of the first-kind coefficient recurrence. -/
 theorem tCoeff_succ_succ_zero (n : ℕ) :
     tCoeff (n + 2) 0 = -tCoeff n 0 := by
-  rw [Polynomial.Chebyshev.T_add_two]
+  unfold tCoeff
+  rw [Polynomial.Chebyshev.T_add_two ℚ (n : ℤ)]
   rw [mul_assoc]
-  simp [tCoeff]
+  simp
 
 /-- Second-kind coefficient recurrence, away from the constant coefficient. -/
 theorem uCoeff_succ_succ (n k : ℕ) :
@@ -57,9 +58,10 @@ theorem uCoeff_succ_succ (n k : ℕ) :
 /-- Boundary case of the second-kind coefficient recurrence. -/
 theorem uCoeff_succ_succ_zero (n : ℕ) :
     uCoeff (n + 2) 0 = -uCoeff n 0 := by
-  rw [Polynomial.Chebyshev.U_add_two]
+  unfold uCoeff
+  rw [Polynomial.Chebyshev.U_add_two ℚ (n : ℤ)]
   rw [mul_assoc]
-  simp [uCoeff]
+  simp
 
 /-- The discrete Wronskian (Casoratian) of the two Chebyshev solutions. -/
 def casoratian (n : ℕ) : Polynomial ℚ :=
