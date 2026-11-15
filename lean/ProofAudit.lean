@@ -557,4 +557,26 @@ theorem integer_endpoint_kernel_from_primitive_success
 
 #print axioms integer_endpoint_kernel_from_primitive_success
 
+
+/-! ## Success coordinates force endpoint anchor minors -/
+
+/-- A single endpoint row annihilating the old success vector is collinear
+    with the primitive perpendicular anchor direction. -/
+theorem endpoint_success_row_implies_anchor_minor
+    {b₀ δ A B : ℤ}
+    (hsuccess : A * b₀ + B * δ = 0) :
+    δ * B = (-b₀) * A :=
+  EPlusPiApproximation.endpoint_success_row_implies_anchor_minor hsuccess
+
+/-- The same anchor-minor identity for every row of the endpoint matrix. -/
+theorem endpoint_success_rows_imply_anchor_minors
+    {ι : Type*} {b₀ δ : ℤ} (A B : ι → ℤ)
+    (hsuccess : ∀ i, A i * b₀ + B i * δ = 0) :
+    ∀ i, δ * B i = (-b₀) * A i :=
+  EPlusPiApproximation.endpoint_success_rows_imply_anchor_minors
+    A B hsuccess
+
+#print axioms endpoint_success_row_implies_anchor_minor
+#print axioms endpoint_success_rows_imply_anchor_minors
+
 end ProofAudit
