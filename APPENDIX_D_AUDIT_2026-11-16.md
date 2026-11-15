@@ -54,7 +54,7 @@ All vectors below are source obligations, not available data values.
 | 3 | 20 | 20 | The analogous dual separator modulo (3^{20}), detecting ((M_1/3)w_1). |
 | 7 | 6 | 6 | The analogous dual separator modulo (7^6), detecting ((M_1/7)w_1). |
 | 11 | 3 | 3 | The analogous dual separator modulo (11^3), detecting ((M_1/11)w_1). |
-| 17 | 2 | 1 | An exact (c_{17}\in\mathbb Z^{499}) with (A_{\mathrm{res},1}c_{17}=(M_1/17)w_1), and a dual separator modulo (17^2) showing ((M_1/17^2)w_1\notin A_{\mathrm{res},1}\mathbb Z^{499}). |
+| 17 | 2 | 1 | An exact `c_17 ∈ ℤ^499` with `A_res,1 c_17 = (M_1/17)w_1`, and a dual nonmembership certificate for `(M_1/17²)w_1`. The paper does not specify its modulus in the displayed prose, so the Lean type leaves it arbitrary and nonzero. |
 | 19 | 1 | 1 | A dual separator modulo 19, detecting ((M_1/19)w_1). |
 | 23 | 1 | 1 | A dual separator modulo 23, detecting ((M_1/23)w_1). |
 | 31 | 1 | 1 | A dual separator modulo 31, detecting ((M_1/31)w_1). |
