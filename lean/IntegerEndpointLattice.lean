@@ -14,6 +14,23 @@ step used when identifying rank-one endpoint kernels.
 
 namespace EPlusPiApproximation
 
+
+/--
+A gcd-one pair admits an explicit integer Bezout witness. This packages the
+fixed Mathlib extended-gcd API for later lattice arguments.
+-/
+theorem exists_bezout_of_int_gcd_eq_one
+    {a b : ℤ} (hcoprime : Int.gcd a b = 1) :
+    ∃ u v : ℤ, u * a + v * b = 1 := by
+  have hgcd : (Int.gcd a b : ℤ) = 1 := by
+    exact_mod_cast hcoprime
+  have hbezsum : (1 : ℤ) = a * Int.gcdA a b + b * Int.gcdB a b := by
+    calc
+      (1 : ℤ) = (Int.gcd a b : ℤ) := hgcd.symm
+      _ = a * Int.gcdA a b + b * Int.gcdB a b :=
+        Int.gcd_eq_gcd_ab a b
+  exact ⟨Int.gcdA a b, Int.gcdB a b, by nlinarith [hbezsum]⟩
+
 /--
 If (a,b) is primitive in the Bezout sense and (c,d) is collinear with it,
 then (c,d) is an integer multiple of (a,b).
@@ -57,17 +74,8 @@ theorem integer_pair_multiple_of_gcd_one_and_determinant
     (hcoprime : Int.gcd a b = 1)
     (hdet : a * d = b * c) :
     ∃ k : ℤ, c = k * a ∧ d = k * b := by
-  have hgcd : (Int.gcd a b : ℤ) = 1 := by
-    exact_mod_cast hcoprime
-  have hbezsum : (1 : ℤ) = a * Int.gcdA a b + b * Int.gcdB a b := by
-    calc
-      (1 : ℤ) = (Int.gcd a b : ℤ) := hgcd.symm
-      _ = a * Int.gcdA a b + b * Int.gcdB a b :=
-        Int.gcd_eq_gcd_ab a b
-  have hbez : ∃ u v : ℤ, u * a + v * b = 1 := by
-    refine ⟨Int.gcdA a b, Int.gcdB a b, ?_⟩
-    nlinarith [hbezsum]
-  exact integer_pair_multiple_of_bezout_and_determinant hbez hdet
+  exact integer_pair_multiple_of_bezout_and_determinant
+    (exists_bezout_of_int_gcd_eq_one hcoprime) hdet
 
 /--
 For a finite or infinite family of integer rows, if every row is collinear
@@ -104,17 +112,41 @@ theorem integer_row_kernel_iff_anchor_of_gcd_one
     (hcollinear : ∀ i, a * B i = b * A i)
     (x y : ℤ) :
     (∀ i, A i * x + B i * y = 0) ↔ a * x + b * y = 0 := by
-  have hgcd : (Int.gcd a b : ℤ) = 1 := by
-    exact_mod_cast hcoprime
-  have hbezsum : (1 : ℤ) = a * Int.gcdA a b + b * Int.gcdB a b := by
-    calc
-      (1 : ℤ) = (Int.gcd a b : ℤ) := hgcd.symm
-      _ = a * Int.gcdA a b + b * Int.gcdB a b :=
-        Int.gcd_eq_gcd_ab a b
-  have hbez : ∃ u v : ℤ, u * a + v * b = 1 := by
-    refine ⟨Int.gcdA a b, Int.gcdB a b, ?_⟩
-    nlinarith [hbezsum]
-  exact integer_row_kernel_iff_anchor i₀ A B hA₀ hB₀ hbez hcollinear x y
+  exact integer_row_kernel_iff_anchor i₀ A B hA₀ hB₀
+    (exists_bezout_of_int_gcd_eq_one hcoprime) hcollinear x y
+
+
+/--
+For a two-column integer matrix, if every 2x2 minor formed with a primitive
+anchor row vanishes, then the matrix kernel is exactly the anchor-row kernel.
+This is the concrete matrix interface for the endpoint source.
+-/
+theorem integer_two_column_matrix_kernel_iff_anchor
+    {ι : Type*} (i₀ : ι) (M : Matrix ι (Fin 2) ℤ)
+    {a b : ℤ}
+    (hA₀ : M i₀ 0 = a) (hB₀ : M i₀ 1 = b)
+    (hbez : ∃ u v : ℤ, u * a + v * b = 1)
+    (hminor : ∀ i, a * M i 1 = b * M i 0)
+    (x y : ℤ) :
+    (∀ i, M i 0 * x + M i 1 * y = 0) ↔ a * x + b * y = 0 :=
+  integer_row_kernel_iff_anchor i₀
+    (fun i => M i 0) (fun i => M i 1) hA₀ hB₀ hbez hminor x y
+
+/--
+The gcd-one condition is essential: the nonprimitive row (2,2) is collinear
+with (1,1), but (1,1) is not an integer multiple of (2,2).
+-/
+theorem nonprimitive_pair_counterexample :
+    (2 : ℤ) * 1 = 2 * 1 ∧
+      ¬ ∃ k : ℤ, (1 : ℤ) = k * 2 ∧ 1 = k * 2 := by
+  constructor
+  · norm_num
+  · rintro ⟨k, hk, _⟩
+    omega
+
+#print axioms exists_bezout_of_int_gcd_eq_one
+#print axioms integer_two_column_matrix_kernel_iff_anchor
+#print axioms nonprimitive_pair_counterexample
 
 #print axioms integer_pair_multiple_of_gcd_one_and_determinant
 #print axioms integer_row_kernel_iff_anchor
