@@ -53,6 +53,10 @@ lean_lib MixedKernelQuotient where
 lean_lib ProofAudit where
   srcDir := "lean"
 
+@[default_target]
+lean_lib HolonomicChebyshev where
+  srcDir := "lean"
+
 -- The Comparator challenge intentionally contains sorry placeholders.
 -- It is excluded from default builds and used only by the lake comparator command.
 lean_lib ProofAuditChallenge where
