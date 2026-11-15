@@ -33,7 +33,8 @@
     "ProofAudit.simultaneous_polynomial_approximation_certificate",
     "ProofAudit.irrational_of_common_denominator_approximations",
     "ProofAudit.factorial_taylor_fusion_forces_sublinear_pi_denominators",
-    "ProofAudit.factorial_taylor_fusion_no_go_from_pi_measure_lower_bound"
+    "ProofAudit.factorial_taylor_fusion_no_go_from_pi_measure_lower_bound",
+    "ProofAudit.integer_pair_multiple_of_bezout_and_determinant"
   ],
   "permitted_axioms": [
     "propext",
