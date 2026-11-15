@@ -314,6 +314,24 @@ This theorem isolates the precise source-specific inputs needed from the
 Split–Machin endpoint map; it does not assume that a primitive row itself
 occurs in the matrix.
 -/
+/--
+The old success-coordinate equation for a row forces that row to be
+collinear with the primitive perpendicular direction (δ,-b₀).
+-/
+theorem endpoint_success_row_implies_anchor_minor
+    {b₀ δ A B : ℤ}
+    (hsuccess : A * b₀ + B * δ = 0) :
+    δ * B = (-b₀) * A := by
+  nlinarith [hsuccess]
+
+/-- Family version of the success-coordinate to anchor-minor identity. -/
+theorem endpoint_success_rows_imply_anchor_minors
+    {ι : Type*} {b₀ δ : ℤ} (A B : ι → ℤ)
+    (hsuccess : ∀ i, A i * b₀ + B i * δ = 0) :
+    ∀ i, δ * B i = (-b₀) * A i := by
+  intro i
+  exact endpoint_success_row_implies_anchor_minor (hsuccess i)
+
 theorem integer_endpoint_kernel_from_primitive_success
     {ι : Type*} (M : Matrix ι (Fin 2) ℤ)
     {b₀ δ : ℤ}
@@ -328,14 +346,15 @@ theorem integer_endpoint_kernel_from_primitive_success
   have hbez : ∃ u' v' : ℤ, u' * δ + v' * (-b₀) = 1 := by
     refine ⟨v, -u, ?_⟩
     nlinarith [hbezBase]
-  have hminor : ∀ i, δ * M i 1 = (-b₀) * M i 0 := by
-    intro i
-    have hs := hsuccess i
-    nlinarith [hs]
+  have hminor : ∀ i, δ * M i 1 = (-b₀) * M i 0 :=
+    endpoint_success_rows_imply_anchor_minors
+      (fun i => M i 0) (fun i => M i 1) hsuccess
   have h := integer_two_column_matrix_kernel_eq_zsmul_anchor_of_nonzero
     M hbez hminor hnonzero x y
   simpa only [neg_neg] using h
 
+#print axioms endpoint_success_row_implies_anchor_minor
+#print axioms endpoint_success_rows_imply_anchor_minors
 #print axioms integer_endpoint_kernel_from_primitive_success
 
 #print axioms integer_pair_kernel_iff_primitive_generator
