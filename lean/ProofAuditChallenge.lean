@@ -454,4 +454,17 @@ theorem endpoint_success_rows_imply_anchor_minors
     ∀ i, δ * B i = (-b₀) * A i := by
   sorry
 
+
+/-- A modular dual certificate excludes a target from the integer column
+    lattice without computing a Smith normal form. -/
+theorem not_mem_integer_column_span_of_modular_dual
+    {m n : ℕ}
+    (A : Matrix (Fin m) (Fin n) ℤ)
+    (y : Fin m → ℤ) (q : ℤ) (s : Fin m → ℤ)
+    (hcolumns : ∀ j : Fin n, q ∣ ∑ i : Fin m, s i * A i j)
+    (htarget : ¬ q ∣ ∑ i : Fin m, s i * y i) :
+    ¬ ∃ c : Fin n → ℤ,
+        ∀ i : Fin m, y i = ∑ j : Fin n, A i j * c j := by
+  sorry
+
 end ProofAudit
