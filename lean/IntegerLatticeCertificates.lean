@@ -104,12 +104,20 @@ theorem PrimeLocalizedMembershipCertificate.sound
 
 /-! ## Smith diagonal factors and full-rank lattice index -/
 
+/-- The standard free module of integer coordinate vectors has rank m. -/
+theorem integerCoordinateSpace_finrank (m : ℕ) :
+    Module.finrank ℤ (Fin m → ℤ) = m := by
+  rw [Module.finrank_eq_card_basis (Pi.basisFun ℤ (Fin m))]
+  simp
+
 /-- The diagonal coefficients in Mathlib's Smith-normal-form basis for L. -/
 noncomputable def smithDiagonalCoefficients
     {m : ℕ} (L : Submodule ℤ (Fin m → ℤ))
     (hRank : Module.finrank ℤ L = m) : Fin m → ℤ :=
   Submodule.smithNormalFormCoeffs
-    (Pi.basisFun ℤ (Fin m)) hRank
+    (Pi.basisFun ℤ (Fin m))
+    (by
+      rw [hRank, integerCoordinateSpace_finrank])
 
 /--
 For a full-rank sublattice of ℤ^m, its additive index is the product of the
@@ -126,7 +134,9 @@ theorem index_eq_product_smith_diagonal_coefficients
   classical
   let b : Basis (Fin m) ℤ (Fin m → ℤ) :=
     Pi.basisFun ℤ (Fin m)
-  let snf := L.smithNormalFormOfRankEq b hRank
+  have hRank' : Module.finrank ℤ L = Module.finrank ℤ (Fin m → ℤ) := by
+    rw [hRank, integerCoordinateSpace_finrank]
+  let snf := L.smithNormalFormOfRankEq b hRank'
   rw [snf.toAddSubgroup_index_eq_ite]
   simp [smithDiagonalCoefficients, b, snf,
     Ideal.span_singleton_toAddSubgroup_eq_zmultiples,
