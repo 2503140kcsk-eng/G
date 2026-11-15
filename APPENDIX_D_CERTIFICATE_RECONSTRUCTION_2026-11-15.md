@@ -23,6 +23,65 @@ Consequently, this branch records the source-reported arithmetic below but does 
 
 No reconstructed matrix or vector should be substituted for these source arrays.
 
+## Reconstructing the residual presentation from the paper's formulas
+
+The paper does specify a reconstruction *pipeline*, even though it does not publish the resulting arrays. In the canonical ray,
+\[
+D=200r+37,\quad L=20r+6,\quad p_r=220r+42,\quad
+I_D=\{N_D,\ldots,M_D\}
+\]
+with \(N_D=220r+40\) and \(M_D=440r+81\). It defines
+\[
+P(z)=(z^2+25)(z^2+239^2),\quad
+Q_r(z)=\frac{P(z)^{2r}}{(2r)!(25\cdot239^2)^{2r}},\quad
+F_r(z)=Q_r(z)G(z)=\sum_{n\ge0}f_nz^n.
+\]
+The endpoint value is
+\[
+q_{\rm end,r}=Q_r(1)=\frac{(26/25)^{2r}(57122/57121)^{2r}}{(2r)!}.
+\]
+Writing \(q_{\rm end,r}=\alpha_D/\beta_D\) in lowest terms and
+\(g_D=\gcd(\beta_D,D!)\), the primitive endpoint pair is
+\[
+\lambda_D=\beta_D/g_D,\qquad \sigma_D=D!\alpha_D/g_D.
+\]
+The fixed Taylor presentation has row order \(n=N_D,\ldots,M_D\), and its polynomial block is specified by
+\[
+A^Q_D[n,a_k]=(k-n+1){n\choose k},\quad
+A^Q_D[n,\rho_j]=n!(f_{n-j}-f_{n-1-j}),\quad
+t^Q_D[n]=\lambda_Dn!f_n+\sigma_D{n\choose D}.
+\]
+The negative-shift columns are defined from the tail observations \(B_{D,-\ell}=T_D(G_\ell)\), with
+\(G_\ell(z)=z^{-\ell}(F_r(z)-T_{<\ell}F_r(z))\) and
+\(G_\ell(z)=\sum_{k\ge0}f_{k+\ell}z^k\). The paper then jointly clears and primitive-normalizes each complete row of
+\([A^Q_D\mid B_{-D}\mid -t^Q_D]\), fixes the negative-column reversal, and calls the resulting blocks \(A_r,B_r,t_r\).
+
+The saturated-coordinate and projected-coset stages then specify the residual presentation:
+\[
+W_r=\operatorname{span}_{\mathbb Q}(A_r)\cap\mathbb Z^{p_r},\quad
+A_r=E_rX_r,\quad B_rK_{{\rm tail},r}=E_rY_r,\quad t_r=E_rs_r.
+\]
+For the first Smith phase choose unimodular \(U_{1,r},V_{1,r}\) with
+\[
+U_{1,r}X_rV_{1,r}=\operatorname{diag}(d_r,X_{1,r}),
+\quad U_{1,r}s_r=(\alpha_r,\sigma_r),\quad
+U_{1,r}Y_r=(\beta_r,Y'_r).
+\]
+Let \(J_r\) be a column-Hermite basis of
+\(\{z\in\mathbb Z^{k_r}:\beta_rz\equiv0\pmod{d_r}\}\).
+For \(q_{{\rm proj},r}=g_r/\gcd(g_r,\alpha_r)\), with
+\(g_r=\gcd(d_r,\beta_{r,1},\ldots,\beta_{r,k_r})\), choose \(z_{0,r}\) satisfying
+\(\beta_rz_{0,r}\equiv q_{{\rm proj},r}\alpha_r\pmod{d_r}\). The residual data are
+\[
+A_{{\rm res},r}=[X_{1,r}\mid Y'_rJ_r],\quad
+w_r\equiv q_{{\rm proj},r}\sigma_r-Y'_rz_{0,r}
+\pmod{\operatorname{im}(Y'_rJ_r)}.
+\]
+At \(r=1\), \(a_1=262\), so the source-reported shape is
+\(A_{{\rm res},1}\in\mathbb Z^{261\times499}\) and \(w_1\in\mathbb Z^{261}\).
+
+This is an exact regeneration route, not a claim that the current branch has executed it. In particular, the paper does not pin down the machine-readable Smith transformations, Hermite-basis tie-breaking, the chosen \(z_{0,1}\), or the chosen representative \(w_1\) in the published item; those choices matter for reproducing the *same byte-for-byte* matrix and witness vectors, even though the residual group and its order are invariant under the allowed changes. That, together with the absent attachments, is why we have not fabricated an “actual” array.
+
 ## Source-reported fixed instance at r = 1
 
 \[
