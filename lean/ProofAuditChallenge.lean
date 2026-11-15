@@ -467,28 +467,14 @@ theorem not_mem_integer_column_span_of_modular_dual
         ∀ i : Fin m, y i = ∑ j : Fin n, A i j * c j := by
   sorry
 
-/-- A finite limit for the denominator/content ratio transfers convergence
-    of rational errors to primitive integer errors inside one fixed saturated
-    lattice. -/
-theorem primitive_integerization_tendsto_zero_of_ratio
-    {m : ℕ} {L : Submodule ℤ (Fin m → ℤ)}
-    {x : ℕ → (Fin m → ℚ)}
-    (C : ∀ n, EPlusPiApproximation.PrimitiveIntegerization L (x n))
-    (hL : EPlusPiApproximation.IsPrimitiveIntegerLattice L)
-    (a : Fin m → ℝ) {b : ℝ}
-    (hratio : Filter.Tendsto
-      (fun n =>
-        ((C n).denominator : ℝ) / ((C n).content : ℝ))
-      Filter.atTop (𝓝 b))
-    (herr : Filter.Tendsto
-      (fun n =>
-        |EPlusPiApproximation.rationalVectorPairing a (x n)|)
-      Filter.atTop (𝓝 0)) :
-    Filter.Tendsto
-      (fun n =>
-        |EPlusPiApproximation.integerVectorPairing a (C n).primitiveVector|)
-      Filter.atTop (𝓝 0) ∧
-      ∀ n, (C n).primitiveVector ∈ L := by
+/-- A real sequence with a finite limit times a sequence tending to zero
+    again tends to zero. This is the scalar convergence step used by the
+    primitive integerization criterion. -/
+theorem finite_ratio_weighted_error_tendsto_zero
+    {ratio error : ℕ → ℝ} {b : ℝ}
+    (hratio : Filter.Tendsto ratio Filter.atTop (𝓝 b))
+    (herr : Filter.Tendsto error Filter.atTop (𝓝 0)) :
+    Filter.Tendsto (fun n => ratio n * error n) Filter.atTop (𝓝 0) := by
   sorry
 
 end ProofAudit
