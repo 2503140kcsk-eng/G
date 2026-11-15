@@ -19,7 +19,7 @@ Consequently, this branch records the source-reported arithmetic below but does 
 - w_1: 261-coordinate integer target;
 - seven prime-power modular dual separators for p = 2, 3, 7, 11, 19, 23, 31, with each local exponent and target specified below;
 - for p = 17: one 499-coordinate integral membership vector and one 261-coordinate modular dual separator;
-- for p = 239: an exponent-ceiling certificate and a 499-coordinate localized-membership vector, together with its allowed denominator/unit witness.
+- for p = 239: the explicit exponent ceiling K = 259, plus a finite-congruence/localized-membership certificate modulo 239^259 for the 499-column residual presentation, with the denominator/unit witness.
 
 No reconstructed matrix or vector should be substituted for these source arrays.
 
@@ -104,7 +104,7 @@ For the all-r presentation A_res,r, the paper states the maximal-minor content f
 
 \[
 D_{{\rm res},r}=\Delta_{a_r-1}(A_{{\rm res},r}),\quad
-E_{{\rm aug},r}=\Delta_{a_r}([A_{{\rm res},r}\mid w_r]),\quad
+E_{{\rm aug},r}=\Delta_{a_r-1}([A_{{\rm res},r}\mid w_r]),\quad
 \delta_r=D_{{\rm res},r}/E_{{\rm aug},r}.
 \]
 
@@ -120,7 +120,7 @@ F(v_n)=\frac{D_n}{c_n}F(x_n).
 
 Therefore \(F(x_n)\to0\) alone does not imply \(F(v_n)\to0\). Example: \(x_n=1/(n+1)\), \(D_n=n+1\), \(z_n=1\), \(c_n=1\), \(v_n=1\), and \(F(t)=t\). The rational error tends to zero while the primitive integer error stays equal to one.
 
-The valid transfer hypothesis is the weighted convergence
+For a general r and prime p, the paper gives the finite-local ceiling K_{r,p} = v_p(D_{res,r}); at r = 1 and p = 239 it states that K = 259 suffices. The valid transfer hypothesis is the weighted convergence
 \[
 \frac{D_n}{c_n}|F(x_n)|\longrightarrow0.
 \]
