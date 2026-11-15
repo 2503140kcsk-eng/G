@@ -318,6 +318,39 @@ theorem PrimitiveIntegerization.tendsto_primitive_errors_of_weighted
     exact hweighted
   · exact hsame
 
+/--
+If the denominator/content ratio has a finite limit and the rational
+functional errors tend to zero, then the corresponding primitive integer
+errors tend to zero in the same fixed saturated lattice.
+This is a directly checkable sufficient condition for the weighted hypothesis:
+a convergent real sequence is bounded, so multiplying it by a null sequence
+again gives a null sequence.
+-/
+theorem PrimitiveIntegerization.tendsto_primitive_errors_of_ratio
+    {m : ℕ} {L : Submodule ℤ (Fin m → ℤ)}
+    {x : ℕ → (Fin m → ℚ)} (C : ∀ n, PrimitiveIntegerization L (x n))
+    (hL : IsPrimitiveIntegerLattice L) (a : Fin m → ℝ)
+    {b : ℝ}
+    (hratio : Tendsto
+      (fun n =>
+        ((C n).denominator : ℝ) / ((C n).content : ℝ))
+      atTop (𝓝 b))
+    (herr : Tendsto
+      (fun n => |rationalVectorPairing a (x n)|)
+      atTop (𝓝 0)) :
+    Tendsto
+      (fun n => |integerVectorPairing a (C n).primitiveVector|)
+      atTop (𝓝 0) ∧
+      ∀ n, (C n).primitiveVector ∈ L := by
+  have hweighted : Tendsto
+      (fun n =>
+        ((C n).denominator : ℝ) / ((C n).content : ℝ) *
+          |rationalVectorPairing a (x n)|)
+      atTop (𝓝 0) := by
+    simpa using hratio.mul herr
+  exact PrimitiveIntegerization.tendsto_primitive_errors_of_weighted
+    C hL a hweighted
+
 #print axioms IntegerLatticeMembershipCertificate.sound
 #print axioms IntegerLatticeNonmembershipCertificate.sound
 #print axioms PrimePowerNonmembershipCertificate.sound
