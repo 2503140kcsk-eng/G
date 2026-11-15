@@ -49,7 +49,9 @@
     "ProofAudit.integer_two_column_matrix_kernel_iff_anchor_of_nonzero",
     "ProofAudit.integer_two_column_matrix_kernel_eq_zsmul_anchor_of_nonzero",
     "ProofAudit.integer_two_column_matrix_kernel_eq_zsmul_anchor_of_nonzero_gcd_one",
-    "ProofAudit.integer_endpoint_kernel_from_primitive_success"
+    "ProofAudit.integer_endpoint_kernel_from_primitive_success",
+    "ProofAudit.endpoint_success_row_implies_anchor_minor",
+    "ProofAudit.endpoint_success_rows_imply_anchor_minors"
   ],
   "permitted_axioms": [
     "propext",
