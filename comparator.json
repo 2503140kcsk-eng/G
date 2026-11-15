@@ -40,7 +40,11 @@
     "ProofAudit.integer_row_kernel_iff_anchor_of_gcd_one",
     "ProofAudit.exists_bezout_of_int_gcd_eq_one",
     "ProofAudit.integer_two_column_matrix_kernel_iff_anchor",
-    "ProofAudit.nonprimitive_pair_counterexample"
+    "ProofAudit.nonprimitive_pair_counterexample",
+    "ProofAudit.integer_pair_kernel_iff_primitive_generator",
+    "ProofAudit.integer_two_column_matrix_kernel_eq_zsmul_anchor",
+    "ProofAudit.integer_two_column_matrix_kernel_eq_zsmul_anchor_of_gcd_one",
+    "ProofAudit.nonprimitive_row_kernel_counterexample"
   ],
   "permitted_axioms": [
     "propext",
