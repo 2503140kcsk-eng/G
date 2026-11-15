@@ -243,20 +243,55 @@ This scalar result should be recorded as a stop rule for the obvious one-channel
 
 The new workstream is **formal endpoint-lattice arithmetic plus a quantitative post-normalization budget**, not a repeat of the finite Taylor search.
 
-### Task A — formalize the generic rank-one endpoint-kernel lemma
+### Completed Lean layer — primitive rank-one kernels
 
-Define an integer matrix $R_D:\mathbb Z^2\to\mathbb Z^{p_D}$. Prove a general theorem of the form:
+The branch now contains \`lean/IntegerEndpointLattice.lean\`, wired into
+\`ProofAudit.lean\`, \`ProofAuditChallenge.lean\`, and \`comparator.json\`.
+The formalized statements are:
 
-- the rational rank of $R_D$ is one;
-- $v_D=(b_D,\delta_D)$ is a primitive integer vector;
-- $R_D(v_D)=0$;
+1. \`exists_bezout_of_int_gcd_eq_one\`: extract an explicit integer Bezout
+   witness from \`Int.gcd a b = 1\), using the pinned Mathlib extended-gcd
+   identity \`Int.gcd_eq_gcd_ab\`.
+2. \`integer_pair_multiple_of_bezout_and_determinant\`: a Bezout-primitive
+   pair spans every integer pair on the same rational line.
+3. \`integer_pair_multiple_of_gcd_one_and_determinant\`: the same result with
+   primitivity expressed by gcd one.
+4. \`integer_row_kernel_iff_anchor\` and its gcd-one variant: if an anchor row
+   is actually included and every other row has zero determinant with it, the
+   common integer kernel of all rows equals the anchor-row kernel.
+5. \`integer_two_column_matrix_kernel_iff_anchor\`: the matrix form for
+   \`Matrix ι (Fin 2) ℤ\`, with the vanishing anchor minors stated explicitly.
+6. \`nonprimitive_pair_counterexample\`: without primitivity, collinearity
+   does not imply integral proportionality; rows (2,2) and (1,1) give a
+   concrete counterexample.
 
-therefore
-$$
-\ker_{\mathbb Z}(R_D)=\mathbb Zv_D.
-$$
+The proof uses only integer identities and Mathlib's extended gcd; no
+floating-point or custom axiom is involved. The pinned Mathlib source
+\`Mathlib/Data/Int/GCD.lean\` contains the cited \`Int.gcd_eq_gcd_ab\`,
+\`Int.gcdA\`, and \`Int.gcdB\` declarations. Context7 resolved
+\`/leanprover-community/mathlib4/v4.36.0-rc2\` but returned no focused snippets
+for the exact queries, so the checked pinned source and the successful CI build
+are the API evidence used here.
 
-This is the abstract algebra behind the endpoint-intersection statement. It should be formalized independently of the special-function analysis, tested against nonprimitive and rank-zero counterexamples, and audited with the project's pinned Mathlib version.
+**Important boundary:** these theorems formalize the abstract saturation
+step. They assume the source-specific collinearity condition
+\[
+a\,B_i=b\,A_i\quad\text{for every source row }i.
+\]
+They do not yet prove that condition for the Split–Machin endpoint matrix.
+That source-specific determinant/minor identity is now the next exact
+obligation, not something hidden inside the general lemma.
+
+### Task A — derive the Split–Machin anchor-minor identities
+
+Extract the concrete two-column endpoint map $R_D$ from the Split–Machin source and prove:
+
+- an anchor row $v_D=(b_D,\delta_D)$ occurs in the source;
+- $\gcd(b_D,\delta_D)=1$;
+- every row satisfies the source-specific minor identity $b_D B_i=\delta_D A_i$;
+- the integral kernel is therefore $\mathbb Z v_D$ by the completed Lean lemma.
+
+The remaining work is to derive those three source-specific facts from the coefficient and endpoint definitions in the paper, rather than assume them. A rank-zero branch or a nonprimitive anchor must be excluded explicitly.
 
 ### Task B — formalize determinantal divisors and index factorization
 
@@ -303,9 +338,9 @@ Until all seven hold, the output is a conditional criterion, a partial theorem, 
 | Lean 4 + Mathlib v4.36.0-rc2 | Formalize integer matrices, primitive kernels, determinantal divisors, endpoint-index identities, and convergence criteria. | The only direct formal proof dependency. Keep the frozen manifest. |
 | Sider Scholar | Locate arXiv and institutional versions; inspect authorship, dates, and whether a result claims irrationality. | Used for arXiv 2606.17303 metadata; broad OpenAlex search returned no matched papers. |
 | Parallel Search / Fetch | Extract and cross-check the 2026 Split–Machin and inverse-Apéry preprints. | Used. Search/fetch are literature evidence, not proof certificates. |
-| Wolfram | Verify Machin's identity and independent exact finite Taylor-matrix / endpoint calculations. | Used for exact identity and $n=2,3$ checks; not used for any limit or universal claim. |
+| Wolfram | Verify Machin's identity, exact rational nullspaces, common denominators, primitive contents, endpoint errors, and the fixed $r=1$ index arithmetic. | Used to recompute all $n=1,\ldots,8$ type-II table rows and $17\cdot239^{44}$; finite computations only, no limit or universal claim. |
 | SymPy 1.14.0 | Exact rational nullspace, coefficient clearing, content/gcd, and finite candidate ledger. | Used locally for the finite type-II diagnostic only. |
-| Context7 | Resolve the pinned Mathlib documentation target and find version-sensitive APIs. | Library ID resolved; the focused PowerSeries/gcd queries returned no matching docs. The pinned compiler/CI remains authoritative. |
+| Context7 | Resolve the pinned Mathlib documentation target and find version-sensitive APIs. | Resolved the exact Mathlib v4.36.0-rc2 library ID; focused queries returned no snippets. The required gcd API was confirmed directly in the pinned Mathlib source and then compiled in CI. |
 | Macaulay2 | Explore syzygies, modules, saturation, and source-realization polynomial modules. | Role assigned; executable not installed in this environment. |
 | GAP | Check finite abelian-group / invariant-factor calculations independently. | Role assigned; executable not installed. |
 | SageMath | Recompute Smith forms, rational lattices, p-adic valuations, and LLL diagnostics independently. | Role assigned; executable not installed. |
