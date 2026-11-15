@@ -194,6 +194,33 @@ and $L_2\approx9.62791798034\times10^{17}$.
 
 **Audit correction:** an earlier exploratory script accidentally used floating-point division while reducing large integers. Its resulting table was withdrawn. The table above is from the corrected exact-integer/rational path, with the $n=2,3$ values independently checked in Wolfram. No conclusion relies on the withdrawn output.
 
+
+
+### Exact arithmetic ledger and independent verification
+
+The complete eight-row record is stored in
+\`data/split_machin_type_ii_diagonal_audit_2026-11-15.json\`.
+It contains the matrix rank/nullity, joint common denominator, coefficient
+content, and the high-precision logarithm of the normalized endpoint form.
+Wolfram Language independently rebuilt the rational Taylor matrix for every
+$n=1,\ldots,8$, verified ranks $2n$ and nullity one, cleared the joint
+denominator, divided the joint coefficient content, and reproduced all eight
+$\log_{10}|L_n|$ values. The content was one in every row; the common
+denominators were $1195,1,1195,1,5975,1,5975,1$.
+
+For the $r=1$ endpoint-index datum reported in the Laurent endpoint-arithmetic
+preprint, Wolfram independently checked
+$
+17\cdot239^{44}
+=7585017080433407590878271022167940357899238784003404874750825000878408791786146064790946637606736779711697,
+$
+with factorization $17^1 239^{44}$ and $239$ prime. This verifies the integer
+arithmetic of the quoted fixed-instance invariant; it does **not** reconstruct
+the source matrices or prove the invariant for other $r$.
+
+The exact computational workflow and its scope are recorded in the JSON
+ledger. These computations are diagnostic and reproducibility aids only.
+
 ## 5. A scalar truncation no-go that must not be overgeneralized
 
 The Split–Machin paper also derives the signed error for the scalar truncation
