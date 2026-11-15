@@ -300,6 +300,44 @@ theorem nonprimitive_row_kernel_counterexample :
   · rintro ⟨k, _, hk⟩
     omega
 
+
+/--
+Endpoint-lattice specialization matching the Split–Machin notation.
+
+The vector (b₀, δ) is assumed to be an old success relation, so every
+source row annihilates it. The gcd-one condition makes the perpendicular
+row direction (δ, -b₀) primitive. A nonzero source row rules out the
+rank-zero case. Consequently the full integer kernel is exactly the
+Z-span of the old success vector (b₀, δ).
+
+This theorem isolates the precise source-specific inputs needed from the
+Split–Machin endpoint map; it does not assume that a primitive row itself
+occurs in the matrix.
+-/
+theorem integer_endpoint_kernel_from_primitive_success
+    {ι : Type*} (M : Matrix ι (Fin 2) ℤ)
+    {b₀ δ : ℤ}
+    (hcoprime : Int.gcd b₀ δ = 1)
+    (hsuccess : ∀ i, M i 0 * b₀ + M i 1 * δ = 0)
+    (hnonzero : ∃ i, M i 0 ≠ 0 ∨ M i 1 ≠ 0)
+    (x y : ℤ) :
+    (∀ i, M i 0 * x + M i 1 * y = 0) ↔
+      ∃ k : ℤ, x = b₀ * k ∧ y = δ * k := by
+  obtain ⟨u, v, hbezBase⟩ :=
+    exists_bezout_of_int_gcd_eq_one hcoprime
+  have hbez : ∃ u' v' : ℤ, u' * δ + v' * (-b₀) = 1 := by
+    refine ⟨v, -u, ?_⟩
+    nlinarith [hbezBase]
+  have hminor : ∀ i, δ * M i 1 = (-b₀) * M i 0 := by
+    intro i
+    have hs := hsuccess i
+    nlinarith [hs]
+  have h := integer_two_column_matrix_kernel_eq_zsmul_anchor_of_nonzero
+    M hbez hminor hnonzero x y
+  simpa only [neg_neg] using h
+
+#print axioms integer_endpoint_kernel_from_primitive_success
+
 #print axioms integer_pair_kernel_iff_primitive_generator
 #print axioms integer_two_column_matrix_kernel_eq_zsmul_anchor
 #print axioms integer_two_column_matrix_kernel_eq_zsmul_anchor_of_gcd_one
