@@ -1,6 +1,9 @@
 module
 public import Mathlib
 public import ProofAuditDefs
+public import PolynomialApproximationDefs
+public import CommonDenominatorApproximationDefs
+public import FactorialTaylorFusionDefs
 
 @[expose] public section
 
@@ -64,6 +67,18 @@ theorem integer_forms_tending_to_zero_imply_irrationality
       (A n : ℝ) * x + (B n : ℝ) ≠ 0)
     (hsmall : Tendsto
       (fun n : ℕ => |(A n : ℝ) * x + (B n : ℝ)|)
+      atTop (𝓝 0)) :
+    Irrational x := by
+  sorry
+
+theorem paired_integer_forms_tending_to_zero_imply_irrationality
+    {x : ℝ} {A C : ℕ → ℤ}
+    (hdet : ∀ᶠ n : ℕ in atTop,
+      A n * C (n + 1) - A (n + 1) * C n ≠ 0)
+    (hsmall : Tendsto
+      (fun n : ℕ =>
+        |(A n : ℝ) * x - (C n : ℝ)| +
+          |(A (n + 1) : ℝ) * x - (C (n + 1) : ℝ)|)
       atTop (𝓝 0)) :
     Irrational x := by
   sorry
@@ -180,6 +195,75 @@ theorem finite_iff_essFiniteType_and_algebraic
     {F K : Type*} [Field F] [Field K] [Algebra F K] :
     Module.Finite F K ↔
       Algebra.EssFiniteType F K ∧ Algebra.IsAlgebraic F K := by
+  sorry
+
+
+/-- The explicit simultaneous approximation family has integer endpoint data,
+    nonzero endpoint determinant, exact reciprocal representation, and a
+    uniform exponential error tending to zero. -/
+theorem simultaneous_polynomial_approximation_certificate
+    (n : ℕ) (hn : 1 ≤ n) :
+    (SimultaneousPolynomialApproximation.endpointMatrix n).det ≠ 0 ∧
+    (∀ x ∈ Set.Icc (-1) 1,
+      |SimultaneousPolynomialApproximation.evalReal
+          (SimultaneousPolynomialApproximation.denominator n) x * Real.exp x -
+        SimultaneousPolynomialApproximation.evalReal
+          (SimultaneousPolynomialApproximation.numerator n) x|
+          ≤ 4 / (n + 1 : ℝ)) ∧
+    (∀ x : ℝ,
+      SimultaneousPolynomialApproximation.evalReal
+          (SimultaneousPolynomialApproximation.denominator n) x *
+            (1 + x ^ 2)⁻¹ =
+        SimultaneousPolynomialApproximation.evalReal
+          (SimultaneousPolynomialApproximation.reciprocalNumerator n) x) ∧
+    (∀ ε : ℝ, 0 < ε →
+      ∃ N : ℕ, ∀ m : ℕ, N ≤ m →
+        (4 : ℝ) / (m + 1 : ℝ) < ε) := by
+  sorry
+
+
+/-- Separate rational approximants can be fused into an integer form for
+    the sum only when the cross-multiplied error budget tends to zero. -/
+theorem irrational_of_common_denominator_approximations
+    {x y : ℝ} {q r : ℕ → ℕ} {p s : ℕ → ℤ}
+    (hnz : ∀ᶠ n : ℕ in Filter.atTop,
+      EPlusPiApproximation.signedIntegerLinearFormValue (x + y)
+        (EPlusPiApproximation.commonDenominatorCoefficient (q n) (r n))
+        (EPlusPiApproximation.commonDenominatorConstant
+          (q n) (r n) (p n) (s n)) ≠ 0)
+    (hsmall : Filter.Tendsto
+      (fun n : ℕ =>
+        EPlusPiApproximation.commonDenominatorScaledError
+          x y (q n) (r n) (p n) (s n))
+      Filter.atTop (𝓝 0)) :
+    Irrational (x + y) := by
+  sorry
+
+
+/-- Any rational pi denominators compatible with the current factorial Taylor
+    approximants to e must be sublinear in the Taylor index if the fused errors
+    are to tend to zero. -/
+theorem factorial_taylor_fusion_forces_sublinear_pi_denominators
+    {r : ℕ → ℕ} {s : ℕ → ℤ}
+    (hsmall : Filter.Tendsto
+      (FactorialTaylorFusion.factorialTaylorFusionError r s)
+      Filter.atTop (𝓝 0)) :
+    Filter.Tendsto (fun n : ℕ => (r n : ℝ) / (n + 1 : ℝ))
+      Filter.atTop (𝓝 0) := by
+  sorry
+
+
+/-- A uniform lower bound for pi-side integer linear forms rules out vanishing
+    cross-weighted error for the current factorial Taylor approximants to e. -/
+theorem factorial_taylor_fusion_no_go_from_pi_measure_lower_bound
+    {r : ℕ → ℕ} {s : ℕ → ℤ} {c : ℝ}
+    (hc : 0 < c)
+    (hrpos : ∀ n, 0 < r n)
+    (hpi : ∀ n,
+      c / (r n : ℝ) ^ 7 ≤
+        |(r n : ℝ) * Real.pi - (s n : ℝ)|) :
+    ¬ Filter.Tendsto (FactorialTaylorFusion.factorialTaylorFusionError r s)
+      Filter.atTop (𝓝 0) := by
   sorry
 
 end ProofAudit

@@ -1,6 +1,6 @@
 # Tool allocation and proof-integrity protocol
 
-**Project snapshot:** 2026-11-12 (JST)  
+**Project snapshot:** 2026-11-15 (JST)  
 **Repository:** `2503140kcsk-eng/G`  
 **Formal environment:** Lean `v4.36.0-rc2`; Mathlib `v4.36.0-rc2`; exact dependency revisions recorded in `lake-manifest.json`.
 
@@ -182,3 +182,76 @@ PR Run #309 on commit `3f9aa564d97244c513c9f44faa757e24d488c347` completed succe
 PR #2 had a successful targeted Comparator run on its then-current commit, but its workflow refreshed dependencies with `lake update`; that run is not evidence for the frozen PR #1 environment. PR #3's axiom audit and first two independent checker stages succeeded, but its earlier runner was shut down while nanoda was running; its full paranoid run did not complete. The successful integrated PR #1 Run #309 is the evidence for the combined tree.
 
 The named starred repositories keep the roles in section 3: Mathlib4 is the only direct mathematical package dependency; Macaulay2, GAP, SymPy, SageMath, cvc5, Naproche, and LeanDojo-v2 are auxiliary exploration or proof-search resources, not trusted proof dependencies. Their software was not executed by merely consulting their GitHub sources. The connected-tool roles and free-scope boundaries remain in section 9.
+
+
+
+## 11. Common-denominator fusion continuation (2026-11-14)
+
+The branch **research/common-denominator-fusion-2026-11-14** adds a formal, conditional bridge for combining two independent rational approximations into a single integer linear form in their sum.
+
+| Resource | Specific work in this continuation | Verification boundary |
+|---|---|---|
+| GitHub | Added the fusion definitions and Lean theorem, wired the theorem into ProofAudit, ProofAuditChallenge, lakefile.lean, and comparator.json; preserved the frozen manifest. | Push run #368 passed in full. No change was made to main and no claim of an unconditional e + π result is made. |
+| Sider Scholar | Retrieved the arXiv record for Yu's 2026 preprint on e + π irrationality obstructions and searched Hermite–Padé literature. | Literature discovery only. The broad OpenAlex query was noisy; it is not treated as mathematical evidence. |
+| Wolfram | Checked finite exact examples related to the growth of cross-multiplied denominators. | Finite symbolic checks only; the lacunary-series obstruction in the research note is a separate written estimate. |
+| Context7 | Resolved the Mathlib v4.36.0-rc2 library identifier. The documentation endpoint returned no matching entries for the targeted lemma queries. | The exact squeeze_zero and abs_add_le APIs were instead located in the pinned Mathlib source through GitHub search and verified by CI. |
+| Parallel | Retrieved the arXiv preprint and a 2006 Hermite–Padé lecture-note source for independent context. | Source extraction and synthesis only; not a proof dependency. |
+| User-starred algebra/computation repositories | M2, GAP, SymPy, Sage, Naproche, cvc5, LeanDojo-v2, and Mathlib retain the roles from section 3. | Their software is not imported as a trusted proof dependency. Mathlib remains the sole direct mathematical package dependency. |
+
+### Formal and CI result
+
+For integers \(p,s\) and natural denominators \(q,r\), the exact identity
+\[
+(qr)(x+y)-(rp+qs)=r(qx-p)+q(ry-s)
+\]
+is proved in CommonDenominatorApproximation.lean. The cross-weighted triangle bound and the conditional irrationality theorem are also proved. The new statement is the 30th theorem contract in comparator.json.
+
+On commit 6f49702caca4abded88e8e4463e2cc29261430ee, GitHub Actions run #368 passed. The implementation's own #print axioms output for the new public wrapper contains only propext, Classical.choice, and Quot.sound. The automated axiom-audit reported 39 declarations under ProofAudit, all within the same allowlist. The Comparator paranoid phase was accepted by the Lean paranoid kernel, lean4lean (57,995 declarations), nanoda, con-leche (57,994 declarations), con-ron (57,994 declarations), and Lean's default kernel.
+
+The mathematical limitation is explicit: two separate limits \(q_nx-p_n\to0\) and \(r_ny-s_n\to0\) do not imply the cross-weighted limit. A lacunary-series counterexample and its proof are recorded in COMMON_DENOMINATOR_FUSION_AUDIT_2026-11-14.md. Thus this continuation supplies a precise conditional bridge, not the missing construction for \(x=e,y=\pi\).
+
+## 9. Factorial-Taylor fusion no-go continuation (2026-11-15)
+
+This continuation added a conditional no-go theorem for one specific construction. It did not change the direct dependency boundary or the open-problem status.
+
+| Resource | Role in this continuation | Actual use and evidence boundary |
+|---|---|---|
+| GitHub | Inspect the exact branch and pinned source, commit Lean modules and audit documentation, compare it with PR #1, and run CI. | Added the factorial-Taylor definitions and proofs, two audit wrappers, and Comparator contract 32. Push run #391 passed every configured step. |
+| Sider Scholar | Locate the published literature record and identify the primary source for the irrationality-measure bound for pi. | Queried OpenAlex and resolved the DOI 10.2140/moscow.2020.9.407. Search results identify Zeilberger and Zudilin (2020); publication theorem hypotheses were cross-checked against the publisher PDF. |
+| Wolfram | Independently check finite Taylor errors and factorial-over-polynomial growth values. | Evaluated sample values for 7 <= n <= 18. This is a numerical consistency check only, not proof of an asymptotic limit. |
+| Context7 | Resolve the exact Mathlib library/version and retrieve current API guidance. | Resolved /leanprover-community/mathlib4 at v4.36.0-rc2. The focused query did not return the exact factorial/Tendsto API documentation, so the pinned source declarations were checked directly in mathlib and the actual proof was compiled by the pinned Lean CI. |
+| Parallel Search / Fetch | Independently locate and inspect the exact publisher PDF for the pi irrationality-measure theorem. | Search and Fetch returned the primary publisher paper and its definition of irrationality measure. The evidence supports an external hypothesis; it is not a Lean proof of that paper's theorem. |
+| SymPy | Exact finite arithmetic and numerical cross-checks for the Taylor numerator, denominator, gcd, and error bounds. | Local SymPy 1.14.0 was used for sample values only. These calculations do not prove the universal inequalities or the limit. |
+| Macaulay2 | Candidate future experiments on polynomial ideals, elimination, or differential modules for alternative simultaneous approximants. | Repository purpose inspected; the M2 executable was not run in this continuation. |
+| GAP | Candidate future finite modular and recurrence checks for alternate denominator constructions. | Repository purpose inspected; GAP was not run. |
+| SageMath | Candidate future continued-fraction, interval, and rational-approximation diagnostics. | Repository purpose inspected; SageMath was not run. |
+| Naproche | Candidate future independent review of the written argument's quantifiers and logical dependencies. | Repository purpose inspected; Naproche was not run. |
+| cvc5 | Candidate future bounded SMT checks and finite counterexample searches for side conditions. | Repository purpose inspected; cvc5 was not run. |
+| LeanDojo-v2 | Candidate future retrieval of proof traces and tactic suggestions for Mathlib formalization. | Repository purpose inspected; the LeanDojo stack was not run. Any generated suggestion remains untrusted until checked by the Lean kernel. |
+| mathlib4 | Pinned formal mathematics library for the factorial, exponential, order, and filter lemmas. | Mathlib v4.36.0-rc2 is the only direct mathematics dependency. The Lake manifest remained unchanged. |
+
+### Proof boundary and result
+
+The current endpoint Taylor approximants to e have denominator q_n = 2*n! and error E_n satisfying
+
+    2/(n+1) <= E_n <= 4/(n+1).
+
+The common-denominator absolute-error budget tending to zero would force r_n/(n+1) -> 0 for the pi-side denominators. The published bound mu(pi) <= 7.103205334137... implies that some c > 0 satisfies
+
+    |r*pi-s| >= c/r^7
+
+for all positive integer r and integer s. Under that explicit arithmetic hypothesis, the Lean theorem proves the current absolute fusion budget cannot tend to zero, because it is bounded below eventually by 2*c*n!/(n+1)^7, which tends to infinity.
+
+The external pi lower bound is a hypothesis of the Lean no-go theorem. The finite-exception argument that turns the paper's eventual inequality into a global constant c is explained in FACTORIAL_TAYLOR_FUSION_NO_GO_2026-11-15.md, but the bridge itself is not yet a standalone Lean theorem. The result rules out this particular factorial-Taylor/absolute-error strategy, not all possible approximation constructions or signed cancellation. No unconditional result about irrationality or transcendence of e + pi is claimed.
+
+### CI record
+
+Push run #391 on bac0fb0b0151c99b6434c0b7a6951b81a748ac83 passed:
+- frozen Lake manifest and pinned toolchain checks;
+- implementation proof-hole/custom-axiom scan;
+- default build and lake build --wfail;
+- axiom audit of 41 declarations under ProofAudit, all using only propext, Classical.choice, and Quot.sound;
+- the 32-contract Comparator and paranoid checks;
+- Lean paranoid kernel, lean4lean (58,038 declarations), nanoda, con-leche (58,037 declarations), con-ron (58,037 declarations), and Lean default kernel.
+
+The challenge's sorry placeholders remain specification-only and are excluded from the implementation scan. Mathlib remains the pinned mathematical-library trust boundary; the run does not independently replay its entire transitive import closure.

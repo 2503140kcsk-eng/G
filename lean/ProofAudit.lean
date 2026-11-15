@@ -7,7 +7,11 @@ public import HermiteLindemannBridge
 public import EPlusPi
 public import SchanuelConditional
 public import ApproximationCriteria
+public import PairedApproximationCriteria
 public import MixedKernelQuotient
+public import ProofAuditApprox
+public import CommonDenominatorApproximation
+public import FactorialTaylorFusion
 
 @[expose] public section
 
@@ -90,6 +94,19 @@ theorem integer_forms_tending_to_zero_imply_irrationality
   simpa [EPlusPiApproximation.signedIntegerLinearFormValue] using
     EPlusPiApproximation.irrational_of_tendsto_zero_signed_integer_linear_forms
       hnz hsmall
+
+theorem paired_integer_forms_tending_to_zero_imply_irrationality
+    {x : ℝ} {A C : ℕ → ℤ}
+    (hdet : ∀ᶠ n : ℕ in atTop,
+      A n * C (n + 1) - A (n + 1) * C n ≠ 0)
+    (hsmall : Tendsto
+      (fun n : ℕ =>
+        |(A n : ℝ) * x - (C n : ℝ)| +
+          |(A (n + 1) : ℝ) * x - (C (n + 1) : ℝ)|)
+      atTop (𝓝 0)) :
+    Irrational x :=
+  EPlusPiApproximation.irrational_of_tendsto_zero_paired_integer_linear_forms
+    hdet (by simpa [EPlusPiApproximation.pairedIntegerLinearFormValue] using hsmall)
 
 /-! ## Relative algebraic closure as an intermediate field -/
 
@@ -256,5 +273,67 @@ theorem mixed_integral_factors_through_quotient (p : Polynomial ℤ) :
 #print axioms mixed_integral_identity
 #print axioms mixed_integral_factorization
 #print axioms mixed_integral_factors_through_quotient
+
+
+/-! ## Common-denominator fusion for separate rational approximants -/
+
+/-- The cross-multiplied error budget is sufficient for an irrationality
+    certificate after the two integer denominators are fused. -/
+theorem irrational_of_common_denominator_approximations
+    {x y : ℝ} {q r : ℕ → ℕ} {p s : ℕ → ℤ}
+    (hnz : ∀ᶠ n : ℕ in Filter.atTop,
+      EPlusPiApproximation.signedIntegerLinearFormValue (x + y)
+        (EPlusPiApproximation.commonDenominatorCoefficient (q n) (r n))
+        (EPlusPiApproximation.commonDenominatorConstant
+          (q n) (r n) (p n) (s n)) ≠ 0)
+    (hsmall : Filter.Tendsto
+      (fun n : ℕ =>
+        EPlusPiApproximation.commonDenominatorScaledError
+          x y (q n) (r n) (p n) (s n))
+      Filter.atTop (𝓝 0)) :
+    Irrational (x + y) :=
+  EPlusPiApproximation.irrational_of_common_denominator_approximations
+    hnz hsmall
+
+#print axioms irrational_of_common_denominator_approximations
+
+
+
+/-! ## Factorial Taylor approximation and fusion obstruction -/
+
+/-- The current factorial Taylor approximants to e force every fused pi denominator
+    to be sublinear in the Taylor index. -/
+theorem factorial_taylor_fusion_forces_sublinear_pi_denominators
+    {r : ℕ → ℕ} {s : ℕ → ℤ}
+    (hsmall : Filter.Tendsto
+      (FactorialTaylorFusion.factorialTaylorFusionError r s)
+      Filter.atTop (𝓝 0)) :
+    Filter.Tendsto (fun n : ℕ => (r n : ℝ) / (n + 1 : ℝ))
+      Filter.atTop (𝓝 0) :=
+  FactorialTaylorFusion.factorialTaylor_denominator_sublinear_of_fusion_tendsto_zero
+    hsmall
+
+#print axioms factorial_taylor_fusion_forces_sublinear_pi_denominators
+
+
+
+/-! ## A conditional no-go theorem from an explicit Diophantine lower bound for pi -/
+
+/-- Under a uniform lower bound of order r^(-7) for the pi-side integer forms,
+    the current factorial Taylor family cannot have vanishing cross-weighted error. -/
+theorem factorial_taylor_fusion_no_go_from_pi_measure_lower_bound
+    {r : ℕ → ℕ} {s : ℕ → ℤ} {c : ℝ}
+    (hc : 0 < c)
+    (hrpos : ∀ n, 0 < r n)
+    (hpi : ∀ n,
+      c / (r n : ℝ) ^ 7 ≤
+        |(r n : ℝ) * Real.pi - (s n : ℝ)|) :
+    ¬ Filter.Tendsto (FactorialTaylorFusion.factorialTaylorFusionError r s)
+      Filter.atTop (𝓝 0) :=
+  FactorialTaylorFusion.factorialTaylor_fusion_not_tendsto_zero_of_pi_lower_bound
+    hc hrpos hpi
+
+#print axioms factorial_taylor_fusion_no_go_from_pi_measure_lower_bound
+
 
 end ProofAudit

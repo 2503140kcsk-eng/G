@@ -10,6 +10,7 @@
     "ProofAudit.schanuel_implies_e_plus_pi_transcendental",
     "ProofAudit.superpolynomial_forms_imply_transcendence",
     "ProofAudit.integer_forms_tending_to_zero_imply_irrationality",
+    "ProofAudit.paired_integer_forms_tending_to_zero_imply_irrationality",
     "ProofAudit.algebraic_elements_mem_iff",
     "ProofAudit.algebraic_elements_carrier_eq",
     "ProofAudit.algebraic_elements_add_closed",
@@ -28,7 +29,11 @@
     "ProofAudit.algebraic_elements_uniqueness_up_to_algEquiv",
     "ProofAudit.finiteDimensional_adjoin_of_algebraic",
     "ProofAudit.algebraic_extension_of_finiteDimensional",
-    "ProofAudit.finite_iff_essFiniteType_and_algebraic"
+    "ProofAudit.finite_iff_essFiniteType_and_algebraic",
+    "ProofAudit.simultaneous_polynomial_approximation_certificate",
+    "ProofAudit.irrational_of_common_denominator_approximations",
+    "ProofAudit.factorial_taylor_fusion_forces_sublinear_pi_denominators",
+    "ProofAudit.factorial_taylor_fusion_no_go_from_pi_measure_lower_bound"
   ],
   "permitted_axioms": [
     "propext",

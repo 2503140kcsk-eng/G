@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - formalize-algebraic-number-closure
+      - 'research/**'
   pull_request:
 
 permissions:

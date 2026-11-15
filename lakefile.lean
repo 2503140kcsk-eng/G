@@ -50,6 +50,38 @@ lean_lib MixedKernelQuotient where
   srcDir := "lean"
 
 @[default_target]
+lean_lib PairedApproximationCriteria where
+  srcDir := "lean"
+
+@[default_target]
+lean_lib PolynomialApproximationDefs where
+  srcDir := "lean"
+
+@[default_target]
+lean_lib SimultaneousPolynomialApproximation where
+  srcDir := "lean"
+
+@[default_target]
+lean_lib ProofAuditApprox where
+  srcDir := "lean"
+
+@[default_target]
+lean_lib CommonDenominatorApproximationDefs where
+  srcDir := "lean"
+
+@[default_target]
+lean_lib CommonDenominatorApproximation where
+  srcDir := "lean"
+
+@[default_target]
+lean_lib FactorialTaylorFusionDefs where
+  srcDir := "lean"
+
+@[default_target]
+lean_lib FactorialTaylorFusion where
+  srcDir := "lean"
+
+@[default_target]
 lean_lib ProofAudit where
   srcDir := "lean"
 
