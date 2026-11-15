@@ -353,6 +353,74 @@ theorem integer_endpoint_kernel_from_primitive_success
     M hbez hminor hnonzero x y
   simpa only [neg_neg] using h
 
+
+/--
+Rearrange the integer pairing of a row functional with a matrix-column
+combination. This exact finite-sum identity is the algebraic core of modular
+dual certificates for integer column lattices.
+-/
+theorem integer_matrix_dual_sum_rearrange
+    {m n : ℕ}
+    (A : Matrix (Fin m) (Fin n) ℤ)
+    (s : Fin m → ℤ) (c : Fin n → ℤ) :
+    (∑ i : Fin m, s i * (∑ j : Fin n, A i j * c j)) =
+      ∑ j : Fin n, c j * (∑ i : Fin m, s i * A i j) := by
+  classical
+  calc
+    _ = ∑ i : Fin m, ∑ j : Fin n, s i * (A i j * c j) := by
+      simp only [Finset.mul_sum]
+    _ = ∑ j : Fin n, ∑ i : Fin m, c j * (s i * A i j) := by
+      rw [Finset.sum_comm]
+      apply Finset.sum_congr rfl
+      intro j hj
+      apply Finset.sum_congr rfl
+      intro i hi
+      ring
+    _ = ∑ j : Fin n, c j * (∑ i : Fin m, s i * A i j) := by
+      apply Finset.sum_congr rfl
+      intro j hj
+      rw [← Finset.mul_sum]
+
+/--
+A modular dual certificate excludes an integer column-lattice relation.
+
+If a row functional s annihilates every column modulo q, but does not
+annihilate the target vector modulo q, then the target cannot be an
+integer linear combination of the columns. The modulus need not be prime;
+this directly covers the prime-power certificates in Appendix D.
+-/
+theorem not_mem_integer_column_span_of_modular_dual
+    {m n : ℕ}
+    (A : Matrix (Fin m) (Fin n) ℤ)
+    (y : Fin m → ℤ) (q : ℤ) (s : Fin m → ℤ)
+    (hcolumns : ∀ j : Fin n, q ∣ ∑ i : Fin m, s i * A i j)
+    (htarget : ¬ q ∣ ∑ i : Fin m, s i * y i) :
+    ¬ ∃ c : Fin n → ℤ,
+        ∀ i : Fin m, y i = ∑ j : Fin n, A i j * c j := by
+  rintro ⟨c, hc⟩
+  apply htarget
+  have hspanPairing :
+      (∑ i : Fin m, s i * y i) =
+        ∑ j : Fin n, c j * (∑ i : Fin m, s i * A i j) := by
+    calc
+      _ = ∑ i : Fin m, s i * (∑ j : Fin n, A i j * c j) := by
+        apply Finset.sum_congr rfl
+        intro i hi
+        rw [hc i]
+      _ = _ := integer_matrix_dual_sum_rearrange A s c
+  have hdiv :
+      q ∣ ∑ j : Fin n, c j * (∑ i : Fin m, s i * A i j) := by
+    refine Finset.dvd_sum fun j hj => ?_
+    obtain ⟨k, hk⟩ := hcolumns j
+    refine ⟨c j * k, ?_⟩
+    rw [hk]
+    ring
+  rw [hspanPairing]
+  exact hdiv
+
+#print axioms integer_matrix_dual_sum_rearrange
+#print axioms not_mem_integer_column_span_of_modular_dual
+
 #print axioms endpoint_success_row_implies_anchor_minor
 #print axioms endpoint_success_rows_imply_anchor_minors
 #print axioms integer_endpoint_kernel_from_primitive_success
