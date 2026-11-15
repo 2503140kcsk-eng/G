@@ -1,3 +1,5 @@
+module
+
 import Mathlib.RingTheory.Polynomial.Chebyshev
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic
 import Mathlib.Analysis.SpecificLimits.Basic
@@ -31,23 +33,31 @@ def uCoeff (n k : ℕ) : ℚ :=
 theorem tCoeff_succ_succ (n k : ℕ) :
     tCoeff (n + 2) (k + 1) =
       2 * tCoeff (n + 1) k - tCoeff n (k + 1) := by
-  simp [tCoeff, Polynomial.Chebyshev.T_add_two, ← mul_assoc]
+  rw [Polynomial.Chebyshev.T_add_two]
+  rw [mul_assoc]
+  simp [tCoeff]
 
 /-- Boundary case of the first-kind coefficient recurrence. -/
 theorem tCoeff_succ_succ_zero (n : ℕ) :
     tCoeff (n + 2) 0 = -tCoeff n 0 := by
-  simp [tCoeff, Polynomial.Chebyshev.T_add_two, ← mul_assoc]
+  rw [Polynomial.Chebyshev.T_add_two]
+  rw [mul_assoc]
+  simp [tCoeff]
 
 /-- Second-kind coefficient recurrence, away from the constant coefficient. -/
 theorem uCoeff_succ_succ (n k : ℕ) :
     uCoeff (n + 2) (k + 1) =
       2 * uCoeff (n + 1) k - uCoeff n (k + 1) := by
-  simp [uCoeff, Polynomial.Chebyshev.U_add_two, ← mul_assoc]
+  rw [Polynomial.Chebyshev.U_add_two]
+  rw [mul_assoc]
+  simp [uCoeff]
 
 /-- Boundary case of the second-kind coefficient recurrence. -/
 theorem uCoeff_succ_succ_zero (n : ℕ) :
     uCoeff (n + 2) 0 = -uCoeff n 0 := by
-  simp [uCoeff, Polynomial.Chebyshev.U_add_two, ← mul_assoc]
+  rw [Polynomial.Chebyshev.U_add_two]
+  rw [mul_assoc]
+  simp [uCoeff]
 
 /-- The discrete Wronskian (Casoratian) of the two Chebyshev solutions. -/
 def casoratian (n : ℕ) : Polynomial ℚ :=
@@ -64,12 +74,14 @@ theorem casoratian_succ (n : ℕ) :
       Polynomial.Chebyshev.T ℚ ((n : ℤ) + 1 + 1) =
         2 * Polynomial.X * Polynomial.Chebyshev.T ℚ ((n : ℤ) + 1) -
           Polynomial.Chebyshev.T ℚ (n : ℤ) := by
-    convert Polynomial.Chebyshev.T_add_two ℚ (n : ℤ) using 1 <;> congr 1 <;> ring
+    simpa only [show (n : ℤ) + 2 = (n : ℤ) + 1 + 1 by ring] using
+      (Polynomial.Chebyshev.T_add_two ℚ (n : ℤ))
   have hU :
       Polynomial.Chebyshev.U ℚ ((n : ℤ) + 1 + 1) =
         2 * Polynomial.X * Polynomial.Chebyshev.U ℚ ((n : ℤ) + 1) -
           Polynomial.Chebyshev.U ℚ (n : ℤ) := by
-    convert Polynomial.Chebyshev.U_add_two ℚ (n : ℤ) using 1 <;> congr 1 <;> ring
+    simpa only [show (n : ℤ) + 2 = (n : ℤ) + 1 + 1 by ring] using
+      (Polynomial.Chebyshev.U_add_two ℚ (n : ℤ))
   rw [hT, hU]
   ring
 
@@ -106,7 +118,6 @@ theorem fundamentalDet_eq_neg_casoratian (n : ℕ) :
 theorem fundamentalDet_eq_X (n : ℕ) :
     fundamentalDet n = Polynomial.X := by
   rw [fundamentalDet_eq_neg_casoratian, casoratian_eq_neg_X]
-  simp
 
 /-- Real scaled second-kind Chebyshev values at the Mehler-Heine scale. -/
 def scaledU (t : ℝ) (n : ℕ) : ℝ :=
@@ -173,10 +184,13 @@ theorem scaledU_tendsto (t : ℝ) (ht : t ≠ 0) :
             (Real.cos (t / ((n : ℝ) + 1))) *
           Real.sin (t / ((n : ℝ) + 1)) = Real.sin t := by
       simpa [θ] using htrig
+    have hsin : Real.sin (θ n) ≠ 0 := by
+      intro hz
+      apply hne
+      simp [hz]
     dsimp [scaledU]
-    field_simp [hne]
-    rw [mul_assoc, htrig']
-    ring
+    field_simp [hsin]
+    exact htrig'
   exact hquot.congr' (heventual.mono fun n h => h.symm)
 
 #print axioms tCoeff_succ_succ
