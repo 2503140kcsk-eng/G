@@ -113,7 +113,8 @@ theorem integerCoordinateSpace_finrank (m : ℕ) :
 /-- The diagonal coefficients in Mathlib's Smith-normal-form basis for L. -/
 noncomputable def smithDiagonalCoefficients
     {m : ℕ} (L : Submodule ℤ (Fin m → ℤ))
-    (hRank : Module.finrank ℤ L = m) : Fin m → ℤ :=
+    (hRank : Module.finrank ℤ L = m) :
+    Fin (Fintype.card (Fin m)) → ℤ :=
   (L.smithNormalFormOfRankEq (Pi.basisFun ℤ (Fin m))
     (by
       rw [hRank, integerCoordinateSpace_finrank])).a
@@ -129,7 +130,8 @@ theorem index_eq_product_smith_diagonal_coefficients
     {m : ℕ} (L : Submodule ℤ (Fin m → ℤ))
     (hRank : Module.finrank ℤ L = m) :
     L.toAddSubgroup.index =
-      ∏ i : Fin m, Int.natAbs (smithDiagonalCoefficients L hRank i) := by
+      ∏ i : Fin (Fintype.card (Fin m)),
+        Int.natAbs (smithDiagonalCoefficients L hRank i) := by
   classical
   let b : Basis (Fin m) ℤ (Fin m → ℤ) :=
     Pi.basisFun ℤ (Fin m)
@@ -137,7 +139,7 @@ theorem index_eq_product_smith_diagonal_coefficients
     rw [hRank, integerCoordinateSpace_finrank]
   let snf := L.smithNormalFormOfRankEq b hRank'
   rw [snf.toAddSubgroup_index_eq_ite]
-  simp [smithDiagonalCoefficients, b, snf,
+  simp [smithDiagonalCoefficients, b, snf, Fintype.card_fin,
     Ideal.span_singleton_toAddSubgroup_eq_zmultiples,
     Int.index_zmultiples]
 
