@@ -315,6 +315,23 @@ encode the paper's actual coefficient formulas for $R_D$ and certify these
 three hypotheses from its source definitions, rather than merely instantiate
 them as assumptions.
 
+
+The latest extension also isolates the elementary row identity
+\[
+A_i b_0+B_i\delta=0
+\quad\Longrightarrow\quad
+\delta B_i=-b_0A_i.
+\]
+It is formalized as
+\`endpoint_success_row_implies_anchor_minor\` and its family version
+\`endpoint_success_rows_imply_anchor_minors\`. The source-specific theorem
+\`integer_endpoint_kernel_from_primitive_success\` now takes the three
+paper-level hypotheses (primitive old success coordinates, their annihilation
+by every row, and one nonzero row) and concludes the exact cyclic integer
+kernel. This removes the need to assume collinearity as a separate black-box
+hypothesis: it is derived from the old success relation itself.
+
+
 ### Expanded exact $r=1$ arithmetic regression data
 
 The JSON ledger now also records the paper's exact residual integer
