@@ -59,6 +59,17 @@ theorem superpolynomial_forms_imply_transcendence
     Transcendental ℚ x := by
   sorry
 
+/-- A fixed-power lower bound contradicts super-polynomial decay. -/
+theorem superpolynomial_decay_conflicts_with_fixed_power_lower_bound
+    {H : ℕ → ℕ} {u : ℕ → ℝ} (d : ℕ)
+    (hH : ∀ᶠ n : ℕ in atTop, 1 < H n)
+    (hLower : ∀ᶠ n : ℕ in atTop,
+      1 / (H n : ℝ) ^ d ≤ |u n|)
+    (hSmall : ∀ k : ℕ, ∀ᶠ n : ℕ in atTop,
+      |u n| < 1 / (H n : ℝ) ^ k) :
+    False := by
+  sorry
+
 theorem integer_forms_tending_to_zero_imply_irrationality
     {x : ℝ} {A B : ℕ → ℤ}
     (hnz : ∀ᶠ n : ℕ in atTop,
