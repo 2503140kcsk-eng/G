@@ -9,6 +9,7 @@
     "ProofAudit.e_add_pi_or_mul_transcendental",
     "ProofAudit.schanuel_implies_e_plus_pi_transcendental",
     "ProofAudit.superpolynomial_forms_imply_transcendence",
+    "ProofAudit.superpolynomial_decay_conflicts_with_fixed_power_lower_bound",
     "ProofAudit.integer_forms_tending_to_zero_imply_irrationality",
     "ProofAudit.paired_integer_forms_tending_to_zero_imply_irrationality",
     "ProofAudit.algebraic_elements_mem_iff",
