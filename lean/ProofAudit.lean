@@ -7,6 +7,7 @@ public import HermiteLindemannBridge
 public import EPlusPi
 public import SchanuelConditional
 public import ApproximationCriteria
+public import ResultantSuperpolynomial
 public import PairedApproximationCriteria
 public import MixedKernelQuotient
 public import ProofAuditApprox
@@ -79,6 +80,18 @@ theorem superpolynomial_forms_imply_transcendence
     EPlusPiApproximation.integerLinearFormHeight] using
     EPlusPiApproximation.transcendental_of_superpolynomial_integer_linear_forms
       ha hnz hsmall
+
+/-- A fixed-power lower bound contradicts super-polynomial decay. -/
+theorem superpolynomial_decay_conflicts_with_fixed_power_lower_bound
+    {H : ℕ → ℕ} {u : ℕ → ℝ} (d : ℕ)
+    (hH : ∀ᶠ n : ℕ in atTop, 1 < H n)
+    (hLower : ∀ᶠ n : ℕ in atTop,
+      1 / (H n : ℝ) ^ d ≤ |u n|)
+    (hSmall : ∀ k : ℕ, ∀ᶠ n : ℕ in atTop,
+      |u n| < 1 / (H n : ℝ) ^ k) :
+    False :=
+  EPlusPiApproximation.no_superpolynomial_smallness_with_fixed_power_lower_bound
+    d hH hLower hSmall
 
 /-- A nonzero integer-linear-form sequence tending to zero proves irrationality. -/
 theorem integer_forms_tending_to_zero_imply_irrationality
