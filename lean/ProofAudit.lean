@@ -135,14 +135,19 @@ theorem pairwise_coprime_family_has_at_most_one_zero
       EPlusPiApproximation.evalReal x (R j) = 0 → i = j :=
   EPlusPiApproximation.pairwise_coprime_family_has_at_most_one_zero R x hcop
 
+/-- All but finitely many members of a pairwise-coprime polynomial sequence are nonzero at a fixed point. -/
+theorem pairwise_coprime_family_eventually_nonzero_at_real
+    (R : ℕ → Polynomial ℚ) (x : ℝ)
+    (hcop : ∀ i j, i ≠ j → IsCoprime (R i) (R j)) :
+    ∀ᶠ n : ℕ in atTop, EPlusPiApproximation.evalReal x (R n) ≠ 0 :=
+  EPlusPiApproximation.pairwise_coprime_family_eventually_nonzero_at_real R x hcop
+
 /-- The paired small-value criterion's final contradiction from a fixed-power bound. -/
 theorem paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound
     {x : ℝ} {P Q : ℕ → Polynomial ℚ} {H : ℕ → ℕ} (d : ℕ)
     (hH : ∀ᶠ n : ℕ in atTop, 1 < H n)
-    (hNonzeroP : ∀ᶠ n : ℕ in atTop,
-      EPlusPiApproximation.evalReal x (P n) ≠ 0)
-    (hNonzeroQ : ∀ᶠ n : ℕ in atTop,
-      EPlusPiApproximation.evalReal x (Q n) ≠ 0)
+    (hCoprimeP : ∀ i j, i ≠ j → IsCoprime (P i) (P j))
+    (hCoprimeQ : ∀ i j, i ≠ j → IsCoprime (Q i) (Q j))
     (hLowerP : ∀ᶠ n : ℕ in atTop,
       EPlusPiApproximation.evalReal x (P n) ≠ 0 →
         1 / (H n : ℝ) ^ d ≤
@@ -157,7 +162,7 @@ theorem paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound
         1 / (H n : ℝ) ^ k) :
     False :=
   EPlusPiApproximation.paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound
-    d hH hNonzeroP hNonzeroQ hLowerP hLowerQ hSmall
+    d hH hCoprimeP hCoprimeQ hLowerP hLowerQ hSmall
 
 #print axioms coprime_polynomials_not_both_zero_at_real
 #print axioms pairwise_coprime_family_has_at_most_one_zero
