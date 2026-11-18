@@ -198,11 +198,11 @@ private theorem norm_eval_le_of_coeff_bound
         Nat.le_of_lt_succ (Finset.mem_range.mp hi)
       calc
         ‖p.coeff i * z ^ i‖ = ‖p.coeff i‖ * ‖z‖ ^ i := by
-          simp [norm_mul, norm_pow]
+          simp [norm_pow]
         _ ≤ H * C ^ i :=
           mul_le_mul (hcoeff i)
             (pow_le_pow_left₀ (norm_nonneg z) hz i)
-            (norm_nonneg _) hH
+            (pow_nonneg (norm_nonneg z) i) hH
         _ ≤ H * C ^ p.natDegree :=
           mul_le_mul_of_nonneg_left
             (pow_le_pow_right₀ hC hi') hH
