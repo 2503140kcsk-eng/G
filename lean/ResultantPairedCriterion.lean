@@ -22,12 +22,15 @@ theorem coprime_polynomials_not_both_zero_at_real
     evalReal x p ≠ 0 ∨ evalReal x q ≠ 0 := by
   rcases hcop with ⟨a, b, hab⟩
   have hEval := congrArg (fun r : Polynomial ℚ => evalReal x r) hab
-  change evalReal x a * evalReal x p + evalReal x b * evalReal x q = 1 at hEval
+  have hEval' :
+      evalReal x a * evalReal x p + evalReal x b * evalReal x q = 1 := by
+    simpa only [evalReal, Polynomial.eval₂_add, Polynomial.eval₂_mul',
+      Polynomial.eval₂_one] using hEval
   by_cases hp : evalReal x p = 0
   · right
     intro hq
-    rw [hp, hq] at hEval
-    norm_num at hEval
+    rw [hp, hq] at hEval'
+    norm_num at hEval'
   · exact Or.inl hp
 
 /--
