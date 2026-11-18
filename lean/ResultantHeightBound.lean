@@ -110,7 +110,9 @@ theorem resultant_eval_lower_bound_of_other_roots
     rw [hmapResultantC]
     intro hz
     apply hresZ
-    exact Int.cast_injective (by simpa using hz)
+    exact Int.cast_injective (by
+      change (Int.castRingHom ℂ) (Polynomial.resultant f g) = 0 at hz
+      simpa using hz)
   have hresAbs : (1 : ℝ) ≤ ‖Polynomial.resultant fC gC‖ := by
     have hInt : (1 : ℝ) ≤ |Polynomial.resultant f g| := by
       exact_mod_cast Int.one_le_abs hresZ
@@ -170,7 +172,12 @@ theorem resultant_eval_lower_bound_of_other_roots
       _ ≤ ‖fC.leadingCoeff‖ ^ gC.natDegree *
             (‖gC.eval α‖ * B ^ (fC.natDegree - 1)) := by
         gcongr
-  simpa only [fC, gC, hdegfC, hdeggC, mul_assoc] using hbound
+  calc
+    (1 : ℝ) ≤
+        ‖(f.map (algebraMap ℤ ℂ)).leadingCoeff‖ ^ g.natDegree *
+          ‖(g.map (algebraMap ℤ ℂ)).eval α‖ *
+            B ^ ((f.map (algebraMap ℤ ℂ)).natDegree - 1) := by
+      simpa only [fC, gC, hdegfC, hdeggC, mul_assoc] using hbound
 
 #print axioms int_resultant_ne_zero_of_rat_coprime
 #print axioms resultant_eval_lower_bound_of_other_roots
