@@ -18,6 +18,7 @@
     "ProofAudit.int_resultant_ne_zero_of_rat_coprime",
     "ProofAudit.resultant_eval_lower_bound_of_other_roots",
     "ProofAudit.resultant_eval_lower_bound_of_cauchy_and_coefficient_bound",
+    "ProofAudit.exists_primitive_irreducible_integer_polynomial_vanishing_of_algebraic",
     "ProofAudit.exists_nonzero_integer_polynomial_vanishing_of_algebraic",
     "ProofAudit.integer_forms_tending_to_zero_imply_irrationality",
     "ProofAudit.paired_integer_forms_tending_to_zero_imply_irrationality",
