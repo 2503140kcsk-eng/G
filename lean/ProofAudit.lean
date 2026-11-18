@@ -245,6 +245,14 @@ theorem resultant_eval_lower_bound_of_cauchy_and_coefficient_bound
     f g α H hcop hα hH hcoeff
 
 /-- Algebraicity over Q yields a nonzero integer polynomial relation. -/
+theorem exists_primitive_irreducible_integer_polynomial_vanishing_of_algebraic
+    {x : ℝ} (hx : IsAlgebraic ℚ x) :
+    ∃ f : Polynomial ℤ, f ≠ 0 ∧ f.IsPrimitive ∧
+      Irreducible f ∧ Polynomial.aeval x f = 0 :=
+  EPlusPiApproximation.exists_primitive_irreducible_integer_polynomial_vanishing_of_algebraic hx
+
+#print axioms exists_primitive_irreducible_integer_polynomial_vanishing_of_algebraic
+
 theorem exists_nonzero_integer_polynomial_vanishing_of_algebraic
     {x : ℝ} (hx : IsAlgebraic ℚ x) :
     ∃ f : Polynomial ℤ, f ≠ 0 ∧ Polynomial.aeval x f = 0 :=
