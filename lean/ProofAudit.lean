@@ -123,24 +123,27 @@ theorem paired_integer_forms_tending_to_zero_imply_irrationality
 /-- Bézout-coprime rational polynomials cannot share a real root. -/
 theorem coprime_polynomials_not_both_zero_at_real
     {p q : Polynomial ℚ} (hcop : IsCoprime p q) (x : ℝ) :
-    EPlusPiApproximation.evalReal x p ≠ 0 ∨
-      EPlusPiApproximation.evalReal x q ≠ 0 :=
-  EPlusPiApproximation.coprime_polynomials_not_both_zero_at_real hcop x
+    p.eval₂ (algebraMap ℚ ℝ) x ≠ 0 ∨
+      q.eval₂ (algebraMap ℚ ℝ) x ≠ 0 := by
+  simpa [EPlusPiApproximation.evalReal] using
+    EPlusPiApproximation.coprime_polynomials_not_both_zero_at_real hcop x
 
 /-- Pairwise coprime polynomials have at most one index vanishing at a fixed point. -/
 theorem pairwise_coprime_family_has_at_most_one_zero
     {ι : Type*} (R : ι → Polynomial ℚ) (x : ℝ)
     (hcop : ∀ i j, i ≠ j → IsCoprime (R i) (R j)) :
-    ∀ i j, EPlusPiApproximation.evalReal x (R i) = 0 →
-      EPlusPiApproximation.evalReal x (R j) = 0 → i = j :=
-  EPlusPiApproximation.pairwise_coprime_family_has_at_most_one_zero R x hcop
+    ∀ i j, (R i).eval₂ (algebraMap ℚ ℝ) x = 0 →
+      (R j).eval₂ (algebraMap ℚ ℝ) x = 0 → i = j := by
+  simpa [EPlusPiApproximation.evalReal] using
+    EPlusPiApproximation.pairwise_coprime_family_has_at_most_one_zero R x hcop
 
 /-- All but finitely many members of a pairwise-coprime polynomial sequence are nonzero at a fixed point. -/
 theorem pairwise_coprime_family_eventually_nonzero_at_real
     (R : ℕ → Polynomial ℚ) (x : ℝ)
     (hcop : ∀ i j, i ≠ j → IsCoprime (R i) (R j)) :
-    ∀ᶠ n : ℕ in atTop, EPlusPiApproximation.evalReal x (R n) ≠ 0 :=
-  EPlusPiApproximation.pairwise_coprime_family_eventually_nonzero_at_real R x hcop
+    ∀ᶠ n : ℕ in atTop, (R n).eval₂ (algebraMap ℚ ℝ) x ≠ 0 := by
+  simpa [EPlusPiApproximation.evalReal] using
+    EPlusPiApproximation.pairwise_coprime_family_eventually_nonzero_at_real R x hcop
 
 /-- The paired small-value criterion's final contradiction from a fixed-power bound. -/
 theorem paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound
@@ -149,20 +152,19 @@ theorem paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound
     (hCoprimeP : ∀ i j, i ≠ j → IsCoprime (P i) (P j))
     (hCoprimeQ : ∀ i j, i ≠ j → IsCoprime (Q i) (Q j))
     (hLowerP : ∀ᶠ n : ℕ in atTop,
-      EPlusPiApproximation.evalReal x (P n) ≠ 0 →
-        1 / (H n : ℝ) ^ d ≤
-          |EPlusPiApproximation.evalReal x (P n)|)
+      (P n).eval₂ (algebraMap ℚ ℝ) x ≠ 0 →
+        1 / (H n : ℝ) ^ d ≤ |(P n).eval₂ (algebraMap ℚ ℝ) x|)
     (hLowerQ : ∀ᶠ n : ℕ in atTop,
-      EPlusPiApproximation.evalReal x (Q n) ≠ 0 →
-        1 / (H n : ℝ) ^ d ≤
-          |EPlusPiApproximation.evalReal x (Q n)|)
+      (Q n).eval₂ (algebraMap ℚ ℝ) x ≠ 0 →
+        1 / (H n : ℝ) ^ d ≤ |(Q n).eval₂ (algebraMap ℚ ℝ) x|)
     (hSmall : ∀ k : ℕ, ∀ᶠ n : ℕ in atTop,
-      min |EPlusPiApproximation.evalReal x (P n)|
-          |EPlusPiApproximation.evalReal x (Q n)| <
+      min |(P n).eval₂ (algebraMap ℚ ℝ) x|
+          |(Q n).eval₂ (algebraMap ℚ ℝ) x| <
         1 / (H n : ℝ) ^ k) :
-    False :=
-  EPlusPiApproximation.paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound
-    d hH hCoprimeP hCoprimeQ hLowerP hLowerQ hSmall
+    False := by
+  simpa [EPlusPiApproximation.evalReal] using
+    EPlusPiApproximation.paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound
+      d hH hCoprimeP hCoprimeQ hLowerP hLowerQ hSmall
 
 #print axioms coprime_polynomials_not_both_zero_at_real
 #print axioms pairwise_coprime_family_has_at_most_one_zero
