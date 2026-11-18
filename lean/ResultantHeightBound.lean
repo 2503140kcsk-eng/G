@@ -5,6 +5,7 @@ public import Mathlib.Analysis.Complex.Polynomial.Basic
 public import Mathlib.Analysis.Polynomial.CauchyBound
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.Polynomial.Resultant.Basic
+public import Mathlib.RingTheory.Localization.Integral
 
 @[expose] public section
 
@@ -274,6 +275,29 @@ theorem resultant_eval_lower_bound_of_cauchy_and_coefficient_bound
           ((f.map (Int.castRingHom ℂ)).natDegree - 1))
   simpa [fC, gC, B, C, hdeggC] using hMain
 
+/--
+Every algebraic real has a nonzero integer-coefficient polynomial that
+vanishes at it.  We obtain it by clearing the denominators of a nonzero
+rational polynomial relation; integerNormalization preserves the root.
+-/
+theorem exists_nonzero_integer_polynomial_vanishing_of_algebraic
+    {x : ℝ} (hx : IsAlgebraic ℚ x) :
+    ∃ f : Polynomial ℤ, f ≠ 0 ∧ Polynomial.aeval x f = 0 := by
+  obtain ⟨p, hp, hpx⟩ := hx
+  let f : Polynomial ℤ :=
+    IsLocalization.integerNormalization (nonZeroDivisors ℤ) p
+  have hf : f ≠ 0 := by
+    intro h
+    apply hp
+    exact (IsFractionRing.integerNormalization_eq_zero_iff
+      (A := ℤ) (K := ℚ)).mp (by simpa [f] using h)
+  have hfx : Polynomial.aeval x f = 0 := by
+    simpa [f] using
+      (IsLocalization.integerNormalization_aeval_eq_zero
+        (M := nonZeroDivisors ℤ) p hpx)
+  exact ⟨f, hf, hfx⟩
+
+#print axioms exists_nonzero_integer_polynomial_vanishing_of_algebraic
 #print axioms int_resultant_ne_zero_of_rat_coprime
 #print axioms resultant_eval_lower_bound_of_other_roots
 
