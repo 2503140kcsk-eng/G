@@ -14,6 +14,7 @@
     "ProofAudit.pairwise_coprime_family_has_at_most_one_zero",
     "ProofAudit.pairwise_coprime_family_eventually_nonzero_at_real",
     "ProofAudit.paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound",
+    "ProofAudit.transcendental_of_paired_superpolynomial_approximation_of_algebraic_lower_bound",
     "ProofAudit.integer_forms_tending_to_zero_imply_irrationality",
     "ProofAudit.paired_integer_forms_tending_to_zero_imply_irrationality",
     "ProofAudit.algebraic_elements_mem_iff",
