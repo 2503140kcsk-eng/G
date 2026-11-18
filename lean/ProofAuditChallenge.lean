@@ -133,6 +133,57 @@ theorem transcendental_of_paired_superpolynomial_approximation_of_algebraic_lowe
     Transcendental ℚ x := by
   sorry
 
+/-- A rationally coprime pair of integer polynomials has nonzero integer resultant. -/
+theorem int_resultant_ne_zero_of_rat_coprime
+    (f g : Polynomial ℤ)
+    (hcop : IsCoprime
+      (f.map (algebraMap ℤ ℚ))
+      (g.map (algebraMap ℤ ℚ))) :
+    Polynomial.resultant f g ≠ 0 := by
+  sorry
+
+/-- The resultant product formula gives a lower bound at a selected root. -/
+theorem resultant_eval_lower_bound_of_other_roots
+    (f g : Polynomial ℤ) (α : ℂ) (B : ℝ)
+    (hcop : IsCoprime
+      (f.map (algebraMap ℤ ℚ))
+      (g.map (algebraMap ℤ ℚ)))
+    (hα : α ∈ (f.map (algebraMap ℤ ℂ)).roots)
+    (hB : 0 ≤ B)
+    (hOther : ∀ z ∈ ((f.map (algebraMap ℤ ℂ)).roots.erase α),
+      ‖(g.map (algebraMap ℤ ℂ)).eval z‖ ≤ B) :
+    1 ≤
+      ‖(f.map (algebraMap ℤ ℂ)).leadingCoeff‖ ^ g.natDegree *
+        ‖(g.map (algebraMap ℤ ℂ)).eval α‖ *
+          B ^ ((f.map (algebraMap ℤ ℂ)).natDegree - 1) := by
+  sorry
+
+/-- Cauchy's root bound and a coefficient-height bound control all conjugate evaluations. -/
+theorem resultant_eval_lower_bound_of_cauchy_and_coefficient_bound
+    (f g : Polynomial ℤ) (α : ℂ) (H : ℝ)
+    (hcop : IsCoprime
+      (f.map (algebraMap ℤ ℚ))
+      (g.map (algebraMap ℤ ℚ)))
+    (hα : α ∈ (f.map (algebraMap ℤ ℂ)).roots)
+    (hH : 0 ≤ H)
+    (hcoeff : ∀ i,
+      ‖(g.map (algebraMap ℤ ℂ)).coeff i‖ ≤ H) :
+    1 ≤
+      ‖(f.map (algebraMap ℤ ℂ)).leadingCoeff‖ ^
+          (g.map (algebraMap ℤ ℂ)).natDegree *
+        ‖(g.map (algebraMap ℤ ℂ)).eval α‖ *
+          (((((g.map (algebraMap ℤ ℂ)).natDegree + 1 : ℕ) : ℝ) * H *
+              (Polynomial.cauchyBound (f.map (algebraMap ℤ ℂ)) : ℝ) ^
+                (g.map (algebraMap ℤ ℂ)).natDegree) ^
+            ((f.map (algebraMap ℤ ℂ)).natDegree - 1)) := by
+  sorry
+
+/-- Algebraicity over Q yields a nonzero integer polynomial relation. -/
+theorem exists_nonzero_integer_polynomial_vanishing_of_algebraic
+    {x : ℝ} (hx : IsAlgebraic ℚ x) :
+    ∃ f : Polynomial ℤ, f ≠ 0 ∧ Polynomial.aeval x f = 0 := by
+  sorry
+
 theorem integer_forms_tending_to_zero_imply_irrationality
     {x : ℝ} {A B : ℕ → ℤ}
     (hnz : ∀ᶠ n : ℕ in atTop,
