@@ -67,8 +67,6 @@ theorem pairwise_coprime_family_eventually_nonzero_at_real
   intro hzero
   exact (not_le_of_gt hn) (hN hzero)
 
-/--
--/
 private lemma abs_min_abs (a b : ℝ) :
     |min |a| |b|| = min |a| |b| := by
   apply abs_of_nonneg
