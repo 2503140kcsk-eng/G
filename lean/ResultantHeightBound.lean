@@ -99,6 +99,14 @@ theorem resultant_eval_lower_bound_of_other_roots
   have hdeggC :
       (g.map (Int.castRingHom ℂ)).natDegree = g.natDegree :=
     Polynomial.natDegree_map_eq_of_injective hfiC g
+  have hdegfC' :
+      (f.map (algebraMap ℤ ℂ)).natDegree = f.natDegree := by
+    change (f.map (Int.castRingHom ℂ)).natDegree = f.natDegree
+    exact hdegfC
+  have hdeggC' :
+      (g.map (algebraMap ℤ ℂ)).natDegree = g.natDegree := by
+    change (g.map (Int.castRingHom ℂ)).natDegree = g.natDegree
+    exact hdeggC
   have hmapResultantC :
       Polynomial.resultant fC gC =
         algebraMap ℤ ℂ (Polynomial.resultant f g) := by
@@ -106,13 +114,6 @@ theorem resultant_eval_lower_bound_of_other_roots
         (g.map (Int.castRingHom ℂ)) =
       (Int.castRingHom ℂ) (Polynomial.resultant f g)
     rw [Polynomial.resultant_map_map, hdegfC, hdeggC]
-  have hresC : Polynomial.resultant fC gC ≠ 0 := by
-    rw [hmapResultantC]
-    intro hz
-    apply hresZ
-    exact Int.cast_injective (by
-      change (Int.castRingHom ℂ) (Polynomial.resultant f g) = 0 at hz
-      simpa using hz)
   have hresAbs : (1 : ℝ) ≤ ‖Polynomial.resultant fC gC‖ := by
     have hInt : (1 : ℝ) ≤ |Polynomial.resultant f g| := by
       exact_mod_cast Int.one_le_abs hresZ
@@ -177,7 +178,7 @@ theorem resultant_eval_lower_bound_of_other_roots
         ‖(f.map (algebraMap ℤ ℂ)).leadingCoeff‖ ^ g.natDegree *
           ‖(g.map (algebraMap ℤ ℂ)).eval α‖ *
             B ^ ((f.map (algebraMap ℤ ℂ)).natDegree - 1) := by
-      simpa only [fC, gC, hdegfC, hdeggC, mul_assoc] using hbound
+      simpa only [fC, gC, hdegfC', hdeggC', mul_assoc] using hbound
 
 #print axioms int_resultant_ne_zero_of_rat_coprime
 #print axioms resultant_eval_lower_bound_of_other_roots
