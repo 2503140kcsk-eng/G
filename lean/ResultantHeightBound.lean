@@ -1,6 +1,9 @@
 module
 public import ResultantPairedCriterion
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Analysis.Complex.Polynomial.Basic
 public import Mathlib.Analysis.Polynomial.CauchyBound
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.Polynomial.Resultant.Basic
 
 @[expose] public section
@@ -46,8 +49,17 @@ theorem int_resultant_ne_zero_of_rat_coprime
     Polynomial.resultant_ne_zero _ _ hcop
   intro hzero
   apply hQ
+  have hfi : Function.Injective (algebraMap ℤ ℚ) :=
+    RingHom.injective_int (algebraMap ℤ ℚ)
+  have hdegf :
+      (f.map (algebraMap ℤ ℚ)).natDegree = f.natDegree :=
+    Polynomial.natDegree_map_eq_of_injective hfi f
+  have hdegg :
+      (g.map (algebraMap ℤ ℚ)).natDegree = g.natDegree :=
+    Polynomial.natDegree_map_eq_of_injective hfi g
   have hmap := congrArg (algebraMap ℤ ℚ) hzero
-  simpa only [Polynomial.resultant_map_map, map_zero] using hmap
+  rw [Polynomial.resultant_map_map, hdegf, hdegg, map_zero] at hmap
+  exact hmap
 
 /--
 A resultant lower bound at one selected complex root.
