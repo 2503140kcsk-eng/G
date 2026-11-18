@@ -6,6 +6,8 @@ public import Mathlib.Analysis.Polynomial.CauchyBound
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.Polynomial.Resultant.Basic
 public import Mathlib.RingTheory.Localization.Integral
+public import Mathlib.RingTheory.Polynomial.Content
+public import Mathlib.RingTheory.Polynomial.GaussLemma
 
 @[expose] public section
 
@@ -296,6 +298,97 @@ theorem exists_nonzero_integer_polynomial_vanishing_of_algebraic
       (IsLocalization.integerNormalization_aeval_eq_zero
         (M := nonZeroDivisors ℤ) p hpx)
   exact ⟨f, hf, hfx⟩
+
+/--
+An algebraic real number has a primitive irreducible integer polynomial
+vanishing at it.  We normalize its rational minimal polynomial to integral
+coefficients, remove the content, and apply Gauss's lemma.
+-/
+theorem exists_primitive_irreducible_integer_polynomial_vanishing_of_algebraic
+    {x : ℝ} (hx : IsAlgebraic ℚ x) :
+    ∃ f : Polynomial ℤ, f ≠ 0 ∧ f.IsPrimitive ∧
+      Irreducible f ∧ Polynomial.aeval x f = 0 := by
+  classical
+  have hxI : IsIntegral ℚ x := IsAlgebraic.isIntegral hx
+  let m : Polynomial ℚ := minpoly ℚ x
+  have hm0 : m ≠ 0 := by
+    change minpoly ℚ x ≠ 0
+    exact minpoly.ne_zero hxI
+  have hmIrr : Irreducible m := by
+    change Irreducible (minpoly ℚ x)
+    exact minpoly.irreducible hxI
+  have hmRoot : Polynomial.aeval x m = 0 := by
+    change Polynomial.aeval x (minpoly ℚ x) = 0
+    exact minpoly.aeval
+  let n : Polynomial ℤ :=
+    IsLocalization.integerNormalization (nonZeroDivisors ℤ) m
+  let f : Polynomial ℤ := n.primPart
+  have hn0 : n ≠ 0 := by
+    intro hn
+    have hmz : m = 0 :=
+      (IsFractionRing.integerNormalization_eq_zero_iff
+        (A := ℤ) (K := ℚ)).mp (by simpa [n] using hn)
+    exact hm0 hmz
+  have hf0 : f ≠ 0 := by
+    exact Polynomial.primPart_ne_zero n
+  have hPrim : f.IsPrimitive := by
+    exact n.isPrimitive_primPart
+  have hRootN : Polynomial.aeval x n = 0 := by
+    dsimp [n]
+    exact IsLocalization.integerNormalization_aeval_eq_zero
+      (M := nonZeroDivisors ℤ) m hmRoot
+  have hRootF : Polynomial.aeval x f = 0 := by
+    dsimp [f]
+    exact Polynomial.aeval_primPart_eq_zero hn0 hRootN
+  obtain ⟨b, hb, hbNorm⟩ :=
+    IsLocalization.integerNormalization_spec (nonZeroDivisors ℤ) m
+  have hbQ : (algebraMap ℤ ℚ) b ≠ 0 :=
+    IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors hb
+  have hNormMap :
+      n.map (algebraMap ℤ ℚ) =
+        C (algebraMap ℤ ℚ b) * m := by
+    calc
+      n.map (algebraMap ℤ ℚ) = b • m := by
+        simpa [n] using hbNorm
+      _ = (algebraMap ℤ ℚ b) • m := by
+        rw [← IsScalarTower.algebraMap_smul b m]
+      _ = C (algebraMap ℤ ℚ b) * m :=
+        Polynomial.smul_eq_C_mul _ _
+  have hContent0 : n.content ≠ 0 := by
+    intro hc
+    exact hn0 (Polynomial.content_eq_zero_iff.mp hc)
+  have hContentQ : (algebraMap ℤ ℚ) n.content ≠ 0 := by
+    exact_mod_cast hContent0
+  have hContentMap :
+      n.map (algebraMap ℤ ℚ) =
+        C (algebraMap ℤ ℚ n.content) * f.map (algebraMap ℤ ℚ) := by
+    calc
+      n.map (algebraMap ℤ ℚ) =
+          (C n.content * n.primPart).map (algebraMap ℤ ℚ) := by
+        rw [n.eq_C_content_mul_primPart]
+      _ = C (algebraMap ℤ ℚ n.content) * f.map (algebraMap ℤ ℚ) := by
+        simp [f, Polynomial.map_mul, Polynomial.map_C]
+  have hProduct :
+      C (algebraMap ℤ ℚ n.content) * f.map (algebraMap ℤ ℚ) =
+        C (algebraMap ℤ ℚ b) * m := by
+    rw [← hContentMap, hNormMap]
+  have hAssoc : Associated m (f.map (algebraMap ℤ ℚ)) := by
+    calc
+      m ~ᵤ C (algebraMap ℤ ℚ b) * m :=
+        (associated_unit_mul_left _ _ (isUnit_C.mpr hbQ.isUnit)).symm
+      _ ~ᵤ C (algebraMap ℤ ℚ n.content) * f.map (algebraMap ℤ ℚ) :=
+        Associated.of_eq hProduct.symm
+      _ ~ᵤ f.map (algebraMap ℤ ℚ) :=
+        associated_unit_mul_left _ _ (isUnit_C.mpr hContentQ.isUnit)
+  have hMapIrr : Irreducible (f.map (Int.castRingHom ℚ)) := by
+    change Irreducible (f.map (algebraMap ℤ ℚ))
+    exact hAssoc.irreducible hmIrr
+  have hfIrr : Irreducible f :=
+    (Polynomial.IsPrimitive.Int.irreducible_iff_irreducible_map_cast hPrim).2
+      hMapIrr
+  exact ⟨f, hf0, hPrim, hfIrr, hRootF⟩
+
+#print axioms exists_primitive_irreducible_integer_polynomial_vanishing_of_algebraic
 
 #print axioms exists_nonzero_integer_polynomial_vanishing_of_algebraic
 #print axioms int_resultant_ne_zero_of_rat_coprime
