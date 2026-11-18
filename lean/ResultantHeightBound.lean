@@ -108,7 +108,9 @@ theorem resultant_eval_lower_bound_of_other_roots
     rw [Polynomial.resultant_map_map, hdegfC, hdeggC]
   have hresC : Polynomial.resultant fC gC ≠ 0 := by
     rw [hmapResultantC]
-    exact fun hz => hresZ (hfiC hz)
+    intro hz
+    apply hresZ
+    exact Int.cast_injective (by simpa using hz)
   have hresAbs : (1 : ℝ) ≤ ‖Polynomial.resultant fC gC‖ := by
     have hInt : (1 : ℝ) ≤ |Polynomial.resultant f g| := by
       exact_mod_cast Int.one_le_abs hresZ
@@ -149,8 +151,11 @@ theorem resultant_eval_lower_bound_of_other_roots
     have h := norm_multiset_map_prod_le_pow (fC.roots.erase α) gC.eval B hB hOther
     have hcard :
         (fC.roots.erase α).card = fC.natDegree - 1 := by
-      rw [Multiset.card_erase_of_mem hαC, ← hfSplits.natDegree_eq_card_roots]
-      omega
+      calc
+        (fC.roots.erase α).card = fC.roots.card - 1 :=
+          Multiset.card_erase_of_mem hαC
+        _ = fC.natDegree - 1 := by
+          rw [← hfSplits.natDegree_eq_card_roots]
     rw [hcard] at h
     exact h
   have hbound :
@@ -165,7 +170,7 @@ theorem resultant_eval_lower_bound_of_other_roots
       _ ≤ ‖fC.leadingCoeff‖ ^ gC.natDegree *
             (‖gC.eval α‖ * B ^ (fC.natDegree - 1)) := by
         gcongr
-  simpa only [fC, gC, hdegfC, hdeggC] using hbound
+  simpa only [fC, gC, hdegfC, hdeggC, mul_assoc] using hbound
 
 #print axioms int_resultant_ne_zero_of_rat_coprime
 #print axioms resultant_eval_lower_bound_of_other_roots
