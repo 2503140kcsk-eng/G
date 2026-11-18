@@ -133,8 +133,41 @@ theorem paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound
   exact no_superpolynomial_smallness_with_fixed_power_lower_bound
     d hH hLower hSmall'
 
+/--
+The paired resultant-style transcendence criterion, abstracting the
+algebraic-number lower bound as an explicit hypothesis.
+
+For every algebraic candidate, the resultant/Liouville input supplies one
+fixed exponent (depending on that algebraic candidate) that lower-bounds
+both nonzero polynomial values by a negative power of the common height.
+Pairwise coprimality makes both evaluation channels eventually nonzero.
+Super-polynomial decay of the smaller channel then contradicts that bound.
+-/
+theorem transcendental_of_paired_superpolynomial_approximation_of_algebraic_lower_bound
+    {x : ℝ} {P Q : ℕ → Polynomial ℚ} {H : ℕ → ℕ}
+    (hH : ∀ᶠ n : ℕ in atTop, 1 < H n)
+    (hCoprimeP : ∀ i j, i ≠ j → IsCoprime (P i) (P j))
+    (hCoprimeQ : ∀ i j, i ≠ j → IsCoprime (Q i) (Q j))
+    (hSmall : ∀ k : ℕ, ∀ᶠ n : ℕ in atTop,
+      min |evalReal x (P n)| |evalReal x (Q n)| <
+        1 / (H n : ℝ) ^ k)
+    (hLiouville : IsAlgebraic ℚ x →
+      ∃ d : ℕ,
+        (∀ᶠ n : ℕ in atTop,
+          evalReal x (P n) ≠ 0 →
+            1 / (H n : ℝ) ^ d ≤ |evalReal x (P n)|) ∧
+        (∀ᶠ n : ℕ in atTop,
+          evalReal x (Q n) ≠ 0 →
+            1 / (H n : ℝ) ^ d ≤ |evalReal x (Q n)|)) :
+    Transcendental ℚ x := by
+  intro hAlg
+  obtain ⟨d, hLowerP, hLowerQ⟩ := hLiouville hAlg
+  exact paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound
+    d hH hCoprimeP hCoprimeQ hLowerP hLowerQ hSmall
+
 #print axioms coprime_polynomials_not_both_zero_at_real
 #print axioms pairwise_coprime_family_has_at_most_one_zero
 #print axioms paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound
+#print axioms transcendental_of_paired_superpolynomial_approximation_of_algebraic_lower_bound
 
 end EPlusPiApproximation
