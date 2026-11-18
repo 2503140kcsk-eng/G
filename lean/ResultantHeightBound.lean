@@ -199,8 +199,10 @@ private theorem norm_eval_le_of_coeff_bound
       calc
         ‖p.coeff i * z ^ i‖ = ‖p.coeff i‖ * ‖z‖ ^ i := by
           simp [norm_mul, norm_pow]
-        _ ≤ H * C ^ i := by
-          gcongr
+        _ ≤ H * C ^ i :=
+          mul_le_mul (hcoeff i)
+            (pow_le_pow_left₀ (norm_nonneg z) hz i)
+            (norm_nonneg _) hH
         _ ≤ H * C ^ p.natDegree :=
           mul_le_mul_of_nonneg_left
             (pow_le_pow_right₀ hC hi') hH
@@ -236,17 +238,19 @@ theorem resultant_eval_lower_bound_of_cauchy_and_coefficient_bound
   let C : ℝ := (Polynomial.cauchyBound fC : ℝ)
   let B : ℝ := ((gC.natDegree + 1 : ℕ) : ℝ) * H * C ^ gC.natDegree
   have hdeggC :
-      (g.map (algebraMap ℤ ℂ)).natDegree = g.natDegree := by
-    change (g.map (Int.castRingHom ℂ)).natDegree = g.natDegree
-    exact Polynomial.natDegree_map_eq_of_injective Int.cast_injective g
+      (g.map (Int.castRingHom ℂ)).natDegree = g.natDegree :=
+    Polynomial.natDegree_map_eq_of_injective Int.cast_injective g
   have hC : 1 ≤ C := by
     exact_mod_cast Polynomial.one_le_cauchyBound fC
   have hfC0 : fC ≠ 0 := by
     intro hf
-    simp [hf] at hα
+    have hzero : f.map (Int.castRingHom ℂ) = 0 := by
+      change f.map (algebraMap ℤ ℂ) = 0
+      simpa [fC] using hf
+    simp [hzero] at hα
   have hRoots : ∀ z ∈ fC.roots.erase α, ‖z‖ ≤ C := by
     intro z hz
-    have hz' : z ∈ fC.roots := (Multiset.mem_erase.mp hz).2
+    have hz' : z ∈ fC.roots := Multiset.mem_of_mem_erase hz
     have hroot : fC.IsRoot z := (Polynomial.mem_roots hfC0).mp hz'
     have hbound := Polynomial.IsRoot.norm_lt_cauchyBound hfC0 hroot
     change ‖z‖ ≤ (Polynomial.cauchyBound fC : ℝ)
@@ -260,6 +264,14 @@ theorem resultant_eval_lower_bound_of_cauchy_and_coefficient_bound
     positivity
   have hMain :=
     resultant_eval_lower_bound_of_other_roots f g α B hcop hα hB hOther
+  change 1 ≤
+    ‖(f.map (Int.castRingHom ℂ)).leadingCoeff‖ ^
+        (g.map (Int.castRingHom ℂ)).natDegree *
+      ‖(g.map (Int.castRingHom ℂ)).eval α‖ *
+        (((((g.map (Int.castRingHom ℂ)).natDegree + 1 : ℕ) : ℝ) * H *
+            (Polynomial.cauchyBound (f.map (Int.castRingHom ℂ)) : ℝ) ^
+              (g.map (Int.castRingHom ℂ)).natDegree) ^
+          ((f.map (Int.castRingHom ℂ)).natDegree - 1))
   simpa [fC, gC, B, C, hdeggC] using hMain
 
 #print axioms int_resultant_ne_zero_of_rat_coprime
