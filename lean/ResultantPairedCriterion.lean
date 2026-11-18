@@ -9,7 +9,7 @@ open scoped Topology
 namespace EPlusPiApproximation
 
 /-- Evaluate a rational-coefficient polynomial at a real number. -/
-def evalReal (x : ℝ) (p : Polynomial ℚ) : ℝ :=
+noncomputable def evalReal (x : ℝ) (p : Polynomial ℚ) : ℝ :=
   p.eval₂ (algebraMap ℚ ℝ) x
 
 /--
@@ -21,14 +21,13 @@ theorem coprime_polynomials_not_both_zero_at_real
     {p q : Polynomial ℚ} (hcop : IsCoprime p q) (x : ℝ) :
     evalReal x p ≠ 0 ∨ evalReal x q ≠ 0 := by
   rcases hcop with ⟨a, b, hab⟩
-  have hEval := congrArg (fun r : Polynomial ℚ =>
-    r.eval₂ (algebraMap ℚ ℝ) x) hab
-  simp only [Polynomial.eval₂_add, Polynomial.eval₂_mul',
-    Polynomial.eval₂_one] at hEval
+  have hEval := congrArg (fun r : Polynomial ℚ => evalReal x r) hab
+  change evalReal x a * evalReal x p + evalReal x b * evalReal x q = 1 at hEval
   by_cases hp : evalReal x p = 0
   · right
     intro hq
-    simp [evalReal, hp, hq] at hEval
+    rw [hp, hq] at hEval
+    norm_num at hEval
   · exact Or.inl hp
 
 /--
@@ -68,7 +67,7 @@ theorem pairwise_coprime_family_eventually_nonzero_at_real
   exact (not_le_of_gt hn) (hN hzero)
 
 private lemma abs_min_abs (a b : ℝ) :
-    |min |a| |b|| = min |a| |b| := by
+    |min (|a|) (|b|)| = min (|a|) (|b|) := by
   apply abs_of_nonneg
   exact le_min (abs_nonneg a) (abs_nonneg b)
 
@@ -127,7 +126,7 @@ theorem paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound
       |u n| < 1 / (H n : ℝ) ^ k := by
     intro k
     filter_upwards [hSmall k] with n hn
-    simpa [u, abs_min_abs] using hn
+    simpa only [u, abs_min_abs] using hn
   exact no_superpolynomial_smallness_with_fixed_power_lower_bound
     d hH hLower hSmall'
 
