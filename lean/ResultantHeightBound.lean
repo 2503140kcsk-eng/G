@@ -180,6 +180,84 @@ theorem resultant_eval_lower_bound_of_other_roots
             B ^ ((f.map (algebraMap ℤ ℂ)).natDegree - 1) := by
       simpa only [fC, gC, hdegfC', hdeggC', mul_assoc] using hbound
 
+/-- Evaluation bound from a coefficient bound and a bound on the argument. -/
+private theorem norm_eval_le_of_coeff_bound
+    (p : Polynomial ℂ) (z : ℂ) (H C : ℝ)
+    (hH : 0 ≤ H) (hC : 1 ≤ C) (hz : ‖z‖ ≤ C)
+    (hcoeff : ∀ i, ‖p.coeff i‖ ≤ H) :
+    ‖p.eval z‖ ≤ ((p.natDegree + 1 : ℕ) : ℝ) * H * C ^ p.natDegree := by
+  rw [Polynomial.eval_eq_sum_range]
+  calc
+    ‖∑ i ∈ Finset.range (p.natDegree + 1), p.coeff i * z ^ i‖ ≤
+        ∑ i ∈ Finset.range (p.natDegree + 1), ‖p.coeff i * z ^ i‖ :=
+      norm_sum_le _ _
+    _ ≤ ∑ i ∈ Finset.range (p.natDegree + 1), H * C ^ p.natDegree := by
+      apply Finset.sum_le_sum
+      intro i hi
+      have hi' : i ≤ p.natDegree :=
+        Nat.le_of_lt_succ (Finset.mem_range.mp hi)
+      calc
+        ‖p.coeff i * z ^ i‖ = ‖p.coeff i‖ * ‖z‖ ^ i := by
+          simp [norm_mul, norm_pow]
+        _ ≤ H * C ^ i := by
+          gcongr
+        _ ≤ H * C ^ p.natDegree :=
+          mul_le_mul_of_nonneg_left
+            (pow_le_pow_right₀ hC hi') hH
+    _ = ((p.natDegree + 1 : ℕ) : ℝ) * H * C ^ p.natDegree := by
+      simp
+      ring
+
+/--
+The resultant lower bound with the other-root estimate discharged from a
+uniform coefficient bound and the Cauchy root bound of the fixed polynomial.
+This is the concrete bridge from coefficient height to the root-product estimate.
+-/
+theorem resultant_eval_lower_bound_of_cauchy_and_coefficient_bound
+    (f g : Polynomial ℤ) (α : ℂ) (H : ℝ)
+    (hcop : IsCoprime
+      (f.map (algebraMap ℤ ℚ))
+      (g.map (algebraMap ℤ ℚ)))
+    (hα : α ∈ (f.map (algebraMap ℤ ℂ)).roots)
+    (hH : 0 ≤ H)
+    (hcoeff : ∀ i,
+      ‖(g.map (algebraMap ℤ ℂ)).coeff i‖ ≤ H) :
+    1 ≤
+      ‖(f.map (algebraMap ℤ ℂ)).leadingCoeff‖ ^
+          (g.map (algebraMap ℤ ℂ)).natDegree *
+        ‖(g.map (algebraMap ℤ ℂ)).eval α‖ *
+          (((((g.map (algebraMap ℤ ℂ)).natDegree + 1 : ℕ) : ℝ) * H *
+              (Polynomial.cauchyBound (f.map (algebraMap ℤ ℂ)) : ℝ) ^
+                (g.map (algebraMap ℤ ℂ)).natDegree) ^
+            ((f.map (algebraMap ℤ ℂ)).natDegree - 1)) := by
+  classical
+  let fC : Polynomial ℂ := f.map (algebraMap ℤ ℂ)
+  let gC : Polynomial ℂ := g.map (algebraMap ℤ ℂ)
+  let C : ℝ := (Polynomial.cauchyBound fC : ℝ)
+  let B : ℝ := ((gC.natDegree + 1 : ℕ) : ℝ) * H * C ^ gC.natDegree
+  have hC : 1 ≤ C := by
+    exact_mod_cast Polynomial.one_le_cauchyBound fC
+  have hfC0 : fC ≠ 0 := by
+    intro hf
+    simp [hf] at hα
+  have hRoots : ∀ z ∈ fC.roots.erase α, ‖z‖ ≤ C := by
+    intro z hz
+    have hz' : z ∈ fC.roots := (Multiset.mem_erase.mp hz).2
+    have hroot : fC.IsRoot z := (Polynomial.mem_roots hfC0).mp hz'
+    have hbound := Polynomial.IsRoot.norm_lt_cauchyBound hfC0 hroot
+    change ‖z‖ ≤ (Polynomial.cauchyBound fC : ℝ)
+    exact_mod_cast hbound.le
+  have hOther : ∀ z ∈ fC.roots.erase α, ‖gC.eval z‖ ≤ B := by
+    intro z hz
+    have h := norm_eval_le_of_coeff_bound gC z H C hH hC (hRoots z hz) hcoeff
+    simpa [B] using h
+  have hB : 0 ≤ B := by
+    dsimp [B]
+    positivity
+  have hMain :=
+    resultant_eval_lower_bound_of_other_roots f g α B hcop hα hB hOther
+  simpa [fC, gC, B, C] using hMain
+
 #print axioms int_resultant_ne_zero_of_rat_coprime
 #print axioms resultant_eval_lower_bound_of_other_roots
 
