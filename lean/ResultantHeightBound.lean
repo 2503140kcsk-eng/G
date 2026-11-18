@@ -91,22 +91,24 @@ theorem resultant_eval_lower_bound_of_other_roots
   have hfSplits : fC.Splits := IsAlgClosed.splits fC
   have hresZ : Polynomial.resultant f g ≠ 0 :=
     int_resultant_ne_zero_of_rat_coprime f g hcop
-  have hfiC : Function.Injective (algebraMap ℤ ℂ) :=
-    RingHom.injective_int (algebraMap ℤ ℂ)
+  have hfiC : Function.Injective (Int.castRingHom ℂ) :=
+    Int.cast_injective
   have hdegfC :
-      (f.map (algebraMap ℤ ℂ)).natDegree = f.natDegree :=
+      (f.map (Int.castRingHom ℂ)).natDegree = f.natDegree :=
     Polynomial.natDegree_map_eq_of_injective hfiC f
   have hdeggC :
-      (g.map (algebraMap ℤ ℂ)).natDegree = g.natDegree :=
+      (g.map (Int.castRingHom ℂ)).natDegree = g.natDegree :=
     Polynomial.natDegree_map_eq_of_injective hfiC g
   have hmapResultantC :
       Polynomial.resultant fC gC =
         algebraMap ℤ ℂ (Polynomial.resultant f g) := by
-    dsimp [fC, gC]
+    change Polynomial.resultant (f.map (Int.castRingHom ℂ))
+        (g.map (Int.castRingHom ℂ)) =
+      (Int.castRingHom ℂ) (Polynomial.resultant f g)
     rw [Polynomial.resultant_map_map, hdegfC, hdeggC]
   have hresC : Polynomial.resultant fC gC ≠ 0 := by
     rw [hmapResultantC]
-    exact map_ne_zero (algebraMap ℤ ℂ) hresZ
+    exact fun hz => hresZ (hfiC hz)
   have hresAbs : (1 : ℝ) ≤ ‖Polynomial.resultant fC gC‖ := by
     have hInt : (1 : ℝ) ≤ |Polynomial.resultant f g| := by
       exact_mod_cast Int.one_le_abs hresZ
@@ -128,7 +130,12 @@ theorem resultant_eval_lower_bound_of_other_roots
   have hmapRoots :
       fC.roots.map gC.eval =
         gC.eval α ::ₘ ((fC.roots.erase α).map gC.eval) := by
-    rw [← Multiset.cons_erase hαC, Multiset.map_cons]
+    calc
+      fC.roots.map gC.eval =
+          (α ::ₘ fC.roots.erase α).map gC.eval := by
+            rw [Multiset.cons_erase hαC]
+      _ = gC.eval α ::ₘ ((fC.roots.erase α).map gC.eval) := by
+            simp
   have hformulaNorm :
       ‖Polynomial.resultant fC gC‖ =
         ‖fC.leadingCoeff‖ ^ gC.natDegree *
@@ -143,6 +150,7 @@ theorem resultant_eval_lower_bound_of_other_roots
     have hcard :
         (fC.roots.erase α).card = fC.natDegree - 1 := by
       rw [Multiset.card_erase_of_mem hαC, ← hfSplits.natDegree_eq_card_roots]
+      omega
     rw [hcard] at h
     exact h
   have hbound :
@@ -157,7 +165,7 @@ theorem resultant_eval_lower_bound_of_other_roots
       _ ≤ ‖fC.leadingCoeff‖ ^ gC.natDegree *
             (‖gC.eval α‖ * B ^ (fC.natDegree - 1)) := by
         gcongr
-  simpa [fC, gC, mul_assoc] using hbound
+  simpa only [fC, gC, hdegfC, hdeggC] using hbound
 
 #print axioms int_resultant_ne_zero_of_rat_coprime
 #print axioms resultant_eval_lower_bound_of_other_roots
