@@ -235,6 +235,10 @@ theorem resultant_eval_lower_bound_of_cauchy_and_coefficient_bound
   let gC : Polynomial ℂ := g.map (algebraMap ℤ ℂ)
   let C : ℝ := (Polynomial.cauchyBound fC : ℝ)
   let B : ℝ := ((gC.natDegree + 1 : ℕ) : ℝ) * H * C ^ gC.natDegree
+  have hdeggC :
+      (g.map (algebraMap ℤ ℂ)).natDegree = g.natDegree := by
+    change (g.map (Int.castRingHom ℂ)).natDegree = g.natDegree
+    exact Polynomial.natDegree_map_eq_of_injective Int.cast_injective g
   have hC : 1 ≤ C := by
     exact_mod_cast Polynomial.one_le_cauchyBound fC
   have hfC0 : fC ≠ 0 := by
@@ -256,7 +260,7 @@ theorem resultant_eval_lower_bound_of_cauchy_and_coefficient_bound
     positivity
   have hMain :=
     resultant_eval_lower_bound_of_other_roots f g α B hcop hα hB hOther
-  simpa [fC, gC, B, C] using hMain
+  simpa [fC, gC, B, C, hdeggC] using hMain
 
 #print axioms int_resultant_ne_zero_of_rat_coprime
 #print axioms resultant_eval_lower_bound_of_other_roots
