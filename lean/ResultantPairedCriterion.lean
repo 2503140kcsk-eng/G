@@ -46,6 +46,29 @@ theorem pairwise_coprime_family_has_at_most_one_zero
   · exact h hi
   · exact h hj
 
+/--
+For a pairwise coprime sequence, a fixed real number can be a root of at
+most one term.  Consequently all but finitely many terms have nonzero
+evaluation.  No algebraicity assumption on the real number is needed for
+this purely algebraic consequence.
+-/
+theorem pairwise_coprime_family_eventually_nonzero_at_real
+    (R : ℕ → Polynomial ℚ) (x : ℝ)
+    (hcop : ∀ i j, i ≠ j → IsCoprime (R i) (R j)) :
+    ∀ᶠ n : ℕ in atTop, evalReal x (R n) ≠ 0 := by
+  have hZeroSubsingleton :
+      {n : ℕ | evalReal x (R n) = 0}.Subsingleton := by
+    intro i hi j hj
+    exact pairwise_coprime_family_has_at_most_one_zero R x hcop i j hi hj
+  have hZeroFinite : {n : ℕ | evalReal x (R n) = 0}.Finite :=
+    hZeroSubsingleton.finite
+  obtain ⟨N, hN⟩ := hZeroFinite.bddAbove
+  filter_upwards [eventually_gt_atTop N] with n hn
+  intro hzero
+  exact (not_le_of_gt hn) (hN hzero)
+
+/--
+-/
 private lemma abs_min_abs (a b : ℝ) :
     |min |a| |b|| = min |a| |b| := by
   apply abs_of_nonneg
@@ -69,8 +92,8 @@ the final contradiction without hiding that estimate as an axiom.
 theorem paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound
     {x : ℝ} {P Q : ℕ → Polynomial ℚ} {H : ℕ → ℕ} (d : ℕ)
     (hH : ∀ᶠ n : ℕ in atTop, 1 < H n)
-    (hNonzeroP : ∀ᶠ n : ℕ in atTop, evalReal x (P n) ≠ 0)
-    (hNonzeroQ : ∀ᶠ n : ℕ in atTop, evalReal x (Q n) ≠ 0)
+    (hCoprimeP : ∀ i j, i ≠ j → IsCoprime (P i) (P j))
+    (hCoprimeQ : ∀ i j, i ≠ j → IsCoprime (Q i) (Q j))
     (hLowerP : ∀ᶠ n : ℕ in atTop,
       evalReal x (P n) ≠ 0 →
         1 / (H n : ℝ) ^ d ≤ |evalReal x (P n)|)
@@ -81,6 +104,10 @@ theorem paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound
       min |evalReal x (P n)| |evalReal x (Q n)| <
         1 / (H n : ℝ) ^ k) :
     False := by
+  have hNonzeroP :=
+    pairwise_coprime_family_eventually_nonzero_at_real P x hCoprimeP
+  have hNonzeroQ :=
+    pairwise_coprime_family_eventually_nonzero_at_real Q x hCoprimeQ
   let u : ℕ → ℝ := fun n =>
     min |evalReal x (P n)| |evalReal x (Q n)|
   have hLowerP' : ∀ᶠ n : ℕ in atTop,
