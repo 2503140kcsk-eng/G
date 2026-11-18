@@ -357,8 +357,11 @@ theorem exists_primitive_irreducible_integer_polynomial_vanishing_of_algebraic
   have hContent0 : n.content ≠ 0 := by
     intro hc
     exact hn0 (Polynomial.content_eq_zero_iff.mp hc)
-  have hContentQ : (algebraMap ℤ ℚ) n.content ≠ 0 :=
-    (Polynomial.map_ne_zero_iff (RingHom.injective_int (algebraMap ℤ ℚ))).2 hContent0
+  have hContentQ : (algebraMap ℤ ℚ) n.content ≠ 0 := by
+    intro h
+    have hzero : n.content = 0 :=
+      (RingHom.injective_int (algebraMap ℤ ℚ)) (by simpa using h)
+    exact hContent0 hzero
   have hContentMap :
       n.map (algebraMap ℤ ℚ) =
         C (algebraMap ℤ ℚ n.content) * f.map (algebraMap ℤ ℚ) := by
