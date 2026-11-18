@@ -319,7 +319,7 @@ theorem exists_primitive_irreducible_integer_polynomial_vanishing_of_algebraic
     exact minpoly.irreducible hxI
   have hmRoot : Polynomial.aeval x m = 0 := by
     change Polynomial.aeval x (minpoly ℚ x) = 0
-    exact minpoly.aeval
+    exact minpoly.aeval ℚ x
   let n : Polynomial ℤ :=
     IsLocalization.integerNormalization (nonZeroDivisors ℤ) m
   let f : Polynomial ℤ := n.primPart
@@ -351,35 +351,32 @@ theorem exists_primitive_irreducible_integer_polynomial_vanishing_of_algebraic
       n.map (algebraMap ℤ ℚ) = b • m := by
         simpa [n] using hbNorm
       _ = (algebraMap ℤ ℚ b) • m := by
-        rw [← IsScalarTower.algebraMap_smul b m]
+        rw [← IsScalarTower.algebraMap_smul ℚ b m]
       _ = C (algebraMap ℤ ℚ b) * m :=
-        Polynomial.smul_eq_C_mul _ _
+        Polynomial.smul_eq_C_mul (algebraMap ℤ ℚ b)
   have hContent0 : n.content ≠ 0 := by
     intro hc
     exact hn0 (Polynomial.content_eq_zero_iff.mp hc)
-  have hContentQ : (algebraMap ℤ ℚ) n.content ≠ 0 := by
-    exact_mod_cast hContent0
+  have hContentQ : (algebraMap ℤ ℚ) n.content ≠ 0 :=
+    map_ne_zero (RingHom.injective_int (algebraMap ℤ ℚ)) hContent0
   have hContentMap :
       n.map (algebraMap ℤ ℚ) =
         C (algebraMap ℤ ℚ n.content) * f.map (algebraMap ℤ ℚ) := by
     calc
       n.map (algebraMap ℤ ℚ) =
           (C n.content * n.primPart).map (algebraMap ℤ ℚ) := by
-        rw [n.eq_C_content_mul_primPart]
+        exact congrArg (fun p : Polynomial ℤ => p.map (algebraMap ℤ ℚ))
+          n.eq_C_content_mul_primPart
       _ = C (algebraMap ℤ ℚ n.content) * f.map (algebraMap ℤ ℚ) := by
-        simp [f, Polynomial.map_mul, Polynomial.map_C]
+        simp [f, Polynomial.map_mul]
   have hProduct :
       C (algebraMap ℤ ℚ n.content) * f.map (algebraMap ℤ ℚ) =
         C (algebraMap ℤ ℚ b) * m := by
     rw [← hContentMap, hNormMap]
-  have hAssoc : Associated m (f.map (algebraMap ℤ ℚ)) := by
-    calc
-      m ~ᵤ C (algebraMap ℤ ℚ b) * m :=
-        (associated_unit_mul_left _ _ (isUnit_C.mpr hbQ.isUnit)).symm
-      _ ~ᵤ C (algebraMap ℤ ℚ n.content) * f.map (algebraMap ℤ ℚ) :=
-        Associated.of_eq hProduct.symm
-      _ ~ᵤ f.map (algebraMap ℤ ℚ) :=
-        associated_unit_mul_left _ _ (isUnit_C.mpr hContentQ.isUnit)
+  have hAssoc : Associated m (f.map (algebraMap ℤ ℚ)) :=
+    (associated_unit_mul_left _ _ (isUnit_C.mpr hbQ.isUnit)).symm.trans
+      ((Associated.of_eq hProduct.symm).trans
+        (associated_unit_mul_left _ _ (isUnit_C.mpr hContentQ.isUnit)))
   have hMapIrr : Irreducible (f.map (Int.castRingHom ℚ)) := by
     change Irreducible (f.map (algebraMap ℤ ℚ))
     exact hAssoc.irreducible hmIrr
