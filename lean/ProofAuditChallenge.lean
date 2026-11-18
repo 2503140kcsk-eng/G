@@ -70,6 +70,42 @@ theorem superpolynomial_decay_conflicts_with_fixed_power_lower_bound
     False := by
   sorry
 
+/-- Bézout-coprime rational polynomials cannot share a real root. -/
+theorem coprime_polynomials_not_both_zero_at_real
+    {p q : Polynomial ℚ} (hcop : IsCoprime p q) (x : ℝ) :
+    p.eval₂ (algebraMap ℚ ℝ) x ≠ 0 ∨
+      q.eval₂ (algebraMap ℚ ℝ) x ≠ 0 := by
+  sorry
+
+/-- Pairwise coprime polynomials have at most one index vanishing at a fixed point. -/
+theorem pairwise_coprime_family_has_at_most_one_zero
+    {ι : Type*} (R : ι → Polynomial ℚ) (x : ℝ)
+    (hcop : ∀ i j, i ≠ j → IsCoprime (R i) (R j)) :
+    ∀ i j, (R i).eval₂ (algebraMap ℚ ℝ) x = 0 →
+      (R j).eval₂ (algebraMap ℚ ℝ) x = 0 → i = j := by
+  sorry
+
+/-- The paired small-value criterion's final contradiction from a fixed-power bound. -/
+theorem paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound
+    {x : ℝ} {P Q : ℕ → Polynomial ℚ} {H : ℕ → ℕ} (d : ℕ)
+    (hH : ∀ᶠ n : ℕ in atTop, 1 < H n)
+    (hNonzeroP : ∀ᶠ n : ℕ in atTop,
+      (P n).eval₂ (algebraMap ℚ ℝ) x ≠ 0)
+    (hNonzeroQ : ∀ᶠ n : ℕ in atTop,
+      (Q n).eval₂ (algebraMap ℚ ℝ) x ≠ 0)
+    (hLowerP : ∀ᶠ n : ℕ in atTop,
+      (P n).eval₂ (algebraMap ℚ ℝ) x ≠ 0 →
+        1 / (H n : ℝ) ^ d ≤ |(P n).eval₂ (algebraMap ℚ ℝ) x|)
+    (hLowerQ : ∀ᶠ n : ℕ in atTop,
+      (Q n).eval₂ (algebraMap ℚ ℝ) x ≠ 0 →
+        1 / (H n : ℝ) ^ d ≤ |(Q n).eval₂ (algebraMap ℚ ℝ) x|)
+    (hSmall : ∀ k : ℕ, ∀ᶠ n : ℕ in atTop,
+      min |(P n).eval₂ (algebraMap ℚ ℝ) x|
+          |(Q n).eval₂ (algebraMap ℚ ℝ) x| <
+        1 / (H n : ℝ) ^ k) :
+    False := by
+  sorry
+
 theorem integer_forms_tending_to_zero_imply_irrationality
     {x : ℝ} {A B : ℕ → ℤ}
     (hnz : ∀ᶠ n : ℕ in atTop,
