@@ -111,6 +111,28 @@ theorem paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound
     False := by
   sorry
 
+/-- Paired super-polynomial approximation proves transcendence once the
+algebraic resultant lower bound is supplied for each algebraic candidate. -/
+theorem transcendental_of_paired_superpolynomial_approximation_of_algebraic_lower_bound
+    {x : ℝ} {P Q : ℕ → Polynomial ℚ} {H : ℕ → ℕ}
+    (hH : ∀ᶠ n : ℕ in atTop, 1 < H n)
+    (hCoprimeP : ∀ i j, i ≠ j → IsCoprime (P i) (P j))
+    (hCoprimeQ : ∀ i j, i ≠ j → IsCoprime (Q i) (Q j))
+    (hSmall : ∀ k : ℕ, ∀ᶠ n : ℕ in atTop,
+      min |(P n).eval₂ (algebraMap ℚ ℝ) x|
+          |(Q n).eval₂ (algebraMap ℚ ℝ) x| <
+        1 / (H n : ℝ) ^ k)
+    (hLiouville : IsAlgebraic ℚ x →
+      ∃ d : ℕ,
+        (∀ᶠ n : ℕ in atTop,
+          (P n).eval₂ (algebraMap ℚ ℝ) x ≠ 0 →
+            1 / (H n : ℝ) ^ d ≤ |(P n).eval₂ (algebraMap ℚ ℝ) x|) ∧
+        (∀ᶠ n : ℕ in atTop,
+          (Q n).eval₂ (algebraMap ℚ ℝ) x ≠ 0 →
+            1 / (H n : ℝ) ^ d ≤ |(Q n).eval₂ (algebraMap ℚ ℝ) x|)) :
+    Transcendental ℚ x := by
+  sorry
+
 theorem integer_forms_tending_to_zero_imply_irrationality
     {x : ℝ} {A B : ℕ → ℤ}
     (hnz : ∀ᶠ n : ℕ in atTop,
