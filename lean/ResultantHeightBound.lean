@@ -800,21 +800,20 @@ theorem transcendental_of_paired_superpolynomial_approximation_of_integerized_he
   have hHgt : ∀ᶠ n : ℕ in atTop, 1 < H n := by
     filter_upwards [hH] with n hn
     omega
-  let Hfilter : Filter ℕ := Filter.atTop
   have hLiouville :
       IsAlgebraic ℚ x →
         ∃ d : ℕ,
-          (∀ᶠ n : ℕ in Hfilter,
+          (∀ᶠ n : ℕ in Filter.atTop,
             evalReal x (P n) ≠ 0 →
               1 / (H n : ℝ) ^ d ≤ |evalReal x (P n)|) ∧
-          (∀ᶠ n : ℕ in Hfilter,
+          (∀ᶠ n : ℕ in Filter.atTop,
             evalReal x (Q n) ≠ 0 →
               1 / (H n : ℝ) ^ d ≤ |evalReal x (Q n)|) := by
     exact @hLiouville_of_integerized_height_degree_bounds
-      Hfilter x P Q H A B c SP SQ hH hPCoeff hQCoeff
+      Filter.atTop x P Q H A B c SP SQ hH hPCoeff hQCoeff
       hPDegree hQDegree hPDenom hQDenom
   exact @transcendental_of_paired_superpolynomial_approximation_of_algebraic_lower_bound
-    Hfilter x P Q H hHgt hCoprimeP hCoprimeQ hSmall hLiouville
+    x P Q H hHgt hCoprimeP hCoprimeQ hSmall hLiouville
 
 #print axioms integerized_polynomial_eval_lower_bound
 #print axioms hLiouville_of_integerized_height_degree_bounds
