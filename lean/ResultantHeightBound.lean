@@ -420,7 +420,7 @@ private theorem nat_add_one_le_two_pow (n : ℕ) : n + 1 ≤ 2 ^ n := by
   induction n with
   | zero => decide
   | succ n ih =>
-      have hp : 1 ≤ 2 ^ n := by positivity
+      have hp : 0 < (2 : ℕ) ^ n := pow_pos (by norm_num) n
       calc
         n + 1 + 1 ≤ 2 ^ n + 2 ^ n := by omega
         _ = 2 ^ (n + 1) := by
@@ -434,8 +434,6 @@ private lemma evalReal_intMap_eq (x : ℝ) (R : Polynomial ℤ) :
       (R.map (algebraMap ℤ ℝ)).eval x := by
   rw [evalReal, Polynomial.eval₂_eq_eval_map, Polynomial.map_map]
   congr 1
-  ext z
-  simp
 
 /--
 Concrete single-index resultant lower bound.
@@ -481,17 +479,19 @@ theorem integerized_polynomial_eval_lower_bound
     have h :=
       (Polynomial.IsPrimitive.Int.irreducible_iff_irreducible_map_cast hfPrim).1 hfIrr
     simpa [fQ] using h
+  have hfRootR : (f.map (algebraMap ℤ ℝ)).eval x = 0 := by
+    change f.eval₂ (algebraMap ℤ ℝ) x = 0 at hfRoot
+    simpa only [Polynomial.eval₂_eq_eval_map] using hfRoot
   have hfQroot : evalReal x fQ = 0 := by
-    have hRootR : (f.map (algebraMap ℤ ℝ)).eval x = 0 := by
-      change f.eval₂ (algebraMap ℤ ℝ) x = 0 at hfRoot
-      simpa only [Polynomial.eval₂_eq_eval_map] using hfRoot
-    simpa [fQ, evalReal_intMap_eq] using hRootR
+    calc
+      evalReal x fQ =
+          (f.map (algebraMap ℤ ℝ)).eval x := by
+            simpa [fQ] using evalReal_intMap_eq x f
+      _ = 0 := hfRootR
   have hMapQC : fQ.map (algebraMap ℚ ℂ) = fC := by
     dsimp [fQ, fC]
     rw [Polynomial.map_map]
     congr 1
-    ext z
-    simp
   have hfC0 : fC ≠ 0 := by
     intro hz
     have hz' : fQ.map (algebraMap ℚ ℂ) = 0 := by
@@ -507,13 +507,14 @@ theorem integerized_polynomial_eval_lower_bound
     dsimp [fC]
     rw [Polynomial.map_map]
     congr 1
-    ext z
-    simp
   have hfRootC : fC.eval (x : ℂ) = 0 := by
-    rw [← hMapC, Polynomial.eval_map_apply]
-    simp [show (f.map (algebraMap ℤ ℝ)).eval x = 0 by
-      change f.eval₂ (algebraMap ℤ ℝ) x = 0 at hfRoot
-      simpa only [Polynomial.eval₂_eq_eval_map] using hfRoot]
+    calc
+      fC.eval (algebraMap ℝ ℂ x) =
+          ((f.map (algebraMap ℤ ℝ)).map (algebraMap ℝ ℂ)).eval
+            (algebraMap ℝ ℂ x) := by rw [hMapC]
+      _ = algebraMap ℝ ℂ ((f.map (algebraMap ℤ ℝ)).eval x) :=
+        Polynomial.eval_map_apply
+      _ = 0 := by simp [hfRootR]
   have hAlpha : (x : ℂ) ∈ fC.roots :=
     (Polynomial.mem_roots hfC0).2 hfRootC
   have hcop : IsCoprime fQ gQ := by
@@ -562,8 +563,12 @@ theorem integerized_polynomial_eval_lower_bound
     calc
       Croot ^ gC.natDegree ≤ ((2 : ℝ) ^ K_C) ^ gC.natDegree := by
         gcongr
+      _ = (2 : ℝ) ^ (K_C * gC.natDegree) := by
+        rw [← pow_mul]
+      _ = (2 : ℝ) ^ (gC.natDegree * K_C) := by
+        rw [Nat.mul_comm]
       _ = ((2 : ℝ) ^ gC.natDegree) ^ K_C := by
-        simp [pow_mul, Nat.mul_comm]
+        rw [pow_mul]
       _ ≤ ((H : ℝ) ^ c) ^ K_C := by
         gcongr
       _ = (H : ℝ) ^ (c * K_C) := by
@@ -574,8 +579,12 @@ theorem integerized_polynomial_eval_lower_bound
       ‖fC.leadingCoeff‖ ^ gC.natDegree ≤
           ((2 : ℝ) ^ K_a) ^ gC.natDegree := by
         gcongr
+      _ = (2 : ℝ) ^ (K_a * gC.natDegree) := by
+        rw [← pow_mul]
+      _ = (2 : ℝ) ^ (gC.natDegree * K_a) := by
+        rw [Nat.mul_comm]
       _ = ((2 : ℝ) ^ gC.natDegree) ^ K_a := by
-        simp [pow_mul, Nat.mul_comm]
+        rw [pow_mul]
       _ ≤ ((H : ℝ) ^ c) ^ K_a := by
         gcongr
       _ = (H : ℝ) ^ (c * K_a) := by
@@ -616,8 +625,8 @@ theorem integerized_polynomial_eval_lower_bound
             ((H : ℝ) ^ (A + c + c * K_C)) ^ (f.natDegree - 1) := by
               gcongr
       _ = ‖gC.eval (x : ℂ)‖ * (H : ℝ) ^ d0 := by
-            rw [pow_mul]
             dsimp [d0]
+            rw [← pow_mul, ← pow_mul]
             rw [Nat.mul_comm (A + c + c * K_C) (f.natDegree - 1)]
             rw [← pow_add]
             ring
@@ -630,22 +639,21 @@ theorem integerized_polynomial_eval_lower_bound
     dsimp [gC]
     rw [Polynomial.map_map]
     congr 1
-    ext z
-    simp
   have hEvalGReal :
       evalReal x gQ = (g.map (algebraMap ℤ ℝ)).eval x :=
     evalReal_intMap_eq x g
   have hNormEval :
       ‖gC.eval (x : ℂ)‖ = |evalReal x gQ| := by
     calc
-      ‖gC.eval (x : ℂ)‖ =
-          ‖((g.map (algebraMap ℤ ℝ)).map (algebraMap ℝ ℂ)).eval (x : ℂ)‖ := by
-            rw [hMapGComplex]
+      ‖gC.eval (algebraMap ℝ ℂ x)‖ =
+          ‖((g.map (algebraMap ℤ ℝ)).map (algebraMap ℝ ℂ)).eval
+            (algebraMap ℝ ℂ x)‖ := by rw [hMapGComplex]
       _ = ‖(algebraMap ℝ ℂ) ((g.map (algebraMap ℤ ℝ)).eval x)‖ := by
             rw [Polynomial.eval_map_apply]
       _ = |evalReal x gQ| := by rw [← hEvalGReal]; simp
   have hScaleEval :
       evalReal x gQ = (m : ℝ) * evalReal x P := by
+    change evalReal x (g.map (algebraMap ℤ ℚ)) = _
     rw [hScale]
     simp [evalReal]
   have hNormEvalP :
@@ -667,7 +675,8 @@ theorem integerized_polynomial_eval_lower_bound
         gcongr
       _ = (H : ℝ) ^ (d0 + B) * |evalReal x P| := by
         rw [← pow_add]
-  exact (div_le_iff₀ (pow_pos hHpos (d0 + B))).2 hFinalProd
+  exact (div_le_iff₀ (pow_pos hHpos (d0 + B))).2
+    (by simpa [mul_comm] using hFinalProd)
 
 /--
 The concrete hLiouville premise for a pair of rational-polynomial
@@ -785,6 +794,7 @@ theorem transcendental_of_paired_superpolynomial_approximation_of_integerized_he
     transcendental_of_paired_superpolynomial_approximation_of_algebraic_lower_bound
       hHgt hCoprimeP hCoprimeQ hSmall
       (hLiouville_of_integerized_height_degree_bounds
+        (x := x) (P := P) (Q := Q) (H := H)
         A B c SP SQ hH hPCoeff hQCoeff hPDegree hQDegree hPDenom hQDenom)
 
 #print axioms integerized_polynomial_eval_lower_bound
