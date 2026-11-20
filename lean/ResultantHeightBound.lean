@@ -526,10 +526,14 @@ theorem integerized_polynomial_eval_lower_bound
           _ = evalReal x fQ * evalReal x t := by
             simp [evalReal, Polynomial.eval₂_mul]
           _ = 0 := by simp [hfQroot]
+      have hScaleCast :
+          g.map (Int.castRingHom ℚ) = C (m : ℚ) * P := by
+        change g.map (algebraMap ℤ ℚ) = C (m : ℚ) * P
+        exact hScale
       have hScaleEval :
           evalReal x gQ = (m : ℝ) * evalReal x P := by
         dsimp [gQ]
-        rw [hScale]
+        rw [hScaleCast]
         simp [evalReal]
       have hmNe : (m : ℝ) ≠ 0 := by
         exact_mod_cast (Nat.ne_of_gt hmPos)
@@ -796,20 +800,21 @@ theorem transcendental_of_paired_superpolynomial_approximation_of_integerized_he
   have hHgt : ∀ᶠ n : ℕ in atTop, 1 < H n := by
     filter_upwards [hH] with n hn
     omega
+  let Hfilter : Filter ℕ := Filter.atTop
   have hLiouville :
       IsAlgebraic ℚ x →
         ∃ d : ℕ,
-          (∀ᶠ n : ℕ in atTop,
+          (∀ᶠ n : ℕ in Hfilter,
             evalReal x (P n) ≠ 0 →
               1 / (H n : ℝ) ^ d ≤ |evalReal x (P n)|) ∧
-          (∀ᶠ n : ℕ in atTop,
+          (∀ᶠ n : ℕ in Hfilter,
             evalReal x (Q n) ≠ 0 →
               1 / (H n : ℝ) ^ d ≤ |evalReal x (Q n)|) := by
     exact @hLiouville_of_integerized_height_degree_bounds
-      x P Q H A B c SP SQ hH hPCoeff hQCoeff
+      Hfilter x P Q H A B c SP SQ hH hPCoeff hQCoeff
       hPDegree hQDegree hPDenom hQDenom
   exact @transcendental_of_paired_superpolynomial_approximation_of_algebraic_lower_bound
-    x P Q H hHgt hCoprimeP hCoprimeQ hSmall hLiouville
+    Hfilter x P Q H hHgt hCoprimeP hCoprimeQ hSmall hLiouville
 
 #print axioms integerized_polynomial_eval_lower_bound
 #print axioms hLiouville_of_integerized_height_degree_bounds
