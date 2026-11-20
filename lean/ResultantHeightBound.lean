@@ -810,7 +810,7 @@ theorem transcendental_of_paired_superpolynomial_approximation_of_integerized_he
             evalReal x (Q n) ≠ 0 →
               1 / (H n : ℝ) ^ d ≤ |evalReal x (Q n)|) := by
     exact @hLiouville_of_integerized_height_degree_bounds
-      Filter.atTop x P Q H A B c SP SQ hH hPCoeff hQCoeff
+      x P Q H A B c SP SQ hH hPCoeff hQCoeff
       hPDegree hQDegree hPDenom hQDenom
   exact @transcendental_of_paired_superpolynomial_approximation_of_algebraic_lower_bound
     x P Q H hHgt hCoprimeP hCoprimeQ hSmall hLiouville
