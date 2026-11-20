@@ -612,7 +612,7 @@ theorem integerized_polynomial_eval_lower_bound
             gcongr
       _ = (H : ℝ) ^ (A + c + c * K_C) := by
             rw [← pow_add, ← pow_add]
-            congr 1 <;> omega
+            congr 1; omega
   have hCoeffNonneg : 0 ≤ (H : ℝ) ^ A := by positivity
   have hRes0 :=
     resultant_eval_lower_bound_of_cauchy_and_coefficient_bound
