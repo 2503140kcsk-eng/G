@@ -59,6 +59,137 @@ theorem superpolynomial_forms_imply_transcendence
     Transcendental ℚ x := by
   sorry
 
+/-- A fixed-power lower bound contradicts super-polynomial decay. -/
+theorem superpolynomial_decay_conflicts_with_fixed_power_lower_bound
+    {H : ℕ → ℕ} {u : ℕ → ℝ} (d : ℕ)
+    (hH : ∀ᶠ n : ℕ in atTop, 1 < H n)
+    (hLower : ∀ᶠ n : ℕ in atTop,
+      1 / (H n : ℝ) ^ d ≤ |u n|)
+    (hSmall : ∀ k : ℕ, ∀ᶠ n : ℕ in atTop,
+      |u n| < 1 / (H n : ℝ) ^ k) :
+    False := by
+  sorry
+
+/-- Bézout-coprime rational polynomials cannot share a real root. -/
+theorem coprime_polynomials_not_both_zero_at_real
+    {p q : Polynomial ℚ} (hcop : IsCoprime p q) (x : ℝ) :
+    p.eval₂ (algebraMap ℚ ℝ) x ≠ 0 ∨
+      q.eval₂ (algebraMap ℚ ℝ) x ≠ 0 := by
+  sorry
+
+/-- Pairwise coprime polynomials have at most one index vanishing at a fixed point. -/
+theorem pairwise_coprime_family_has_at_most_one_zero
+    {ι : Type*} (R : ι → Polynomial ℚ) (x : ℝ)
+    (hcop : ∀ i j, i ≠ j → IsCoprime (R i) (R j)) :
+    ∀ i j, (R i).eval₂ (algebraMap ℚ ℝ) x = 0 →
+      (R j).eval₂ (algebraMap ℚ ℝ) x = 0 → i = j := by
+  sorry
+
+/-- All but finitely many members of a pairwise-coprime polynomial sequence are nonzero at a fixed point. -/
+theorem pairwise_coprime_family_eventually_nonzero_at_real
+    (R : ℕ → Polynomial ℚ) (x : ℝ)
+    (hcop : ∀ i j, i ≠ j → IsCoprime (R i) (R j)) :
+    ∀ᶠ n : ℕ in atTop, (R n).eval₂ (algebraMap ℚ ℝ) x ≠ 0 := by
+  sorry
+
+/-- The paired small-value criterion's final contradiction from a fixed-power bound. -/
+theorem paired_superpolynomial_smallness_conflicts_with_fixed_power_lower_bound
+    {x : ℝ} {P Q : ℕ → Polynomial ℚ} {H : ℕ → ℕ} (d : ℕ)
+    (hH : ∀ᶠ n : ℕ in atTop, 1 < H n)
+    (hCoprimeP : ∀ i j, i ≠ j → IsCoprime (P i) (P j))
+    (hCoprimeQ : ∀ i j, i ≠ j → IsCoprime (Q i) (Q j))
+    (hLowerP : ∀ᶠ n : ℕ in atTop,
+      (P n).eval₂ (algebraMap ℚ ℝ) x ≠ 0 →
+        1 / (H n : ℝ) ^ d ≤ |(P n).eval₂ (algebraMap ℚ ℝ) x|)
+    (hLowerQ : ∀ᶠ n : ℕ in atTop,
+      (Q n).eval₂ (algebraMap ℚ ℝ) x ≠ 0 →
+        1 / (H n : ℝ) ^ d ≤ |(Q n).eval₂ (algebraMap ℚ ℝ) x|)
+    (hSmall : ∀ k : ℕ, ∀ᶠ n : ℕ in atTop,
+      min |(P n).eval₂ (algebraMap ℚ ℝ) x|
+          |(Q n).eval₂ (algebraMap ℚ ℝ) x| <
+        1 / (H n : ℝ) ^ k) :
+    False := by
+  sorry
+
+/-- Paired super-polynomial approximation proves transcendence once the
+algebraic resultant lower bound is supplied for each algebraic candidate. -/
+theorem transcendental_of_paired_superpolynomial_approximation_of_algebraic_lower_bound
+    {x : ℝ} {P Q : ℕ → Polynomial ℚ} {H : ℕ → ℕ}
+    (hH : ∀ᶠ n : ℕ in atTop, 1 < H n)
+    (hCoprimeP : ∀ i j, i ≠ j → IsCoprime (P i) (P j))
+    (hCoprimeQ : ∀ i j, i ≠ j → IsCoprime (Q i) (Q j))
+    (hSmall : ∀ k : ℕ, ∀ᶠ n : ℕ in atTop,
+      min |(P n).eval₂ (algebraMap ℚ ℝ) x|
+          |(Q n).eval₂ (algebraMap ℚ ℝ) x| <
+        1 / (H n : ℝ) ^ k)
+    (hLiouville : IsAlgebraic ℚ x →
+      ∃ d : ℕ,
+        (∀ᶠ n : ℕ in atTop,
+          (P n).eval₂ (algebraMap ℚ ℝ) x ≠ 0 →
+            1 / (H n : ℝ) ^ d ≤ |(P n).eval₂ (algebraMap ℚ ℝ) x|) ∧
+        (∀ᶠ n : ℕ in atTop,
+          (Q n).eval₂ (algebraMap ℚ ℝ) x ≠ 0 →
+            1 / (H n : ℝ) ^ d ≤ |(Q n).eval₂ (algebraMap ℚ ℝ) x|)) :
+    Transcendental ℚ x := by
+  sorry
+
+/-- A rationally coprime pair of integer polynomials has nonzero integer resultant. -/
+theorem int_resultant_ne_zero_of_rat_coprime
+    (f g : Polynomial ℤ)
+    (hcop : IsCoprime
+      (f.map (algebraMap ℤ ℚ))
+      (g.map (algebraMap ℤ ℚ))) :
+    Polynomial.resultant f g ≠ 0 := by
+  sorry
+
+/-- The resultant product formula gives a lower bound at a selected root. -/
+theorem resultant_eval_lower_bound_of_other_roots
+    (f g : Polynomial ℤ) (α : ℂ) (B : ℝ)
+    (hcop : IsCoprime
+      (f.map (algebraMap ℤ ℚ))
+      (g.map (algebraMap ℤ ℚ)))
+    (hα : α ∈ (f.map (algebraMap ℤ ℂ)).roots)
+    (hB : 0 ≤ B)
+    (hOther : ∀ z ∈ ((f.map (algebraMap ℤ ℂ)).roots.erase α),
+      ‖(g.map (algebraMap ℤ ℂ)).eval z‖ ≤ B) :
+    1 ≤
+      ‖(f.map (algebraMap ℤ ℂ)).leadingCoeff‖ ^ g.natDegree *
+        ‖(g.map (algebraMap ℤ ℂ)).eval α‖ *
+          B ^ ((f.map (algebraMap ℤ ℂ)).natDegree - 1) := by
+  sorry
+
+/-- Cauchy's root bound and a coefficient-height bound control all conjugate evaluations. -/
+theorem resultant_eval_lower_bound_of_cauchy_and_coefficient_bound
+    (f g : Polynomial ℤ) (α : ℂ) (H : ℝ)
+    (hcop : IsCoprime
+      (f.map (algebraMap ℤ ℚ))
+      (g.map (algebraMap ℤ ℚ)))
+    (hα : α ∈ (f.map (algebraMap ℤ ℂ)).roots)
+    (hH : 0 ≤ H)
+    (hcoeff : ∀ i,
+      ‖(g.map (algebraMap ℤ ℂ)).coeff i‖ ≤ H) :
+    1 ≤
+      ‖(f.map (algebraMap ℤ ℂ)).leadingCoeff‖ ^
+          (g.map (algebraMap ℤ ℂ)).natDegree *
+        ‖(g.map (algebraMap ℤ ℂ)).eval α‖ *
+          (((((g.map (algebraMap ℤ ℂ)).natDegree + 1 : ℕ) : ℝ) * H *
+              (Polynomial.cauchyBound (f.map (algebraMap ℤ ℂ)) : ℝ) ^
+                (g.map (algebraMap ℤ ℂ)).natDegree) ^
+            ((f.map (algebraMap ℤ ℂ)).natDegree - 1)) := by
+  sorry
+
+/-- Algebraicity over Q yields a nonzero integer polynomial relation. -/
+theorem exists_primitive_irreducible_integer_polynomial_vanishing_of_algebraic
+    {x : ℝ} (hx : IsAlgebraic ℚ x) :
+    ∃ f : Polynomial ℤ, f ≠ 0 ∧ f.IsPrimitive ∧
+      Irreducible f ∧ Polynomial.aeval x f = 0 := by
+  sorry
+
+theorem exists_nonzero_integer_polynomial_vanishing_of_algebraic
+    {x : ℝ} (hx : IsAlgebraic ℚ x) :
+    ∃ f : Polynomial ℤ, f ≠ 0 ∧ Polynomial.aeval x f = 0 := by
+  sorry
+
 theorem integer_forms_tending_to_zero_imply_irrationality
     {x : ℝ} {A B : ℕ → ℤ}
     (hnz : ∀ᶠ n : ℕ in atTop,

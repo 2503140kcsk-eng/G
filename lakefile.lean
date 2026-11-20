@@ -66,6 +66,18 @@ lean_lib ProofAuditApprox where
   srcDir := "lean"
 
 @[default_target]
+lean_lib ResultantSuperpolynomial where
+  srcDir := "lean"
+
+@[default_target]
+lean_lib ResultantPairedCriterion where
+  srcDir := "lean"
+
+@[default_target]
+lean_lib ResultantHeightBound where
+  srcDir := "lean"
+
+@[default_target]
 lean_lib ProofAudit where
   srcDir := "lean"
 
