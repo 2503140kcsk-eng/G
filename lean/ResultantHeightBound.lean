@@ -11,7 +11,7 @@ public import Mathlib.RingTheory.Polynomial.GaussLemma
 
 @[expose] public section
 
-open Polynomial
+open Polynomial Filter
 
 namespace EPlusPiApproximation
 
