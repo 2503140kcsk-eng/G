@@ -100,7 +100,7 @@ theorem splitMachinTaylor_commonDenominator_clears_coefficient
   rw [hprodQ]
   push_cast
   field_simp [hdq']
-  <;> ring
+  ring
 
 /-- Exact first nonzero coefficient, retained as a small arithmetic regression. -/
 theorem splitMachinTaylorCoefficient_one :
