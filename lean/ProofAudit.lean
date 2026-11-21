@@ -10,6 +10,7 @@ public import ApproximationCriteria
 public import ResultantSuperpolynomial
 public import ResultantPairedCriterion
 public import ResultantHeightBound
+public import SplitMachinTaylorArithmetic
 public import PairedApproximationCriteria
 public import MixedKernelQuotient
 public import ProofAuditApprox
@@ -428,5 +429,21 @@ theorem mixed_integral_factors_through_quotient (p : Polynomial ℤ) :
 #print axioms mixed_integral_identity
 #print axioms mixed_integral_factorization
 #print axioms mixed_integral_factors_through_quotient
+
+
+/-! ## Exact denominator bridge for the Split–Machin Taylor coefficients -/
+
+/-- A single explicit integer denominator clears each coefficient up to the
+chosen Taylor degree. This is a formal arithmetic input for later height
+bounds; it does not assert that the resulting endpoint form is small. -/
+theorem split_machin_taylor_coefficients_have_an_exact_common_denominator
+    (N k : ℕ) (hk : k ≤ N) :
+    ∃ z : ℤ,
+      (EPlusPiApproximation.splitMachinTaylorCommonDenominator N : ℚ) *
+        EPlusPiApproximation.splitMachinTaylorCoefficient k = z :=
+  EPlusPiApproximation.splitMachinTaylor_commonDenominator_clears_coefficient
+    N k hk
+
+#print axioms split_machin_taylor_coefficients_have_an_exact_common_denominator
 
 end ProofAudit
