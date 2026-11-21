@@ -64,7 +64,7 @@ theorem splitMachinTaylorDenominator_dvd_common
       splitMachinTaylorCommonDenominator N := by
   classical
   unfold splitMachinTaylorCommonDenominator
-  exact Finset.dvd_prod_of_mem
+  exact Finset.dvd_prod_of_mem splitMachinTaylorDenominator
     (Finset.mem_range.mpr (Nat.lt_succ_of_le hk))
 
 /--
@@ -93,8 +93,8 @@ theorem splitMachinTaylor_commonDenominator_clears_coefficient
   push_cast
   have hdq : (d : ℚ) ≠ 0 := by
     exact_mod_cast hdpos.ne'
-  field_simp
-  <;> ring
+  field_simp [hdq]
+  <;> ring_nf
 
 /-- Exact first nonzero coefficient, retained as a small arithmetic regression. -/
 theorem splitMachinTaylorCoefficient_one :
