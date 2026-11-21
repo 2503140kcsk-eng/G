@@ -185,7 +185,7 @@ theorem splitMachinScalarTaylorIntegerNumerator_map_eq (N : ℕ) :
         (splitMachinScalarTaylorCommonDenominator N : ℚ) *
           splitMachinScalarTaylorPartialSum N :=
     (splitMachinScalarTaylorPartialSumInteger_spec N).symm
-  rw [hA]
+  rw [hA, Polynomial.C_mul]
   ring
 
 /-- An actual integerized polynomial sequence for the scalar truncations. -/
@@ -209,9 +209,8 @@ bounded by the explicit H_N above.
 -/
 private lemma norm_complex_intCast_eq_natAbs (z : ℤ) :
     ‖(z : ℂ)‖ = (Int.natAbs z : ℝ) := by
-  cases z with
-  | ofNat n => simp
-  | negSucc n => simp [Int.natAbs]
+  rw [Complex.norm_intCast]
+  rfl
 
 theorem splitMachinScalarTaylor_coefficient_height_bound (N : ℕ) :
     ∀ i,
@@ -223,11 +222,11 @@ theorem splitMachinScalarTaylor_coefficient_height_bound (N : ℕ) :
   let D := splitMachinScalarTaylorCommonDenominator N
   have hDcast : (algebraMap ℤ ℂ) (D : ℤ) = (D : ℂ) := by
     norm_cast
-  have hAcast : (algebraMap ℤ ℂ) (-a) = (-(a : ℂ)) := by
-    simp
-  have hconst : Polynomial.coeff (Polynomial.C (-(a : ℂ)) : Polynomial ℂ) i =
-      if i = 0 then -(a : ℂ) else 0 := by
-    simpa using (Polynomial.coeff_C_mul_X_pow (-(a : ℂ)) 0 i)
+  have hAcast : (algebraMap ℤ ℂ) a = (a : ℂ) := by
+    norm_cast
+  have hconst : Polynomial.coeff (Polynomial.C (a : ℂ) : Polynomial ℂ) i =
+      if i = 0 then (a : ℂ) else 0 := by
+    simpa using (Polynomial.coeff_C_mul_X_pow (a : ℂ) 0 i)
   have hlinear : Polynomial.coeff
       (Polynomial.C (D : ℂ) * Polynomial.X : Polynomial ℂ) i =
       if i = 1 then (D : ℂ) else 0 := by
@@ -313,26 +312,34 @@ theorem splitMachinScalarTaylor_has_concrete_hLiouville
           evalReal x (splitMachinScalarTaylorApproxPolynomial n) ≠ 0 →
             1 / (splitMachinScalarTaylorHeight n : ℝ) ^ d ≤
               |evalReal x (splitMachinScalarTaylorApproxPolynomial n)|) := by
-  refine @hLiouville_of_integerized_height_degree_bounds
-    x splitMachinScalarTaylorApproxPolynomial
-      splitMachinScalarTaylorApproxPolynomial splitMachinScalarTaylorHeight
-      1 1 1 splitMachinScalarTaylorIntegerizedSequence
-      splitMachinScalarTaylorIntegerizedSequence ?_ ?_ ?_ ?_ ?_ ?_ ?_
-  · exact Filter.Eventually.of_forall splitMachinScalarTaylorHeight_ge_two
-  · filter_upwards [] with n
+  have hH : ∀ᶠ n : ℕ in atTop, 2 ≤ splitMachinScalarTaylorHeight n :=
+    Filter.Eventually.of_forall splitMachinScalarTaylorHeight_ge_two
+  have hCoeff : ∀ᶠ n : ℕ in atTop, ∀ i,
+      ‖((splitMachinScalarTaylorIntegerizedSequence.numerator n).map
+        (algebraMap ℤ ℂ)).coeff i‖ ≤
+          (splitMachinScalarTaylorHeight n : ℝ) ^ 1 := by
+    filter_upwards [] with n
     intro i
     simpa only [pow_one] using splitMachinScalarTaylor_coefficient_height_bound n i
-  · filter_upwards [] with n
-    intro i
-    simpa only [pow_one] using splitMachinScalarTaylor_coefficient_height_bound n i
-  · filter_upwards [] with n
+  have hDegree : ∀ᶠ n : ℕ in atTop,
+      2 ^ (splitMachinScalarTaylorIntegerizedSequence.numerator n).natDegree ≤
+        splitMachinScalarTaylorHeight n ^ 1 := by
+    filter_upwards [] with n
     simpa only [pow_one] using splitMachinScalarTaylor_degree_height_bound n
-  · filter_upwards [] with n
-    simpa only [pow_one] using splitMachinScalarTaylor_degree_height_bound n
-  · filter_upwards [] with n
+  have hDenom : ∀ᶠ n : ℕ in atTop,
+      splitMachinScalarTaylorIntegerizedSequence.denominator n ≤
+        splitMachinScalarTaylorHeight n ^ 1 := by
+    filter_upwards [] with n
     simpa only [pow_one] using splitMachinScalarTaylor_denominator_height_bound n
-  · filter_upwards [] with n
-    simpa only [pow_one] using splitMachinScalarTaylor_denominator_height_bound n
+  exact hLiouville_of_integerized_height_degree_bounds
+    (x := x)
+    (P := splitMachinScalarTaylorApproxPolynomial)
+    (Q := splitMachinScalarTaylorApproxPolynomial)
+    (H := splitMachinScalarTaylorHeight)
+    (A := 1) (B := 1) (c := 1)
+    (SP := splitMachinScalarTaylorIntegerizedSequence)
+    (SQ := splitMachinScalarTaylorIntegerizedSequence)
+    hH hCoeff hCoeff hDegree hDegree hDenom hDenom
 
 #print axioms splitMachinScalarTaylor_has_concrete_hLiouville
 #print axioms splitMachinScalarTaylorIntegerNumerator_map_eq
