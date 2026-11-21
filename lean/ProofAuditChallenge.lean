@@ -2,6 +2,7 @@ module
 public import Mathlib
 public import ProofAuditDefs
 public import PolynomialApproximationDefs
+public import SplitMachinTaylorArithmetic
 
 @[expose] public section
 
@@ -349,5 +350,16 @@ theorem simultaneous_polynomial_approximation_certificate
       ∃ N : ℕ, ∀ m : ℕ, N ≤ m →
         (4 : ℝ) / (m + 1 : ℝ) < ε) := by
   sorry
+
+
+/-- A common positive integer denominator clears every coefficient in the
+finite Split–Machin Taylor truncation. -/
+theorem split_machin_taylor_coefficients_have_an_exact_common_denominator
+    (N k : ℕ) (hk : k ≤ N) :
+    ∃ z : ℤ,
+      (EPlusPiApproximation.splitMachinTaylorCommonDenominator N : ℚ) *
+        EPlusPiApproximation.splitMachinTaylorCoefficient k = z := by
+  sorry
+
 
 end ProofAudit
