@@ -158,7 +158,7 @@ noncomputable def splitMachinScalarTaylorApproxPolynomial (N : ℕ) : Polynomial
 /-- Integer numerator polynomial for X-r_N after denominator clearing. -/
 noncomputable def splitMachinScalarTaylorIntegerNumeratorPolynomial (N : ℕ) :
     Polynomial ℤ :=
-  Polynomial.X * Polynomial.C (splitMachinScalarTaylorCommonDenominator N : ℤ) -
+  Polynomial.C (splitMachinScalarTaylorCommonDenominator N : ℤ) * Polynomial.X -
     Polynomial.C (splitMachinScalarTaylorPartialSumInteger N)
 
 theorem splitMachinScalarTaylorIntegerNumerator_map_eq (N : ℕ) :
@@ -167,8 +167,11 @@ theorem splitMachinScalarTaylorIntegerNumerator_map_eq (N : ℕ) :
       Polynomial.C (splitMachinScalarTaylorCommonDenominator N : ℚ) *
         splitMachinScalarTaylorApproxPolynomial N := by
   classical
-  change Polynomial.X *
-      Polynomial.C (splitMachinScalarTaylorCommonDenominator N : ℚ) -
+  simp only [splitMachinScalarTaylorIntegerNumeratorPolynomial,
+    Polynomial.map_sub, Polynomial.map_mul, Polynomial.map_C, Polynomial.map_X,
+    splitMachinScalarTaylorApproxPolynomial]
+  change Polynomial.C (splitMachinScalarTaylorCommonDenominator N : ℚ) *
+      Polynomial.X -
       Polynomial.C (splitMachinScalarTaylorPartialSumInteger N : ℚ) =
     Polynomial.C (splitMachinScalarTaylorCommonDenominator N : ℚ) *
       (Polynomial.X - Polynomial.C (splitMachinScalarTaylorPartialSum N))
@@ -203,7 +206,7 @@ private lemma norm_complex_intCast_eq_natAbs (z : ℤ) :
     ‖(z : ℂ)‖ = (Int.natAbs z : ℝ) := by
   cases z with
   | ofNat n => simp
-  | negSucc n => simp [Int.natAbs, norm_neg]
+  | negSucc n => simp [Int.natAbs]
 
 theorem splitMachinScalarTaylor_coefficient_height_bound (N : ℕ) :
     ∀ i,
@@ -217,9 +220,8 @@ theorem splitMachinScalarTaylor_coefficient_height_bound (N : ℕ) :
       if i = 0 then -(a : ℂ) else 0 := by
     simpa using (Polynomial.coeff_C_mul_X_pow (-(a : ℂ)) 0 i)
   have hlinear : Polynomial.coeff
-      (Polynomial.X * Polynomial.C (D : ℂ) : Polynomial ℂ) i =
+      (Polynomial.C (D : ℂ) * Polynomial.X : Polynomial ℂ) i =
       if i = 1 then (D : ℂ) else 0 := by
-    rw [mul_comm]
     exact Polynomial.coeff_C_mul_X (D : ℂ) i
   have hformula :
       ((splitMachinScalarTaylorIntegerizedSequence.numerator N).map
@@ -228,8 +230,12 @@ theorem splitMachinScalarTaylor_coefficient_height_bound (N : ℕ) :
            else if i = 1 then (D : ℂ) else 0) := by
     simp only [splitMachinScalarTaylorIntegerizedSequence,
       splitMachinScalarTaylorIntegerNumeratorPolynomial,
-      Polynomial.map_sub, Polynomial.map_mul, Polynomial.map_X,
-      Polynomial.map_C, Polynomial.coeff_sub]
+      Polynomial.map_sub, Polynomial.map_mul, Polynomial.map_C,
+      Polynomial.map_X, Polynomial.coeff_sub]
+    change Polynomial.coeff
+        (Polynomial.C (D : ℂ) * Polynomial.X) i -
+        Polynomial.coeff (Polynomial.C (-(a : ℂ))) i =
+        (if i = 0 then -(a : ℂ) else if i = 1 then (D : ℂ) else 0)
     rw [hlinear, hconst]
     by_cases hi0 : i = 0
     · subst i
@@ -238,14 +244,17 @@ theorem splitMachinScalarTaylor_coefficient_height_bound (N : ℕ) :
       · subst i
         simp [hi0]
       · simp [hi0, hi1]
+  let M := max (Int.natAbs a) (max D
+    (2 ^ (splitMachinScalarTaylorIntegerNumeratorPolynomial N).natDegree))
   have hA : Int.natAbs a ≤ splitMachinScalarTaylorHeight N := by
     dsimp [splitMachinScalarTaylorHeight]
-    exact Nat.le_trans (le_max_left _ _) (Nat.le_add_right _ _)
+    exact Nat.le_trans (le_max_left _ _) (Nat.le_add_right M 2)
   have hD : D ≤ splitMachinScalarTaylorHeight N := by
     dsimp [splitMachinScalarTaylorHeight]
-    exact Nat.le_trans
-      (Nat.le_trans (le_max_left _ _) (le_max_right _ _))
-      (Nat.le_add_right _ _)
+    have hDM : D ≤ M := by
+      dsimp [M]
+      exact Nat.le_trans (le_max_left _ _) (le_max_right _ _)
+    exact Nat.le_trans hDM (Nat.le_add_right M 2)
   rw [hformula]
   split_ifs with hi0 hi1
   · rw [norm_neg, norm_complex_intCast_eq_natAbs]
@@ -265,7 +274,9 @@ theorem splitMachinScalarTaylor_denominator_height_bound (N : ℕ) :
       splitMachinScalarTaylorHeight N := by
   dsimp [splitMachinScalarTaylorIntegerizedSequence,
     splitMachinScalarTaylorHeight]
-  exact Nat.le_trans (le_max_right _ _) (Nat.le_add_right _ _)
+  exact Nat.le_trans
+    (Nat.le_trans (le_max_left _ _) (le_max_right _ _))
+    (Nat.le_add_right _ _)
 
 /-- The degree contribution is controlled by the same height. -/
 theorem splitMachinScalarTaylor_degree_height_bound (N : ℕ) :
@@ -304,12 +315,20 @@ theorem splitMachinScalarTaylor_has_concrete_hLiouville
     (SP := splitMachinScalarTaylorIntegerizedSequence)
     (SQ := splitMachinScalarTaylorIntegerizedSequence)
   · exact Filter.Eventually.of_forall splitMachinScalarTaylorHeight_ge_two
-  · exact Filter.Eventually.of_forall splitMachinScalarTaylor_coefficient_height_bound
-  · exact Filter.Eventually.of_forall splitMachinScalarTaylor_coefficient_height_bound
-  · exact Filter.Eventually.of_forall splitMachinScalarTaylor_degree_height_bound
-  · exact Filter.Eventually.of_forall splitMachinScalarTaylor_degree_height_bound
-  · exact Filter.Eventually.of_forall splitMachinScalarTaylor_denominator_height_bound
-  · exact Filter.Eventually.of_forall splitMachinScalarTaylor_denominator_height_bound
+  · filter_upwards [] with n
+    intro i
+    simpa only [pow_one] using splitMachinScalarTaylor_coefficient_height_bound n i
+  · filter_upwards [] with n
+    intro i
+    simpa only [pow_one] using splitMachinScalarTaylor_coefficient_height_bound n i
+  · filter_upwards [] with n
+    simpa only [pow_one] using splitMachinScalarTaylor_degree_height_bound n
+  · filter_upwards [] with n
+    simpa only [pow_one] using splitMachinScalarTaylor_degree_height_bound n
+  · filter_upwards [] with n
+    simpa only [pow_one] using splitMachinScalarTaylor_denominator_height_bound n
+  · filter_upwards [] with n
+    simpa only [pow_one] using splitMachinScalarTaylor_denominator_height_bound n
 
 #print axioms splitMachinScalarTaylor_has_concrete_hLiouville
 #print axioms splitMachinScalarTaylorIntegerNumerator_map_eq
