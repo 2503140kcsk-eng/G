@@ -212,15 +212,17 @@ theorem splitMachinScalarTaylor_coefficient_height_bound (N : ℕ) :
   dsimp [splitMachinScalarTaylorHeight, a, D]
   split_ifs with hi0 hi1
   · simp
-    exact_mod_cast (Nat.le_add_right
-      (2 ^ (splitMachinScalarTaylorIntegerNumeratorPolynomial N).natDegree +
-        splitMachinScalarTaylorCommonDenominator N)
-      (Int.natAbs (splitMachinScalarTaylorPartialSumInteger N) + 2))
+    exact_mod_cast (show
+      Int.natAbs (splitMachinScalarTaylorPartialSumInteger N) ≤
+        2 ^ (splitMachinScalarTaylorIntegerNumeratorPolynomial N).natDegree +
+          splitMachinScalarTaylorCommonDenominator N +
+          Int.natAbs (splitMachinScalarTaylorPartialSumInteger N) + 2 by omega)
   · simp
-    exact_mod_cast (Nat.le_add_right
-      (2 ^ (splitMachinScalarTaylorIntegerNumeratorPolynomial N).natDegree +
-        splitMachinScalarTaylorCommonDenominator N)
-      (Int.natAbs (splitMachinScalarTaylorPartialSumInteger N) + 2))
+    exact_mod_cast (show
+      splitMachinScalarTaylorCommonDenominator N ≤
+        2 ^ (splitMachinScalarTaylorIntegerNumeratorPolynomial N).natDegree +
+          splitMachinScalarTaylorCommonDenominator N +
+          Int.natAbs (splitMachinScalarTaylorPartialSumInteger N) + 2 by omega)
   · simp
 
 /-- The chosen height is at least two. -/
