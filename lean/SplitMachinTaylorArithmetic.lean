@@ -78,22 +78,24 @@ theorem splitMachinTaylor_commonDenominator_clears_coefficient
     ∃ z : ℤ,
       (splitMachinTaylorCommonDenominator N : ℚ) *
         splitMachinTaylorCoefficient k = z := by
+  classical
+  let s := Finset.range (N + 1)
   let d := splitMachinTaylorDenominator k
   let D := splitMachinTaylorCommonDenominator N
-  have hdpos : 0 < d := splitMachinTaylorDenominator_pos k
-  have hdvd : d ∣ D := by
-    exact splitMachinTaylorDenominator_dvd_common N k hk
-  have hmulNat : d * (D / d) = D :=
-    Nat.mul_div_cancel' hdvd
-  have hmul : (d : ℚ) * (D / d : ℕ) = (D : ℚ) := by
-    exact_mod_cast hmulNat
+  let E : ℕ := ∏ j ∈ s.erase k, splitMachinTaylorDenominator j
+  have hkMem : k ∈ s := Finset.mem_range.mpr (Nat.lt_succ_of_le hk)
+  have hprod : D = d * E := by
+    dsimp [D, E, s, splitMachinTaylorCommonDenominator]
+    exact (Finset.mul_prod_erase (Finset.range (N + 1))
+      splitMachinTaylorDenominator hkMem).symm
+  have hprodQ : (D : ℚ) = (d : ℚ) * (E : ℚ) := by
+    exact_mod_cast hprod
   have hdq : (d : ℚ) ≠ 0 := by
-    exact_mod_cast hdpos.ne'
-  refine ⟨(D / d : ℕ) * splitMachinTaylorNumerator k, ?_⟩
+    exact_mod_cast (splitMachinTaylorDenominator_pos k).ne'
+  refine ⟨(E : ℤ) * splitMachinTaylorNumerator k, ?_⟩
   dsimp [splitMachinTaylorCoefficient, d, D]
-  simp only [Int.cast_mul, Int.cast_ofNat]
-  rw [← hmul]
-  rw [div_eq_mul_inv]
+  rw [hprodQ]
+  push_cast
   field_simp [hdq]
   <;> ring
 
