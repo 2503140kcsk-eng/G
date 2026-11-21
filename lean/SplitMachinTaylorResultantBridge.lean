@@ -118,7 +118,14 @@ theorem splitMachinScalarTaylorPartialSum_integerized (N : ℕ) :
     intro k hk
     exact splitMachinScalarTaylor_commonDenominator_clears_coefficient
       N k (Nat.le_of_lt_succ (Finset.mem_range.mp hk))
-  choose z hz using hterm
+  let z : ℕ → ℤ := fun k =>
+    if hk : k ∈ s then Classical.choose (hterm k hk) else 0
+  have hz (k : ℕ) (hk : k ∈ s) :
+      (splitMachinScalarTaylorCommonDenominator N : ℚ) *
+        splitMachinScalarTaylorCoefficient k = (z k : ℚ) := by
+    dsimp [z]
+    rw [dif_pos hk]
+    exact_mod_cast Classical.choose_spec (hterm k hk)
   refine ⟨∑ k ∈ s, z k, ?_⟩
   calc
     (splitMachinScalarTaylorCommonDenominator N : ℚ) *
@@ -145,14 +152,14 @@ theorem splitMachinScalarTaylorPartialSumInteger_spec (N : ℕ) :
 
 /-- The rational linear polynomial X-r_N, where r_N is the scalar endpoint
 Taylor truncation for e+pi. -/
-def splitMachinScalarTaylorApproxPolynomial (N : ℕ) : Polynomial ℚ :=
+noncomputable def splitMachinScalarTaylorApproxPolynomial (N : ℕ) : Polynomial ℚ :=
   Polynomial.X - Polynomial.C (splitMachinScalarTaylorPartialSum N)
 
 /-- Integer numerator polynomial for X-r_N after denominator clearing. -/
-def splitMachinScalarTaylorIntegerNumeratorPolynomial (N : ℕ) :
+noncomputable def splitMachinScalarTaylorIntegerNumeratorPolynomial (N : ℕ) :
     Polynomial ℤ :=
-  Polynomial.C (-(splitMachinScalarTaylorPartialSumInteger N)) +
-    Polynomial.monomial 1 (splitMachinScalarTaylorCommonDenominator N : ℤ)
+  Polynomial.X * Polynomial.C (splitMachinScalarTaylorCommonDenominator N : ℤ) -
+    Polynomial.C (splitMachinScalarTaylorPartialSumInteger N)
 
 theorem splitMachinScalarTaylorIntegerNumerator_map_eq (N : ℕ) :
     (splitMachinScalarTaylorIntegerNumeratorPolynomial N).map
@@ -160,10 +167,10 @@ theorem splitMachinScalarTaylorIntegerNumerator_map_eq (N : ℕ) :
       Polynomial.C (splitMachinScalarTaylorCommonDenominator N : ℚ) *
         splitMachinScalarTaylorApproxPolynomial N := by
   classical
-  simp [splitMachinScalarTaylorIntegerNumeratorPolynomial,
-    splitMachinScalarTaylorApproxPolynomial,
-    Polynomial.map_monomial,
-    splitMachinScalarTaylorPartialSumInteger_spec]
+  simp only [splitMachinScalarTaylorIntegerNumeratorPolynomial,
+    Polynomial.map_sub, Polynomial.map_mul, Polynomial.map_X, Polynomial.map_C,
+    splitMachinScalarTaylorApproxPolynomial]
+  rw [← splitMachinScalarTaylorPartialSumInteger_spec]
   ring
 
 /-- An actual integerized polynomial sequence for the scalar truncations. -/
@@ -185,6 +192,10 @@ noncomputable def splitMachinScalarTaylorHeight (N : ℕ) : ℕ :=
 The coefficient height of the integerized scalar Taylor polynomial is
 bounded by the explicit H_N above.
 -/
+private lemma norm_complex_intCast_eq_natAbs (z : ℤ) :
+    ‖(z : ℂ)‖ = (Int.natAbs z : ℝ) := by
+  cases z <;> simp
+
 theorem splitMachinScalarTaylor_coefficient_height_bound (N : ℕ) :
     ∀ i,
       ‖((splitMachinScalarTaylorIntegerizedSequence.numerator N).map
@@ -201,28 +212,27 @@ theorem splitMachinScalarTaylor_coefficient_height_bound (N : ℕ) :
     by_cases hi0 : i = 0
     · subst i
       simp [splitMachinScalarTaylorIntegerizedSequence,
-        splitMachinScalarTaylorIntegerNumeratorPolynomial]
+        splitMachinScalarTaylorIntegerNumeratorPolynomial, a, D]
     · by_cases hi1 : i = 1
       · subst i
         simp [splitMachinScalarTaylorIntegerizedSequence,
-          splitMachinScalarTaylorIntegerNumeratorPolynomial]
+          splitMachinScalarTaylorIntegerNumeratorPolynomial, a, D]
       · simp [splitMachinScalarTaylorIntegerizedSequence,
-          splitMachinScalarTaylorIntegerNumeratorPolynomial, hi0, hi1]
+          splitMachinScalarTaylorIntegerNumeratorPolynomial, a, D, hi0, hi1]
+  have hA : Int.natAbs (splitMachinScalarTaylorPartialSumInteger N) ≤
+      splitMachinScalarTaylorHeight N := by
+    dsimp [splitMachinScalarTaylorHeight]
+    omega
+  have hD : splitMachinScalarTaylorCommonDenominator N ≤
+      splitMachinScalarTaylorHeight N := by
+    dsimp [splitMachinScalarTaylorHeight]
+    omega
   rw [hformula]
-  dsimp [splitMachinScalarTaylorHeight, a, D]
   split_ifs with hi0 hi1
-  · simp
-    exact_mod_cast (show
-      Int.natAbs (splitMachinScalarTaylorPartialSumInteger N) ≤
-        2 ^ (splitMachinScalarTaylorIntegerNumeratorPolynomial N).natDegree +
-          splitMachinScalarTaylorCommonDenominator N +
-          Int.natAbs (splitMachinScalarTaylorPartialSumInteger N) + 2 by omega)
-  · simp
-    exact_mod_cast (show
-      splitMachinScalarTaylorCommonDenominator N ≤
-        2 ^ (splitMachinScalarTaylorIntegerNumeratorPolynomial N).natDegree +
-          splitMachinScalarTaylorCommonDenominator N +
-          Int.natAbs (splitMachinScalarTaylorPartialSumInteger N) + 2 by omega)
+  · rw [norm_complex_intCast_eq_natAbs]
+    exact_mod_cast hA
+  · rw [norm_complex_intCast_eq_natAbs]
+    exact_mod_cast hD
   · simp
 
 /-- The chosen height is at least two. -/
@@ -265,7 +275,11 @@ theorem splitMachinScalarTaylor_has_concrete_hLiouville
           evalReal x (splitMachinScalarTaylorApproxPolynomial n) ≠ 0 →
             1 / (splitMachinScalarTaylorHeight n : ℝ) ^ d ≤
               |evalReal x (splitMachinScalarTaylorApproxPolynomial n)|) := by
-  apply hLiouville_of_integerized_height_degree_bounds
+  exact hLiouville_of_integerized_height_degree_bounds
+    (x := x)
+    (P := splitMachinScalarTaylorApproxPolynomial)
+    (Q := splitMachinScalarTaylorApproxPolynomial)
+    (H := splitMachinScalarTaylorHeight)
     (A := 1) (B := 1) (c := 1)
     (SP := splitMachinScalarTaylorIntegerizedSequence)
     (SQ := splitMachinScalarTaylorIntegerizedSequence)
