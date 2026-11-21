@@ -78,6 +78,10 @@ lean_lib ResultantHeightBound where
   srcDir := "lean"
 
 @[default_target]
+lean_lib SplitMachinTaylorArithmetic where
+  srcDir := "lean"
+
+@[default_target]
 lean_lib ProofAudit where
   srcDir := "lean"
 
