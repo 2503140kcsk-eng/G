@@ -41,7 +41,8 @@
     "ProofAudit.finiteDimensional_adjoin_of_algebraic",
     "ProofAudit.algebraic_extension_of_finiteDimensional",
     "ProofAudit.finite_iff_essFiniteType_and_algebraic",
-    "ProofAudit.simultaneous_polynomial_approximation_certificate"
+    "ProofAudit.simultaneous_polynomial_approximation_certificate",
+    "ProofAudit.split_machin_taylor_coefficients_have_an_exact_common_denominator"
   ],
   "permitted_axioms": [
     "propext",
