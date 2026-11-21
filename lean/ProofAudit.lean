@@ -18,7 +18,7 @@ public import ProofAuditApprox
 
 @[expose] public section
 
-open Filter Module Polynomial
+open Filter Module Polynomial EPlusPiApproximation
 open scoped Topology
 
 /-!
