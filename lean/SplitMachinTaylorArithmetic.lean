@@ -85,16 +85,17 @@ theorem splitMachinTaylor_commonDenominator_clears_coefficient
     exact splitMachinTaylorDenominator_dvd_common N k hk
   have hmulNat : d * (D / d) = D :=
     Nat.mul_div_cancel' hdvd
-  have hmul : (d : ℚ) * (D / d : ℚ) = (D : ℚ) := by
+  have hmul : (d : ℚ) * (D / d : ℕ) = (D : ℚ) := by
     exact_mod_cast hmulNat
-  refine ⟨(D / d : ℕ) * splitMachinTaylorNumerator k, ?_⟩
-  dsimp [splitMachinTaylorCoefficient, d, D]
-  rw [← hmul]
-  push_cast
   have hdq : (d : ℚ) ≠ 0 := by
     exact_mod_cast hdpos.ne'
+  refine ⟨(D / d : ℕ) * splitMachinTaylorNumerator k, ?_⟩
+  dsimp [splitMachinTaylorCoefficient, d, D]
+  simp only [Int.cast_mul, Int.cast_ofNat]
+  rw [← hmul]
+  rw [div_eq_mul_inv]
   field_simp [hdq]
-  <;> ring_nf
+  <;> ring
 
 /-- Exact first nonzero coefficient, retained as a small arithmetic regression. -/
 theorem splitMachinTaylorCoefficient_one :
