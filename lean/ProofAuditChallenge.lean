@@ -371,16 +371,16 @@ theorem split_machin_scalar_taylor_has_concrete_hLiouville
     IsAlgebraic ℚ x →
       ∃ d : ℕ,
         (∀ᶠ n : ℕ in Filter.atTop,
-          Polynomial.eval x
+          EPlusPiApproximation.evalReal x
             (EPlusPiApproximation.splitMachinScalarTaylorApproxPolynomial n) ≠ 0 →
             1 / (EPlusPiApproximation.splitMachinScalarTaylorHeight n : ℝ) ^ d ≤
-              |Polynomial.eval x
+              |EPlusPiApproximation.evalReal x
                 (EPlusPiApproximation.splitMachinScalarTaylorApproxPolynomial n)|) ∧
         (∀ᶠ n : ℕ in Filter.atTop,
-          Polynomial.eval x
+          EPlusPiApproximation.evalReal x
             (EPlusPiApproximation.splitMachinScalarTaylorApproxPolynomial n) ≠ 0 →
             1 / (EPlusPiApproximation.splitMachinScalarTaylorHeight n : ℝ) ^ d ≤
-              |Polynomial.eval x
+              |EPlusPiApproximation.evalReal x
                 (EPlusPiApproximation.splitMachinScalarTaylorApproxPolynomial n)|) := by
   sorry
 
