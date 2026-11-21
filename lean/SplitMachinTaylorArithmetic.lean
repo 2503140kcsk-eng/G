@@ -92,11 +92,14 @@ theorem splitMachinTaylor_commonDenominator_clears_coefficient
     exact_mod_cast hprod
   have hdq : (d : ℚ) ≠ 0 := by
     exact_mod_cast (splitMachinTaylorDenominator_pos k).ne'
+  have hdq' :
+      (splitMachinTaylorDenominator k : ℚ) ≠ 0 := by
+    exact_mod_cast (splitMachinTaylorDenominator_pos k).ne'
   refine ⟨(E : ℤ) * splitMachinTaylorNumerator k, ?_⟩
   dsimp [splitMachinTaylorCoefficient, d, D]
   rw [hprodQ]
   push_cast
-  field_simp [hdq]
+  field_simp [hdq']
   <;> ring
 
 /-- Exact first nonzero coefficient, retained as a small arithmetic regression. -/
