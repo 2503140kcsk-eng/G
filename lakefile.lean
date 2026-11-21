@@ -82,6 +82,10 @@ lean_lib SplitMachinTaylorArithmetic where
   srcDir := "lean"
 
 @[default_target]
+lean_lib SplitMachinTaylorResultantBridge where
+  srcDir := "lean"
+
+@[default_target]
 lean_lib ProofAudit where
   srcDir := "lean"
 
