@@ -3,6 +3,7 @@ public import Mathlib
 public import ProofAuditDefs
 public import PolynomialApproximationDefs
 public import SplitMachinTaylorArithmetic
+public import SplitMachinTaylorResultantBridge
 
 @[expose] public section
 
@@ -361,5 +362,26 @@ theorem split_machin_taylor_coefficients_have_an_exact_common_denominator
         EPlusPiApproximation.splitMachinTaylorCoefficient k = z := by
   sorry
 
+
+
+/-- The actual scalar Split–Machin Taylor polynomial sequence satisfies the
+concrete resultant-derived fixed-power lower bound at every algebraic point. -/
+theorem split_machin_scalar_taylor_has_concrete_hLiouville
+    {x : ℝ} :
+    IsAlgebraic ℚ x →
+      ∃ d : ℕ,
+        (∀ᶠ n : ℕ in Filter.atTop,
+          Polynomial.eval x
+            (EPlusPiApproximation.splitMachinScalarTaylorApproxPolynomial n) ≠ 0 →
+            1 / (EPlusPiApproximation.splitMachinScalarTaylorHeight n : ℝ) ^ d ≤
+              |Polynomial.eval x
+                (EPlusPiApproximation.splitMachinScalarTaylorApproxPolynomial n)|) ∧
+        (∀ᶠ n : ℕ in Filter.atTop,
+          Polynomial.eval x
+            (EPlusPiApproximation.splitMachinScalarTaylorApproxPolynomial n) ≠ 0 →
+            1 / (EPlusPiApproximation.splitMachinScalarTaylorHeight n : ℝ) ^ d ≤
+              |Polynomial.eval x
+                (EPlusPiApproximation.splitMachinScalarTaylorApproxPolynomial n)|) := by
+  sorry
 
 end ProofAudit
