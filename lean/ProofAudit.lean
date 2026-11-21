@@ -11,6 +11,7 @@ public import ResultantSuperpolynomial
 public import ResultantPairedCriterion
 public import ResultantHeightBound
 public import SplitMachinTaylorArithmetic
+public import SplitMachinTaylorResultantBridge
 public import PairedApproximationCriteria
 public import MixedKernelQuotient
 public import ProofAuditApprox
@@ -445,5 +446,31 @@ theorem split_machin_taylor_coefficients_have_an_exact_common_denominator
     N k hk
 
 #print axioms split_machin_taylor_coefficients_have_an_exact_common_denominator
+
+
+/-! ## Scalar Split–Machin approximation through the resultant-height bridge -/
+
+/-- The actual rational endpoint Taylor truncations have integerized
+coefficients, a concrete height, and therefore the fixed-power algebraic
+lower bound supplied by the resultant theorem. -/
+theorem split_machin_scalar_taylor_has_concrete_hLiouville
+    {x : ℝ} :
+    IsAlgebraic ℚ x →
+      ∃ d : ℕ,
+        (∀ᶠ n : ℕ in atTop,
+          evalReal x
+            (EPlusPiApproximation.splitMachinScalarTaylorApproxPolynomial n) ≠ 0 →
+            1 / (EPlusPiApproximation.splitMachinScalarTaylorHeight n : ℝ) ^ d ≤
+              |evalReal x
+                (EPlusPiApproximation.splitMachinScalarTaylorApproxPolynomial n)|) ∧
+        (∀ᶠ n : ℕ in atTop,
+          evalReal x
+            (EPlusPiApproximation.splitMachinScalarTaylorApproxPolynomial n) ≠ 0 →
+            1 / (EPlusPiApproximation.splitMachinScalarTaylorHeight n : ℝ) ^ d ≤
+              |evalReal x
+                (EPlusPiApproximation.splitMachinScalarTaylorApproxPolynomial n)|) :=
+  EPlusPiApproximation.splitMachinScalarTaylor_has_concrete_hLiouville
+
+#print axioms split_machin_scalar_taylor_has_concrete_hLiouville
 
 end ProofAudit
