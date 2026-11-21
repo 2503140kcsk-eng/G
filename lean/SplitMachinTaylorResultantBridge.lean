@@ -170,11 +170,16 @@ theorem splitMachinScalarTaylorIntegerNumerator_map_eq (N : ℕ) :
   simp only [splitMachinScalarTaylorIntegerNumeratorPolynomial,
     Polynomial.map_sub, Polynomial.map_mul, Polynomial.map_C, Polynomial.map_X,
     splitMachinScalarTaylorApproxPolynomial]
-  change Polynomial.C (splitMachinScalarTaylorCommonDenominator N : ℚ) *
-      Polynomial.X -
-      Polynomial.C (splitMachinScalarTaylorPartialSumInteger N : ℚ) =
-    Polynomial.C (splitMachinScalarTaylorCommonDenominator N : ℚ) *
-      (Polynomial.X - Polynomial.C (splitMachinScalarTaylorPartialSum N))
+  have hDcast :
+      (algebraMap ℤ ℚ)
+        (splitMachinScalarTaylorCommonDenominator N : ℤ) =
+          (splitMachinScalarTaylorCommonDenominator N : ℚ) := by
+    norm_cast
+  have hAcast :
+      (algebraMap ℤ ℚ) (splitMachinScalarTaylorPartialSumInteger N) =
+        (splitMachinScalarTaylorPartialSumInteger N : ℚ) := by
+    norm_cast
+  rw [hDcast, hAcast]
   have hA :
       (splitMachinScalarTaylorPartialSumInteger N : ℚ) =
         (splitMachinScalarTaylorCommonDenominator N : ℚ) *
@@ -216,6 +221,10 @@ theorem splitMachinScalarTaylor_coefficient_height_bound (N : ℕ) :
   intro i
   let a := splitMachinScalarTaylorPartialSumInteger N
   let D := splitMachinScalarTaylorCommonDenominator N
+  have hDcast : (algebraMap ℤ ℂ) (D : ℤ) = (D : ℂ) := by
+    norm_cast
+  have hAcast : (algebraMap ℤ ℂ) (-a) = (-(a : ℂ)) := by
+    simp
   have hconst : Polynomial.coeff (Polynomial.C (-(a : ℂ)) : Polynomial ℂ) i =
       if i = 0 then -(a : ℂ) else 0 := by
     simpa using (Polynomial.coeff_C_mul_X_pow (-(a : ℂ)) 0 i)
@@ -232,11 +241,7 @@ theorem splitMachinScalarTaylor_coefficient_height_bound (N : ℕ) :
       splitMachinScalarTaylorIntegerNumeratorPolynomial,
       Polynomial.map_sub, Polynomial.map_mul, Polynomial.map_C,
       Polynomial.map_X, Polynomial.coeff_sub]
-    change Polynomial.coeff
-        (Polynomial.C (D : ℂ) * Polynomial.X) i -
-        Polynomial.coeff (Polynomial.C (-(a : ℂ))) i =
-        (if i = 0 then -(a : ℂ) else if i = 1 then (D : ℂ) else 0)
-    rw [hlinear, hconst]
+    rw [hDcast, hAcast, hlinear, hconst]
     by_cases hi0 : i = 0
     · subst i
       simp
@@ -253,13 +258,15 @@ theorem splitMachinScalarTaylor_coefficient_height_bound (N : ℕ) :
     dsimp [splitMachinScalarTaylorHeight]
     have hDM : D ≤ M := by
       dsimp [M]
-      exact Nat.le_trans (le_max_left _ _) (le_max_right _ _)
+      exact Nat.le_trans (le_max_left D _) (le_max_right _ _)
     exact Nat.le_trans hDM (Nat.le_add_right M 2)
   rw [hformula]
   split_ifs with hi0 hi1
   · rw [norm_neg, norm_complex_intCast_eq_natAbs]
     exact_mod_cast hA
-  · simpa using (show (D : ℝ) ≤ (splitMachinScalarTaylorHeight N : ℝ) by exact_mod_cast hD)
+  · have hnormD : ‖(D : ℂ)‖ = (D : ℝ) := by norm_cast
+    simpa [hnormD] using
+      (show (D : ℝ) ≤ (splitMachinScalarTaylorHeight N : ℝ) by exact_mod_cast hD)
   · simp
 
 /-- The chosen height is at least two. -/
@@ -306,14 +313,11 @@ theorem splitMachinScalarTaylor_has_concrete_hLiouville
           evalReal x (splitMachinScalarTaylorApproxPolynomial n) ≠ 0 →
             1 / (splitMachinScalarTaylorHeight n : ℝ) ^ d ≤
               |evalReal x (splitMachinScalarTaylorApproxPolynomial n)|) := by
-  apply hLiouville_of_integerized_height_degree_bounds
-    (x := x)
-    (P := splitMachinScalarTaylorApproxPolynomial)
-    (Q := splitMachinScalarTaylorApproxPolynomial)
-    (H := splitMachinScalarTaylorHeight)
-    (A := 1) (B := 1) (c := 1)
-    (SP := splitMachinScalarTaylorIntegerizedSequence)
-    (SQ := splitMachinScalarTaylorIntegerizedSequence)
+  refine @hLiouville_of_integerized_height_degree_bounds
+    x splitMachinScalarTaylorApproxPolynomial
+      splitMachinScalarTaylorApproxPolynomial splitMachinScalarTaylorHeight
+      1 1 1 splitMachinScalarTaylorIntegerizedSequence
+      splitMachinScalarTaylorIntegerizedSequence ?_ ?_ ?_ ?_ ?_ ?_ ?_
   · exact Filter.Eventually.of_forall splitMachinScalarTaylorHeight_ge_two
   · filter_upwards [] with n
     intro i
